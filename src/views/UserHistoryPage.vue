@@ -1,24 +1,12 @@
 <template>
 <v-app>
-
-  
-
-
-
-
-
-
  <v-sheet class="d-flex flex-column">
     <v-sheet class="flex-1-0 ma-2 pa-2">
       <FileUploader />
     </v-sheet>
 
     <v-sheet class="flex-1-0 ma-2 pa-2">
-      <TableData 
-          toolbarTitle='Histórico'
-          textBtnAddItem='Adicionar Item'
-          msgDeleteItem='Tem certeza que deseja excluir o item?'
-        />
+      <TableData />
     </v-sheet>
   </v-sheet>
 </v-app>
@@ -27,6 +15,7 @@
 <script>
   import FileUploader from '@/components/FileUploader.vue'
   import TableData from '@/components/TableData.vue'
+
 
   export default {
     name: 'userHistoryPage',
