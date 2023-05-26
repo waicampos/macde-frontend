@@ -1,16 +1,16 @@
 <template>
-    <v-container>
-        <h1>FILE UPLOADER</h1>
+    <div>
         <div v-if="!file">
             <div :class="['dropZone', dragging ? 'dropZone-over' : '']" @dragenter="dragging = true" @dragleave="dragging = false">
                 <div class="dropZone-info" @drag="onChange">
+                    <v-icon size="large">mdi-upload</v-icon>
                     <span class="fa fa-cloud-upload dropZone-title"></span>
                     <span class="dropZone-title">Arraste e solte ou clique para enviar um arquivo</span>
                     <div class="dropZone-upload-limit-info">               
-                    <div> Os arquivos devem ter o formato CSV e ter no máximo 5 KB de tamanho</div>
+                    <div> Os arquivos devem ter o formato JSON</div>
                     </div>
                 </div>
-                <input type="file" @change="onChange" accept=".csv">
+                <input type="file" @change="onChange" accept=".csv, application/JSON">
             </div>
         </div>
         <div v-else class="dropZone-uploaded">
@@ -25,7 +25,7 @@
             <div>Tamanho: {{ file.size }} (bytes)</div>
             <div>Extension: {{ extension }}</div>
         </div>    
-    </v-container>
+    </div>
 </template>
 
 <script>
@@ -33,72 +33,23 @@ export default {
     data() {
         return {            
             file: '',
+            data_file: [],
             dragging: false
         }
     },    
     computed: {     
-        userFileData: {
-            get() {
-                return this.$store.state.userFileData
-            },
-
-            set(payload) {
-                this.$store.commit('userFileData', payload)
-            }
-        },
         extension() {
             return (this.file) ? this.file.name.split('.').pop() : '';
         }
     },
     methods: {
         onChange(e) {
-            var files = e.target.files || e.dataTransfer.files;
-        
-            if (!files.length) {
-                this.dragging = false;
-                return;
-            }
-
-            this.createFile(files[0])
-            
-            const reader = new FileReader();
-            reader.onload = () => this.readCSV(reader.result, ';', 1, false);
-            reader.readAsText(files[0])
-        },
-
-        readCSV(filepath_or_buffer, separator=';', columns=0, index=true) {
-            const lines = filepath_or_buffer.split(/\r?\n|\r/);                          
-            const result = lines.map((line) => line.toString().split(separator).filter(l => l.length != 0))
-
-            let csv = {}
-            if(columns) {   
-                csv.columns = result.slice(0, columns)
-            }
-
-            if(index) {
-                csv.index = result.slice(columns).map(el => el.shift())
-            }
-
-            csv.data = result.slice(columns)
-            
-            console.log(csv)
-            this.userFileData = csv
-        },
-        createFile(file) {
-            if (!file.type.match('text.*')) {
-                alert('Por favor, selecione um arquivo do tipo .csv');
-                this.dragging = false;
-                return;
-            }
-            
-            if (file.size > 5000) {
-                alert('Tamanho máximo excedido.')
-                this.dragging = false;
-                return;
-            }
-            
-            this.file = file;
-            this.dragging = false;
+            this.file = e.target.files[0];
+            var reader = new FileReader();
+            reader.readAsText(this.file); 
+            reader.onload = (e) => {
+                this.data_file = e.target.result
+            };                     
         },
         removeFile() {
             this.file = '';
@@ -109,10 +60,10 @@ export default {
 
 <style>
     .dropZone {
-        width: 80%;
-        height: 200px;
+        width: 100%;
+        height: 75px;
         position: relative;
-        border: 2px dashed #000;
+        border: 2px dashed #535050;
     }
 
     .dropZone:hover {
@@ -160,10 +111,10 @@ export default {
     }
 
     .dropZone-uploaded {
-        width: 80%;
-        height: 200px;
+        width: 100%;
+        height: 75px;
         position: relative;
-        border: 2px dashed #eee;
+        border: 2px solid #1975A0;
     }
 
     .dropZone-uploaded-info {
