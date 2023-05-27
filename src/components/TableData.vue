@@ -1,8 +1,14 @@
 <template>
+<ul v-for="(item, index) in editedItem" :key="index">
+  <li>{{item.label}}</li>
+  <li>{{item.name}}</li>
+  <li>{{item.value}}</li>
+  <li>"---------------------"</li>
+</ul>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    :sort-by="[{ key: 'data', order: 'asc' }]"
+    :items="data_file"
+    :sort-by="[{ key: 'date', order: 'asc' }]"
     class="elevation-4"
   >
     <template v-slot:top>
@@ -10,8 +16,6 @@
         flat
       >
         <v-toolbar-title>Histórico</v-toolbar-title>
-        
-        
         <v-dialog
           v-model="dialog"
           max-width="500px"
@@ -40,50 +44,15 @@
 
             <v-card-text>
               <v-container>
-                <v-row>
+                <v-row>                  
                   <v-col
                     cols="12"
                     sm="6"
+                    v-for="(item, index) in editedItem" :key="index"
                   >
                     <v-text-field
-                      v-model="editedItem.data"
-                      label="Data"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                  >
-                    <v-text-field
-                      v-model="editedItem.demanda_ponta"
-                      label="Demanda de Ponta (kW)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                  >
-                    <v-text-field
-                      v-model="editedItem.demanda_fora_ponta"
-                      label="Demanda Fora de Ponta (kW)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                  >
-                    <v-text-field
-                      v-model="editedItem.energia_ponta"
-                      label="Energia de Ponta (kWh)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                  >
-                    <v-text-field
-                      v-model="editedItem.energia_fora_ponta"
-                      label="Energia Fora de Ponta (kWh)"
+                      v-model="item.value"
+                      :label="item.label"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -122,6 +91,7 @@
         </v-dialog>
       </v-toolbar>
     </template>
+    <!-- <template v-slot:[`item.actions`]="{ item }"> -->
     <template v-slot:item.action="{ item }">
       <v-icon
         size="small"
@@ -139,16 +109,21 @@
     </template>
     <template v-slot:no-data>
       <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
+        disabled
+        size="small"
+        class="ma-2"
+        color="green-darken-2"
+        icon="mdi-table-alert"
+      ></v-btn>
+      <p class="text-medium-emphasis">
+        Nenhum dado disponível. Por favor, carregue um arquivo de dados ou preencha a tabela manualmente.
+      </p>
     </template>
   </v-data-table>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   export default {
     data: () => ({
       dialog: false,
@@ -158,33 +133,34 @@
           title: 'Data',
           align: 'start',
           sortable: true,
-          key: 'data',
+          key: 'date',
         },
-        { title: 'Demanda de Ponta', key: 'demanda_ponta' },
-        { title: 'Demanda Fora de Ponta', key: 'demanda_fora_ponta' },
-        { title: 'Energia de Ponta', key: 'energia_ponta' },
-        { title: 'Energia Fora de Ponta', key: 'energia_fora_ponta' },
+        { title: 'Demanda de Ponta', key: 'peak_demand' },
+        { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
+        { title: 'Energia de Ponta', key: 'peak_energy' },
+        { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
         { title: 'Opções', key: 'action', sortable: false },
       ],
-      desserts: [],
       editedIndex: -1,
-      editedItem: {
-        data: '',
-        demanda_ponta: 0,
-        demanda_fora_ponta: 0,
-        energia_ponta: 0,
-        energia_fora_ponta: 0,
-      },
-      defaultItem: {
-        data: '',
-        demanda_ponta: 0,
-        demanda_fora_ponta: 0,
-        energia_ponta: 0,
-        energia_fora_ponta: 0,
-      },
+      editedItem: [
+        {name: 'date', value: '', label: 'Data'},
+        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta'},
+        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta'},
+        {name: 'peak_energy', value: 0, label: 'Energia de Ponta'},
+        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta'}        
+      ],
+      defaultItem: [
+        {name: 'date', value: '', label: 'Data'},
+        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta'},
+        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta'},
+        {name: 'peak_energy', value: 0, label: 'Energia de Ponta'},
+        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta'}        
+      ],
     }),
-
     computed: {
+      ...mapGetters({
+        data_file: 'get_user_data_history'
+      }),
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Item' : 'Editar Item'
       },
@@ -198,283 +174,21 @@
         val || this.closeDelete()
       },
     },
-
-    created () {
-      this.initialize()
-    },
-
     methods: {
-      initialize () {
-        this.desserts = [
-          {
-            data: '01/01/2019',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/02/2019',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/03/2019',
-            demanda_ponta: 620.76,
-            demanda_fora_ponta: 784.44,
-            energia_ponta: 26654,
-            energia_fora_ponta:137737,
-          },
-          {
-            data: '01/04/2019',
-            demanda_ponta: 624.96,
-            demanda_fora_ponta: 719.88,
-            energia_ponta: 25065,
-            energia_fora_ponta: 133994,
-          },
-          {
-            data: '01/05/2019',
-            demanda_ponta: 383.88,
-            demanda_fora_ponta: 624.68,
-            energia_ponta: 17033,
-            energia_fora_ponta: 102337,
-          },
-           {
-            data: '01/06/2019',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/07/2019',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/08/2019',
-            demanda_ponta: 620.76,
-            demanda_fora_ponta: 784.44,
-            energia_ponta: 26654,
-            energia_fora_ponta:137737,
-          },
-          {
-            data: '01/09/2019',
-            demanda_ponta: 624.96,
-            demanda_fora_ponta: 719.88,
-            energia_ponta: 25065,
-            energia_fora_ponta: 133994,
-          },
-          {
-            data: '01/10/2019',
-            demanda_ponta: 383.88,
-            demanda_fora_ponta: 624.68,
-            energia_ponta: 17033,
-            energia_fora_ponta: 102337,
-          },
-           {
-            data: '01/11/2019',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/12/2019',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/01/2020',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/02/2020',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/03/2020',
-            demanda_ponta: 620.76,
-            demanda_fora_ponta: 784.44,
-            energia_ponta: 26654,
-            energia_fora_ponta:137737,
-          },
-          {
-            data: '01/04/2020',
-            demanda_ponta: 624.96,
-            demanda_fora_ponta: 719.88,
-            energia_ponta: 25065,
-            energia_fora_ponta: 133994,
-          },
-          {
-            data: '01/05/2020',
-            demanda_ponta: 383.88,
-            demanda_fora_ponta: 624.68,
-            energia_ponta: 17033,
-            energia_fora_ponta: 102337,
-          },
-           {
-            data: '01/06/2020',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/07/2020',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/08/2020',
-            demanda_ponta: 620.76,
-            demanda_fora_ponta: 784.44,
-            energia_ponta: 26654,
-            energia_fora_ponta:137737,
-          },
-          {
-            data: '01/09/2020',
-            demanda_ponta: 624.96,
-            demanda_fora_ponta: 719.88,
-            energia_ponta: 25065,
-            energia_fora_ponta: 133994,
-          },
-          {
-            data: '01/10/2020',
-            demanda_ponta: 383.88,
-            demanda_fora_ponta: 624.68,
-            energia_ponta: 17033,
-            energia_fora_ponta: 102337,
-          },
-           {
-            data: '01/11/2020',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/12/2020',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/01/2021',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/02/2021',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/03/2021',
-            demanda_ponta: 620.76,
-            demanda_fora_ponta: 784.44,
-            energia_ponta: 26654,
-            energia_fora_ponta:137737,
-          },
-          {
-            data: '01/04/2021',
-            demanda_ponta: 624.96,
-            demanda_fora_ponta: 719.88,
-            energia_ponta: 25065,
-            energia_fora_ponta: 133994,
-          },
-          {
-            data: '01/05/2021',
-            demanda_ponta: 383.88,
-            demanda_fora_ponta: 624.68,
-            energia_ponta: 17033,
-            energia_fora_ponta: 102337,
-          },
-           {
-            data: '01/06/2021',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/07/2021',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-          {
-            data: '01/08/2021',
-            demanda_ponta: 620.76,
-            demanda_fora_ponta: 784.44,
-            energia_ponta: 26654,
-            energia_fora_ponta:137737,
-          },
-          {
-            data: '01/09/2021',
-            demanda_ponta: 624.96,
-            demanda_fora_ponta: 719.88,
-            energia_ponta: 25065,
-            energia_fora_ponta: 133994,
-          },
-          {
-            data: '01/10/2021',
-            demanda_ponta: 383.88,
-            demanda_fora_ponta: 624.68,
-            energia_ponta: 17033,
-            energia_fora_ponta: 102337,
-          },
-           {
-            data: '01/11/2021',
-            demanda_ponta: 100.8,
-            demanda_fora_ponta: 254.52,
-            energia_ponta:4989,
-            energia_fora_ponta: 59163,
-          },
-          {
-            data: '01/12/2021',
-            demanda_ponta: 537.6,
-            demanda_fora_ponta: 624.12,
-            energia_ponta: 8206,
-            energia_fora_ponta: 118769,
-          },
-        ]
-      },
-
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.data_file.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.data_file.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
       deleteItemConfirm () {
-        this.desserts.splice(this.editedIndex, 1)
+        this.data_file.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
@@ -496,9 +210,9 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          Object.assign(this.data_file[this.editedIndex], this.editedItem)
         } else {
-          this.desserts.push(this.editedItem)
+          this.data_file.push(this.editedItem)
         }
         this.close()
       },

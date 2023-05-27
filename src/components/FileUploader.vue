@@ -3,9 +3,14 @@
         <div v-if="!file">
             <div :class="['dropZone', dragging ? 'dropZone-over' : '']" @dragenter="dragging = true" @dragleave="dragging = false">
                 <div class="dropZone-info" @drag="onChange">
-                    <v-icon size="large">mdi-upload</v-icon>
+                    <v-btn
+                        size="large"
+                        class="ma-2"
+                        color="indigo"
+                        icon="mdi-cloud-upload"
+                    ></v-btn>
                     <span class="fa fa-cloud-upload dropZone-title"></span>
-                    <span class="dropZone-title">Arraste e solte ou clique para enviar um arquivo</span>
+                    <p class="dropZone-title">Arraste e solte ou clique para enviar um arquivo.</p>
                     <div class="dropZone-upload-limit-info">               
                     <div> Os arquivos devem ter o formato JSON</div>
                     </div>
@@ -29,26 +34,30 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
     data() {
         return {            
             file: '',
-            data_file: [],
             dragging: false
         }
     },    
     computed: {     
+        data_file () {
+            return this.$store.getters.user_data_history
+        },
         extension() {
             return (this.file) ? this.file.name.split('.').pop() : '';
         }
     },
     methods: {
+        ...mapActions(['load_user_data_history']),
         onChange(e) {
             this.file = e.target.files[0];
             var reader = new FileReader();
             reader.readAsText(this.file); 
             reader.onload = (e) => {
-                this.data_file = e.target.result
+                this.load_user_data_history(JSON.parse(e.target.result))
             };                     
         },
         removeFile() {
@@ -61,7 +70,7 @@ export default {
 <style>
     .dropZone {
         width: 100%;
-        height: 75px;
+        height: 150px;
         position: relative;
         border: 2px dashed #535050;
     }
@@ -112,7 +121,7 @@ export default {
 
     .dropZone-uploaded {
         width: 100%;
-        height: 75px;
+        height: 150px;
         position: relative;
         border: 2px solid #1975A0;
     }
