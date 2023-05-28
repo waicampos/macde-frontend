@@ -1,10 +1,4 @@
 <template>
-<ul v-for="(item, index) in editedItem" :key="index">
-  <li>{{item.label}}</li>
-  <li>{{item.name}}</li>
-  <li>{{item.value}}</li>
-  <li>"---------------------"</li>
-</ul>
   <v-data-table
     :headers="headers"
     :items="data_file"
@@ -45,14 +39,14 @@
             <v-card-text>
               <v-container>
                 <v-row>                  
-                  <v-col
+                  <v-col v-for="(item, index) in editedItem" :key="index"
                     cols="12"
                     sm="6"
-                    v-for="(item, index) in editedItem" :key="index"
                   >
-                    <v-text-field
-                      v-model="item.value"
-                      :label="item.label"
+                    <v-text-field                    
+                      v-model= "item.value"
+                      :label= "item.label"
+                      :suffix= "item.suffix"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -143,18 +137,18 @@
       ],
       editedIndex: -1,
       editedItem: [
-        {name: 'date', value: '', label: 'Data'},
-        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta'},
-        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta'},
-        {name: 'peak_energy', value: 0, label: 'Energia de Ponta'},
-        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta'}        
+        {name: 'date', value: '', label: 'Data', suffix: ""},
+        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta', suffix: "kW"},
+        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta', suffix: "kW"},
+        {name: 'peak_energy', value: 0, label: 'Energia de Ponta', suffix: "kWh"},
+        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta', suffix: "kWh"}        
       ],
       defaultItem: [
-        {name: 'date', value: '', label: 'Data'},
-        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta'},
-        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta'},
-        {name: 'peak_energy', value: 0, label: 'Energia de Ponta'},
-        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta'}        
+        {name: 'date', value: '', label: 'Data', suffix: ""},
+        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta', suffix: "kW"},
+        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta', suffix: "kW"},
+        {name: 'peak_energy', value: 0, label: 'Energia de Ponta', suffix: "kWh"},
+        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta', suffix: "kWh"}        
       ],
     }),
     computed: {
@@ -170,14 +164,18 @@
       dialog (val) {
         val || this.close()
       },
-      dialogDelete (val) {
+      dialogDelete (val) {''
         val || this.closeDelete()
       },
     },
     methods: {
       editItem (item) {
         this.editedIndex = this.data_file.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+
+        for(var i in this.editedItem){
+          let name = this.editedItem[i].name
+          this.editedItem[i].value = item[name]        
+        }
         this.dialog = true
       },
 
@@ -195,7 +193,7 @@
       close () {
         this.dialog = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem = JSON.parse(JSON.stringify(this.defaultItem))
           this.editedIndex = -1
         })
       },
@@ -203,16 +201,23 @@
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem =JSON.parse(JSON.stringify(this.defaultItem))      
           this.editedIndex = -1
         })
       },
 
       save () {
+        let obj = {}
+        for(var i in this.editedItem){
+          let name = this.editedItem[i].name
+          obj[name] = this.editedItem[i].value     
+        }
+
         if (this.editedIndex > -1) {
-          Object.assign(this.data_file[this.editedIndex], this.editedItem)
+          let payload = {'index': this.editedItem, 'value': obj}
+          this.set_item_user_data_history(payload)
         } else {
-          this.data_file.push(this.editedItem)
+          this.data_file.push(obj)
         }
         this.close()
       },
