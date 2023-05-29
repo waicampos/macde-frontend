@@ -150,14 +150,14 @@ import LineChart from '@/components/charts/LineChart.vue';
         methods: {
             loadNaive() {
                 axios
-                .post('http://localhost:5010/naive', this.dados)
+                .post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', this.dados)
                 .then(response => {
                     this.forecast.naive = response.data;
                 })
             },
             loadDoubleMean() {
                 axios
-                .post('http://localhost:5010/doublemean', this.dados2)
+                .post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', this.dados2)
                 .then(response => {
                     this.forecast.double_mean = response.data;
                 })
