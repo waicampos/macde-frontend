@@ -6,6 +6,8 @@ import UserHistoryPage from '@/views/UserHistoryPage.vue'
 import UserForecastPage from '@/views/UserForecastPage.vue'
 import UserOptimizationPage from '@/views/UserOptimizationPage.vue'
 import UserResultsPage from '@/views/UserResultsPage.vue'
+import ReportPage from '@/views/ReportPage.vue'
+import AccountPage from '@/views/AccountPage.vue'
 
 const routes = [
   {
@@ -22,7 +24,9 @@ const routes = [
       {path: 'historico', component: UserHistoryPage},
       {path: 'previsao', component: UserForecastPage},
       {path: 'otimizacao', component: UserOptimizationPage},
-      {path: 'resultados', component: UserResultsPage}
+      {path: 'resultados', component: UserResultsPage},
+      {path: 'relatorio', component: ReportPage},
+      {path: 'info', component: AccountPage}
     ]
   },
 ]

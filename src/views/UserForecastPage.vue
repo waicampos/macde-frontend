@@ -1,9 +1,5 @@
 <template>
     <v-sheet>
-        <v-sheet class="flex-1-0 ma-2 pa-2">
-            <FileUploader />
-        </v-sheet>
-
         <v-sheet>
             <LineChart />
         </v-sheet>
@@ -59,12 +55,11 @@
 </template>
 <script>
 import axios from 'axios';
-import FileUploader from '@/components/FileUploader.vue';
 import LineChart from '@/components/charts/LineChart.vue';
 
     export default {
         name: "user-forecast_page",
-        components: {FileUploader, LineChart},
+        components: {LineChart},
         data() {
             return {
                 dados2: {"data":  [
