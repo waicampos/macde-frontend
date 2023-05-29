@@ -11,11 +11,12 @@
     "@mdi/font": "7.0.96",
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
+    "or": "^0.2.0",
     "roboto-fontface": "*",
     "vue": "^3.2.0",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.0.0",
-    "vuetify": "^3.0.0",
+    "vuetify": "^3.3.2",
     "vuex": "^4.0.2",
     "webfontloader": "^1.0.0"
   },
@@ -23,7 +24,7 @@
     "@vitejs/plugin-vue": "^3.0.3",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
-    "vite": "^4.2.0",
-    "vite-plugin-vuetify": "^1.0.0"
+    "vite": "^4.3.9",
+    "vite-plugin-vuetify": "^1.0.2"
   }
 }
