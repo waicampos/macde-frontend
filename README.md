@@ -1,5 +1,8 @@
 # default
 
+## rodar servidor de produção
+serve -s dist
+
 ## Project setup
 
 ```
