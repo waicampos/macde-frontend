@@ -1,7 +1,9 @@
 <template>
 <v-container class="pa-10">
     <v-app-bar>        
-      <v-app-bar-title>
+      <v-app-bar-title
+      href="/simulador"
+      >
         MACDE  
       </v-app-bar-title>      
       <template v-slot:prepend></template>
@@ -12,9 +14,18 @@
       </template>
       
       <template #append>
-        <v-btn text>
-          <span>Simulador</span> 
-        </v-btn>
+          <v-btn 
+            text
+            href="/simulador"
+          >
+              <span>Simulador</span> 
+          </v-btn>
+          <v-btn 
+            text
+            href="/"
+          >
+              <span>Inicio</span> 
+          </v-btn>
       </template>
     </v-app-bar>
 </v-container>
