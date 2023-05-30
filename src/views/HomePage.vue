@@ -1,5 +1,5 @@
 <template>
-<v-app>
+<v-container>
   <NavBar />
  <div class="d-flex align-center flex-column">      
     <v-row class="text-center">
@@ -89,7 +89,7 @@
     <!-- <FooterPage /> -->
 
   </div>
-  </v-app>
+  </v-container>
 </template>
 
 <script>
