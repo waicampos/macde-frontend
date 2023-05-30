@@ -10,8 +10,7 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
   plugins: [
     vue({ 
-      template: { transformAssetUrls },
-      base: '',
+      template: { transformAssetUrls }
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
@@ -32,5 +31,5 @@ export default defineConfig({
       '.tsx',
       '.vue',
     ],
-  }
+  },
 })
