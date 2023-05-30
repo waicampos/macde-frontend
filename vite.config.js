@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [
     vue({ 
       template: { transformAssetUrls },
-      base: '/macde-beta/',
+      base: './macde-beta/',
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
@@ -32,9 +32,5 @@ export default defineConfig({
       '.tsx',
       '.vue',
     ],
-  },
-  server: {
-    port: 5011,
-    strictPort: true
-  },
+  }
 })
