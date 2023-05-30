@@ -10,7 +10,8 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
   plugins: [
     vue({ 
-      template: { transformAssetUrls }
+      template: { transformAssetUrls },
+      base: '/macde-beta/',
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
@@ -33,6 +34,7 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    port: 5011,
+    strictPort: true
   },
 })
