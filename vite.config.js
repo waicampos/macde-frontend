@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [
     vue({ 
       template: { transformAssetUrls },
-      base: './macde-beta/',
+      base: '',
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
