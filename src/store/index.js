@@ -17,7 +17,6 @@ export default createStore({
       state.user_data_history.push(payload)
     },
     set_item_user_data_history(state, payload) {
-      console.log("ENTROU" + payload)
       Object.assign(state.user_data_history[payload.index], payload.value)
     }
   },
