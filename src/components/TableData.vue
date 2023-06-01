@@ -90,12 +90,14 @@
       <v-icon
         size="small"
         class="me-2"
+        color="green-darken-4"
         @click="editItem(item.raw)"
       >
         mdi-pencil
       </v-icon>
       <v-icon
         size="small"
+        color="red-accent-4"
         @click="deleteItem(item.raw)"
       >
         mdi-delete
