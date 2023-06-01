@@ -85,7 +85,6 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <!-- <template v-slot:[`item.actions`]="{ item }"> -->
     <template v-slot:item.action="{ item }">
       <v-icon
         size="small"
@@ -188,7 +187,7 @@
       },
 
       deleteItemConfirm () {
-        this.data_file.splice(this.editedIndex, 1)
+        this.$store.dispatch('delete_item_user_data_history_by_id', this.editedIndex)
         this.closeDelete()
       },
 
@@ -219,7 +218,7 @@
           let payload = {'index': this.editedIndex, 'value': obj}
           this.$store.dispatch('set_item_user_data_history', payload)
         } else {
-          this.data_file.push(obj)
+            this.$store.dispatch('add_user_data_history', obj)
         }
         this.close()
       },

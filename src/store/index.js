@@ -17,10 +17,10 @@ export default createStore({
       state.user_data_history.push(payload)
     },
     set_item_user_data_history(state, payload) {
-      console.log("ENTROU")
-      console.log(state.user_data_history[payload.index])
       Object.assign(state.user_data_history[payload.index], payload.value)
-      console.log(state.user_data_history[payload.index])
+    },
+    delete_item_user_data_history_by_id(state, payload) {
+      state.user_data_history.splice(payload, 1)
     }
   },
   actions: {
@@ -32,6 +32,9 @@ export default createStore({
     },
     set_item_user_data_history({ commit }, payload) {
       commit("set_item_user_data_history", payload)
+    },
+    delete_item_user_data_history_by_id({ commit }, payload) {
+      commit("delete_item_user_data_history_by_id", payload)
     }
   },
   modules: {

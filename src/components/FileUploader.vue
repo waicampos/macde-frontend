@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+
 export default {
     data() {
         return {            
@@ -43,21 +43,17 @@ export default {
         }
     },    
     computed: {     
-        data_file () {
-            return this.$store.getters.user_data_history
-        },
         extension() {
             return (this.file) ? this.file.name.split('.').pop() : '';
         }
     },
     methods: {
-        ...mapActions(['load_user_data_history']),
         onChange(e) {
             this.file = e.target.files[0];
             var reader = new FileReader();
             reader.readAsText(this.file); 
             reader.onload = (e) => {
-                this.load_user_data_history(JSON.parse(e.target.result))
+                this.$store.dispatch('load_user_data_history', JSON.parse(e.target.result))
             };                     
         },
         removeFile() {
