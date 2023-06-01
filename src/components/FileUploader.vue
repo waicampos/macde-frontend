@@ -21,7 +21,7 @@
         <div v-else class="dropZone-uploaded">
             <div class="dropZone-uploaded-info">
             <span class="dropZone-title">Uploaded</span>
-            <button type="button" class="btn btn-primary removeFile" @click="removeFile">Remover Arquivo</button>
+            <button type="button" class="btn btn-primary removeFile" @click="removeFile">Enviar Novo Arquivo</button>
             </div>
         </div>
         
