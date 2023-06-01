@@ -214,8 +214,8 @@
         }
 
         if (this.editedIndex > -1) {
-          let payload = {'index': this.editedItem, 'value': obj}
-          this.set_item_user_data_history(payload)
+          let payload = {'index': this.editedIndex, 'value': obj}
+          this.$store.dispatch('set_item_user_data_history', payload)
         } else {
           this.data_file.push(obj)
         }
