@@ -7,20 +7,25 @@
     </v-row>
     
     <v-row class="flex-1-0 ma-2 pa-2">
-      <v-col cols="12">
-        <MyLine
-          id="my-line-historic-chart-demand-id"
-          :data="chartDemand"
-          :options="this.chartOptions"
-        />
+      <v-col cols="12" lg="6">
+        <v-sheet rounded="lg" min-height="300">
+          <MyLine
+            id="my-line-historic-chart-demand-id"
+            :data="chartDemand"
+            :options="this.chartOptions"
+          />
+        </v-sheet>
       </v-col>
     
-        <v-col cols="12">
-          <MyLine
-            id="my-line-historic-chart-energy-id"
-            :data="chartEnergy"
-            :options="chartOptions"
-          />
+        <v-col cols="12" lg="6">
+          <v-sheet rounded="lg" min-height="300">
+            <MyLine
+              id="my-line-historic-chart-energy-id"
+              :styles="myStyles"
+              :data="chartEnergy"
+              :options="chartOptions"
+            />
+          </v-sheet>
       </v-col>
     </v-row>    
 
@@ -128,7 +133,6 @@ import { mapGetters } from 'vuex'
     watch: {
       data_file: {
         handler() {
-          console.log("Watch")
           this.chartDataDemand()
           this.chartDataEnergy()
         },
