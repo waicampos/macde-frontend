@@ -1,5 +1,5 @@
 <template>
- <v-sheet class="d-flex flex-column">
+ <div class="d-flex flex-column">
     <div class="flex-1-0 ma-2 pa-2">
       <FileUploader />
     </div>
@@ -15,7 +15,7 @@
       />
     </div>  
     
-</v-sheet>
+</div>
 </template>
 
 <script>
@@ -32,13 +32,28 @@ import { mapGetters } from 'vuex'
     components: {FileUploader, TableData, MyLine},
     data() {
       return {
-          chartData: {datasets: []},
+        
       }
     },
     computed: {
-        ...mapGetters({
-            data_file: 'get_user_data_history',
+      ...mapGetters({
+          data_file: 'get_user_data_history',
+      }),
+
+      chartData() {
+        let arr = {datasets: []}
+        arr.datasets.push({
+            label: 'Histórico',
+            data: this.data_file,
+            parsing: {
+                xAxisKey: 'date',
+                yAxisKey: 'peak_demand',
+            },
+            borderColor: '#36A2EB',
+            backgroundColor: '#9BD0F5'
         })
+        return arr
+      }
     },
     methods: {
       str2date(dt) {
@@ -47,27 +62,6 @@ import { mapGetters } from 'vuex'
         // Função Date o mês inicia em 0
         return new Date(curr[2], curr[1] - 1, curr[0])
       },
-      create_datasets_time_series() {
-          this.chartData = {datasets: []}
-          this.chartData.datasets.push({
-              label: 'Histórico',
-              data: this.data_file,
-              parsing: {
-                  xAxisKey: 'date',
-                  yAxisKey: 'peak_demand',
-              },
-              borderColor: '#36A2EB',
-              backgroundColor: '#9BD0F5'
-          })
-      },
-    },
-    watch: {
-      data_file: function() {
-          this.create_datasets_time_series()
-      }
-    },
-    mounted() {
-      this.create_datasets_time_series()
-    },
+    }
   }
 </script>
