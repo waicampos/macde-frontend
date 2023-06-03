@@ -1,0 +1,71 @@
+export const chartDataConfig = {
+    'peak_demand': {
+        name: 'peak_demand', 
+        label: "Demanda de Ponta",
+        borderColor: '#36A2EB',
+        backgroundColor: '#9BD0F5',
+    },
+    'off_peak_demand': {
+        name: 'off_peak_demand', 
+        label: "Demanda Fora de Ponta",
+        borderColor: '#B71C1C',
+        backgroundColor: '#E53935',
+    },
+    'peak_energy': {
+        name: 'peak_energy', 
+        label: "Energia de Ponta",
+        borderColor: '#E65100',
+        backgroundColor: '#FB8C00',
+    },
+    'off_peak_energy': {
+        name: 'off_peak_energy', 
+        label: "Energia Fora de Ponta",
+        borderColor: '#1B5E20',
+        backgroundColor: '#43A047',
+    }
+}
+
+export const chartOptionsConfig = {
+    plugins: {
+        title : {
+            display: true,
+            text: 'Título do Gráfico',
+            //fontSize: 20
+        },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        x: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Label X axis'
+            }
+        },
+        y: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Label Y axis'
+            }
+        },
+    }
+}
+
+export function createDataSetsTimeSeries(keys, yAxis, data_raw) {
+    let modelData = {datasets: []}
+    keys.forEach(i => {
+      modelData.datasets.push({
+        label: chartDataConfig[i].label,
+        data:  data_raw,
+        parsing: {
+            xAxisKey: yAxis,
+            yAxisKey: chartDataConfig[i].name,
+        },
+        borderColor: chartDataConfig[i].borderColor,
+        backgroundColor: chartDataConfig[i].backgroundColor
+      })
+    })
+    return modelData
+  }

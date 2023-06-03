@@ -12,7 +12,7 @@
           <MyLine
             id="my-line-historic-chart-demand-id"
             :data="chartDemand"
-            :options="this.chartOptions"
+            :options="this.chartOptionsDemand"
           />
         </v-sheet>
       </v-col>
@@ -21,9 +21,8 @@
           <v-sheet rounded="lg" min-height="300">
             <MyLine
               id="my-line-historic-chart-energy-id"
-              :styles="myStyles"
               :data="chartEnergy"
-              :options="chartOptions"
+              :options="chartOptionsEnergy"
             />
           </v-sheet>
       </v-col>
@@ -38,13 +37,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
   import FileUploader from '@/components/FileUploader.vue'
   import TableData from '@/components/TableData.vue'
   import { Line as MyLine} from 'vue-chartjs'
+  import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
   import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-
 
   export default {
     name: 'userHistoryPage',
@@ -60,12 +59,22 @@ import { mapGetters } from 'vuex'
           data_file: 'get_user_data_history',
       }),
     
-      chartOptions() {
-        return {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      }
+      chartOptionsDemand() {
+        let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
+        opt.plugins.title.text = "Gráfico de Demanda"
+        opt.scales.x.title.text = "Data"
+        opt.scales.y.title.text = "Demanda [kW]"
+
+        return opt
+      },
+
+      chartOptionsEnergy() {
+        let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
+        opt.plugins.title.text = "Gráfico de Energia"
+        opt.scales.x.title.text = "Data"
+        opt.scales.y.title.text = "Energia [kWh]"
+        return opt
+      },
     },
     methods: {
       str2date(dt) {
@@ -74,57 +83,20 @@ import { mapGetters } from 'vuex'
         // Função Date o mês inicia em 0
         return new Date(curr[2], curr[1] - 1, curr[0])
       },
-
-      chartDataDemand() {
-        this.chartDemand = {datasets: []}
-        this.chartDemand.datasets.push({
-            label: 'Ponta',
-            data: this.data_file,
-            parsing: {
-                xAxisKey: 'date',
-                yAxisKey: 'peak_demand',
-            },
-            borderColor: '#36A2EB',
-            backgroundColor: '#9BD0F5'
-        })
-
-        this.chartDemand.datasets.push({
-            label: 'Fora de Ponta',
-            data: this.data_file,
-            parsing: {
-                xAxisKey: 'date',
-                yAxisKey: 'off_peak_demand',
-            },
-            borderColor: '#B71C1C',
-            backgroundColor: '#E53935'
-        })
-      },
       
-      chartDataEnergy() {
-        this.chartEnergy = {datasets: []}
-        this.chartEnergy.datasets.push({
-            label: 'Ponta',
-            data: this.data_file,
-            parsing: {
-                xAxisKey: 'date',
-                yAxisKey: 'peak_energy',
-            },
-            borderColor: '#E65100',
-            backgroundColor: '#FB8C00'
-        })
-
-        this.chartEnergy.datasets.push({
-            label: 'Fora de Ponta',
-            data: this.data_file,
-            parsing: {
-                xAxisKey: 'date',
-                yAxisKey: 'off_peak_energy',
-            },
-            borderColor: '#1B5E20',
-            backgroundColor: '#43A047'
-        })
+      chartDataDemand() {
+        this.chartDemand = createDataSetsTimeSeries( 
+          ['off_peak_demand', 'peak_demand'], 
+          'date',
+          this.data_file)
       },
 
+      chartDataEnergy() {
+        this.chartEnergy = createDataSetsTimeSeries( 
+          ['off_peak_energy', 'peak_energy'], 
+          'date',
+          this.data_file)
+      },
     },
     mounted(){
       this.chartDataDemand()
