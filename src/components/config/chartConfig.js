@@ -22,6 +22,19 @@ export const chartDataConfig = {
         label: "Energia Fora de Ponta",
         borderColor: '#1B5E20',
         backgroundColor: '#43A047',
+    },
+    'naive': {
+        name: 'naive', 
+        label: "Previsão Naive",
+        borderColor: '#263238',
+        backgroundColor: '#455A64',
+    }
+    ,
+    'double_mean': {
+        name: 'double_mean', 
+        label: "Previsão Média Dupla",
+        borderColor: '#3E2723',
+        backgroundColor: '#6D4C41',
     }
 }
 
@@ -53,14 +66,14 @@ export const chartOptionsConfig = {
     }
 }
 
-export function createDataSetsTimeSeries(keys, yAxis, data_raw) {
+export function createDataSetsTimeSeries(keys, xAxis, data_raw) {
     let modelData = {datasets: []}
     keys.forEach(i => {
       modelData.datasets.push({
         label: chartDataConfig[i].label,
         data:  data_raw,
         parsing: {
-            xAxisKey: yAxis,
+            xAxisKey: xAxis,
             yAxisKey: chartDataConfig[i].name,
         },
         borderColor: chartDataConfig[i].borderColor,
