@@ -26,8 +26,8 @@ export const chartDataConfig = {
     'naive': {
         name: 'naive', 
         label: "Previsão Naive",
-        borderColor: '#263238',
-        backgroundColor: '#455A64',
+        borderColor: '#757575',
+        backgroundColor: '#E0E0E0',
     }
     ,
     'double_mean': {

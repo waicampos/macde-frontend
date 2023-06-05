@@ -42,6 +42,21 @@
                 </v-sheet>
             </v-col>
         </v-row>
+
+        <!-- Modelo de Previsão Naive -->
+         <v-row class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12">
+                <v-btn @click="this.loadNaive()">NAIVE</v-btn>
+            </v-col>
+        </v-row>
+
+        <!-- Modelo de Previsão Média Dupla -->
+         <v-row class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12">
+                <v-btn @click="this.loadDoubleMean()">Média Dupla</v-btn>
+            </v-col>            
+        </v-row>
+
     </div>
 </template>
 
@@ -49,7 +64,7 @@
 import { mapGetters } from 'vuex'
 import axios from 'axios';
 import { Line as MyLine} from 'vue-chartjs'
-import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
+import { createDataSetsTimeSeries, chartOptionsConfig, chartDataConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -58,55 +73,9 @@ export default {
     components: {MyLine},
     data() {
         return {
-            chartDataByMonth: {datasets: []},
-            chartDemandTimeSeries: {datasets: []},
             forecast: {
-                "naive": [
-                    {
-                        "date": "01/01/2022",
-                        "peak_demand": 159.6,
-                        "off_peak_demand": 254.52,
-                        "peak_energy": 4989,
-                        "off_peak_energy": 59163
-                    },
-                    {
-                        "date": "01/02/2022",
-                        "peak_demand": 547.68,
-                        "off_peak_demand": 624.12,
-                        "peak_energy": 8206,
-                        "off_peak_energy": 118769
-                    },
-                    {
-                        "date": "01/03/2022",
-                        "peak_demand": 547.68,
-                        "off_peak_demand": 624.12,
-                        "peak_energy": 8206,
-                        "off_peak_energy": 118769
-                    },
-                ],
-                "double_mean": [
-                    {
-                        "date": "01/01/2022",
-                        "peak_demand": 459.6,
-                        "off_peak_demand": 54.52,
-                        "peak_energy": 4989,
-                        "off_peak_energy": 59163
-                    },
-                    {
-                        "date": "01/02/2022",
-                        "peak_demand": 847.68,
-                        "off_peak_demand": 824.12,
-                        "peak_energy": 8206,
-                        "off_peak_energy": 118769
-                    },
-                    {
-                        "date": "01/03/2022",
-                        "peak_demand": 947.68,
-                        "off_peak_demand": 924.12,
-                        "peak_energy": 8206,
-                        "off_peak_energy": 118769
-                    },
-                ],
+                "naive": [],
+                "double_mean": [],
             },
         }
     },
@@ -123,6 +92,7 @@ export default {
 
             return opt
         },
+
         chartTimeSeriesOptionsEnergy() {
             let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
             opt.plugins.title.text = "Gráfico de Energia"
@@ -141,41 +111,131 @@ export default {
             )
                          
             if(this.forecast.naive.length) {
-                let b = createDataSetsTimeSeries( 
+                let dt_naive = createDataSetsTimeSeries( 
                     keys, 
                     'date',
-                    this.forecast.naive
+                    JSON.parse(JSON.stringify(this.forecast.naive))
                 )
-                b.datasets.forEach( dt => {
+                dt_naive.datasets[0].label = chartDataConfig['naive'].label
+                dt_naive.datasets[0].label = chartDataConfig['naive'].label
+                dt_naive.datasets[0].borderColor = chartDataConfig['naive'].borderColor
+                dt_naive.datasets[0].backgroundColor = chartDataConfig['naive'].backgroundColor
+                
+                dt_naive.datasets.forEach( dt => {
                     dt_series.datasets.push(dt)
                 })
             }
 
             if(this.forecast.double_mean.length) {
-                let b = createDataSetsTimeSeries( 
+                let dt_double_mean = createDataSetsTimeSeries( 
                     keys, 
                     'date',
-                    this.forecast.double_mean
+                    JSON.parse(JSON.stringify(this.forecast.double_mean))
                 )
-                b.datasets.forEach( dt => {
-                    dt_series.datasets.push(dt)
+                    dt_double_mean.datasets[0].label = chartDataConfig['double_mean'].label
+                    dt_double_mean.datasets[0].label = chartDataConfig['double_mean'].label
+                    dt_double_mean.datasets[0].borderColor = chartDataConfig['double_mean'].borderColor
+                    dt_double_mean.datasets[0].backgroundColor = chartDataConfig['double_mean'].backgroundColor
+
+                    dt_double_mean.datasets.forEach( dt => {
+                        dt_series.datasets.push(dt)
                 })
             }
                                             
             return dt_series
         },
+
+        convert2naive(key) {            
+            return this.data_file.map((curr) => {
+                return curr[key]
+            })
+        },
+
+        convert2doublemean(key) {                        
+            let mod_data = JSON.parse(JSON.stringify(this.data_file));
+            mod_data.forEach((curr, i, arr) => {
+                let dt = this.str2date(curr.date)
+                arr[i]['month'] = dt.getMonth().toString()
+                arr[i]['year'] = dt.getFullYear().toString()         
+            })
+            let agrouped = this.groupBy(mod_data, 'year')
+            let arr = []
+
+            for(let name in agrouped){                
+                arr.push(
+                    agrouped[name].map((curr) => {
+                        return curr[key]
+                    })
+                )
+            }
+            
+            return arr
+        },
+        
+        join_date_arr(arr) {            
+            let current_year = this.get_bigger_date_forecast() + 1
+            let ans = []
+            let range = [...Array(12).keys()]
+            for(let i in range){
+                let date = new Date(current_year, i)
+                ans.push({                    
+                    'date': `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`,
+                    'peak_demand':  arr[0].data[i],
+                    'off_peak_demand': arr[1].data[i],
+                    'peak_energy':  arr[2].data[i],
+                    'off_peak_energy':  arr[3].data[i]                    
+                })
+            }
+            return ans
+        },
+
+        get_bigger_date_forecast() {
+            let mod_data = JSON.parse(JSON.stringify(this.data_file));
+            mod_data.forEach((curr, i, arr) => {
+                let dt = this.str2date(curr.date)
+                arr[i]['year'] = dt.getFullYear()
+            })
+
+            let all_date = mod_data.map(curr => {
+                return curr['year']
+            })
+            return Math.max(...all_date)
+        },
+
         loadNaive() {
-            axios
-            .post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', this.dados)
+            let peak_demand = this.convert2naive('peak_demand')
+            let off_peak_demand = this.convert2naive('off_peak_demand')
+            let peak_energy = this.convert2naive('peak_energy')
+            let off_peak_energy = this.convert2naive('off_peak_energy')
+            
+            Promise.all([
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": peak_demand}),
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": off_peak_demand}),
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": peak_energy}),
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": off_peak_energy})
+            ])
             .then(response => {
-                this.forecast.naive = response.data;
+                this.forecast.naive = this.join_date_arr(response)
             })
         },
         loadDoubleMean() {
-            axios
-            .post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', this.dados2)
-            .then(response => {
-                this.forecast.double_mean = response.data;
+            let peak_demand = this.convert2doublemean('peak_demand')
+            let off_peak_demand = this.convert2doublemean('off_peak_demand')
+            let peak_energy = this.convert2doublemean('peak_energy')
+            let off_peak_energy = this.convert2doublemean('off_peak_energy')
+
+console.log('peak_demand', peak_demand)
+            console.log('off_peak_demand', off_peak_demand)
+            console.log('peak_energy', peak_energy)
+            console.log('off_peak_energy', off_peak_energy)
+        
+            Promise.all([
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": peak_demand}),
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": off_peak_demand}),
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": peak_energy}),
+                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": off_peak_energy})
+            ]).then(response => {
+                this.forecast.double_mean = this.join_date_arr(response)                
             })
         },
         str2date(dt) {
@@ -193,8 +253,6 @@ export default {
                 return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
             }, {})
         },
-        
-      
     },
 }
 </script>
