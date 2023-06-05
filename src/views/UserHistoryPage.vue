@@ -2,10 +2,21 @@
   <div class="d-flex flex-column">
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
-        <FileUploader />
+        <v-btn 
+        @click="load_standard_user_historic" 
+        elevation="4" 
+        size="small">
+          Carregar Modelo
+        </v-btn>
       </v-col>
     </v-row>
     
+     <v-row class="flex-1-0 ma-2 pa-2">
+      <v-col cols="12">
+        <FileUploader />
+      </v-col>
+    </v-row>
+
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12" lg="6">
         <v-sheet rounded="lg" min-height="300">
@@ -39,6 +50,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import FileUploader from '@/components/FileUploader.vue'
+  import macde_modelo from '@/assets/files/modelo_macde.json'
   import TableData from '@/components/TableData.vue'
   import { Line as MyLine} from 'vue-chartjs'
   import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
@@ -77,6 +89,11 @@
       },
     },
     methods: {
+      load_standard_user_historic() {
+        this.$store.dispatch('load_user_data_history', macde_modelo)
+        console.log(this.data_file)
+      },
+
       str2date(dt) {
         let curr = dt.split('/')
         
