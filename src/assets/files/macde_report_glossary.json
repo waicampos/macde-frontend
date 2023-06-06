@@ -1,0 +1,124 @@
+[
+  {
+      "title": "Ano A-1",
+      "text": "Primeiro dos 3 anos que são utilizados para compor os três anos históricos para analisar o incremento ou decréscimo de demanda prevista. Ex. Ano 2022, o ano A-1 é o ano de 2021.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Bandeiras Tarifárias",
+      "text": "A distribuidora deve aplicar as bandeiras tarifárias sobre o consumo faturado da unidade consumidora, utilizando uma tarifa proporcional aos dias de vigência de cada bandeira.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "CUSD - Contrato de Uso do Sistema de Distribuição",
+      "text": "A distribuidora deve celebrar um contrato com o consumidor responsável por unidade consumidora do grupo A e demais usuários, com exceção das unidades consumidoras do Grupo B.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Demanda",
+      "text": "média das potências elétricas ativas (kW) requerida pela carga durante um intervalo de tempo especificado (15 minutos).",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Demanda Contratada",
+      "text": "potência ativa (kW) contratada junto à distribuidora de energia, durante o período de vigência fixado em contrato. Deve ser paga mesmo que não utilizada, devido aos custos para manutenção da disponibilidade.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Demanda Faturável",
+      "text": "maior valor entre a demanda máxima medida e a demanda contratada durante o período de faturamento, expressa em quilowatts (kW).",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Fatura",
+      "text": "documento emitido pela distribuidora com a quantia monetária total a ser paga pelo consumidor. Documento fiscal denominado 'Nota Fiscal/Conta de Energia Elétrica'.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Horário Fora de Ponta (Posto tarifário fora de ponta)",
+      "text": "período composto pelo restante das horas diárias não inclusas no Horário de Ponta, além dos sábados, domingos e feriados e, para o grupo B, intermediário.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Horário de Ponta (Posto tarifário ponta)",
+      "text": " período composto por três horas diárias consecutivas definidas pela distribuidora, onde os custos das tarifas de energia (TE) e de uso do sistema elétrico (TUSD) são, geralmente, superiores aos do Horário Fora de Ponta devido à maior concentração de cargas no sistema. Não se aplica aos sábados, domingos e feriados nacionais.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Horo-Sazonal Azul (modalidade tarifária horária azul)",
+      "text": "caracterizada por:",
+      "list": [
+        {
+          "text": "1 (uma) tarifa para a demanda para o posto tarifário ponta;"
+        },
+        {
+          "text": "1 (uma) tarifa para a demanda para o posto tarifário fora de ponta;"
+        },
+        {
+          "text": "1 (uma) tarifa para o consumo de energia elétrica para o posto tarifário ponta; e"
+        },
+        {
+          "text": "1 (uma) tarifa para o consumo de energia elétrica para o posto tarifário fora de ponta."
+        }
+      ],
+      "icon": "mdi-menu-right"
+        
+  },
+  {
+      "title": "Horo-Sazonal Verde (modalidade tarifária horária verde)",
+      "text": "caracterizada por:",
+      "list": [
+        {
+          "text": "1 (uma) tarifa para a demanda, sem segmentação horária;"
+        },
+        {
+          "text": "1 (uma) tarifa para o consumo de energia elétrica para o posto tarifário ponta; e"
+        },
+        {
+          "text": "1 (uma) tarifa para o consumo de energia elétrica para o posto tarifário fora de ponta."
+        }        
+      ],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Otimização",
+      "text": "processo matemático que busca identificar a alternativa que gere o melhor resultado possível diante de uma determinada oportunidade, considerando as restrições estabelecidas.",
+      "list": [],
+      "icon": "mdi-menu-right"
+        
+  },
+  {
+      "title": "PIS/PASEP/COFINS e ICMS:",
+      "text": "contribuições federais e estadual aplicadas sobre o faturamento da distribuidora e diluídas posteriormente entre os consumidores, através de alíquotas mensais variáveis, aplicadas sobre os montantes de demanda e energia da fatura.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "TE – Tarifa de Energia",
+      "text": "valor determinado pela ANEEL, em R$/MWh, utilizado para efetuar o faturamento mensal do consumo de energia.",
+      "list": [],
+      "icon": "mdi-menu-right"
+        
+  },
+  {
+      "title": "TUSD - Tarifa de Uso do Sistema de Distribuição",
+      "text": "valor determinado pela ANEEL, em R$/MWh (aplicado sobre o consumo) e em R$/kW (aplicado sobre a demanda contratada), utilizado para efetuar o faturamento mensal pelo uso do sistema elétrico de distribuição.",
+      "list": [],
+      "icon": "mdi-menu-right"
+  },
+  {
+      "title": "Ultrapassagem de Demanda",
+      "text": "multa pelo uso de demanda maior que o limite de 5% acima da Demanda Contratada para consumidor. É cobrada sobre todo o excesso de demanda e equivale ao dobro do valor da TUSD aplicada sobre a contratação de demanda (R$/kW).",
+      "list": [],
+      "icon": "mdi-menu-right"
+  }
+]
