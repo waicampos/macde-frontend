@@ -48,13 +48,29 @@
             <v-col cols="12">
                 <v-btn @click="this.loadNaive()">NAIVE</v-btn>
             </v-col>
+            <v-col cols="12">
+                <v-data-table                     
+                    :headers="headers"
+                    :items="forecast.naive"
+                    class="elevation-4"
+                >
+                </v-data-table>
+            </v-col>
         </v-row>
 
         <!-- Modelo de Previsão Média Dupla -->
          <v-row class="flex-1-0 ma-2 pa-2">
             <v-col cols="12">
                 <v-btn @click="this.loadDoubleMean()">Média Dupla</v-btn>
-            </v-col>            
+            </v-col>     
+             <v-col cols="12">
+                <v-data-table                     
+                    :headers="headers"
+                    :items="forecast.double_mean"
+                    class="elevation-4"                    
+                >
+                </v-data-table>
+            </v-col>       
         </v-row>
 
     </div>
@@ -73,6 +89,18 @@ export default {
     components: {MyLine},
     data() {
         return {
+             headers: [
+                {
+                    title: 'Date',
+                    align: 'start',
+                    sortable: false,
+                    key: 'date',
+                },
+                { title: 'Demanda de Ponta', key: 'peak_demand' },
+                { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
+                { title: 'Energia de Ponta', key: 'peak_energy' },
+                { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
+            ],
             forecast: {
                 "naive": [],
                 "double_mean": [],
