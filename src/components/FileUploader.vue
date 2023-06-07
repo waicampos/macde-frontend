@@ -21,7 +21,7 @@
         <div v-else class="dropZone-uploaded">
             <div class="dropZone-uploaded-info">
             <span class="dropZone-title">Uploaded</span>
-            <button type="button" class="btn btn-primary removeFile" @click="removeFile">Enviar Novo Arquivo</button>
+            <button type="button" class="btn btn-primary removeFile" @click="removeFile">Clique para Enviar um Novo Arquivo</button>
             </div>
         </div>
         
@@ -42,18 +42,22 @@ export default {
             dragging: false
         }
     },    
+    props: {
+        store_dispatch_name: String
+    },
     computed: {     
         extension() {
             return (this.file) ? this.file.name.split('.').pop() : '';
         }
     },
+    
     methods: {
         onChange(e) {
             this.file = e.target.files[0];
             var reader = new FileReader();
             reader.readAsText(this.file); 
             reader.onload = (e) => {
-                this.$store.dispatch('load_user_data_history', JSON.parse(e.target.result))
+                this.$store.dispatch(this.store_dispatch_name, JSON.parse(e.target.result))
             };                     
         },
         removeFile() {

@@ -13,7 +13,7 @@
     
      <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
-        <FileUploader />
+        <FileUploader  store_dispatch_name="load_user_data_history"/>
       </v-col>
     </v-row>
 
