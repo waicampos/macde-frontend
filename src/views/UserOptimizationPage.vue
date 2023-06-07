@@ -2,7 +2,7 @@
     <div class="d-flex flex-column">
         <v-row>
             <v-col cols="12">
-                <FileUploader />
+                <FileUploader store_dispatch_name="load_user_data_forecast"/>
             </v-col>
         </v-row>
         <v-row>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import axios from 'axios';
 import FileUploader from '@/components/FileUploader.vue';
 import { Line as MyLine} from 'vue-chartjs'
@@ -108,6 +109,12 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                         }
                 ]                
             }
+        },
+
+        computed: {
+            ...mapGetters({
+                data_file: 'get_user_data_forecast',
+            })
         },
         methods: {        
             chartTimeSeriesData(keys) {
@@ -146,13 +153,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
             },
             loadExploratory() {               
                 const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/exploratory/${this.select_modality.value}/${this.has_demand_variation}`
-                
-                Promise.all([
-                    axios.post(addr, this.dataIn[this.select_modality.value-1])
-                ])
-                
-                
-                
                 
                 axios
                 .post(addr, this.dataIn[this.select_modality.value-1])
