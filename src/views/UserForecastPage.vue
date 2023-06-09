@@ -251,11 +251,6 @@ export default {
             let off_peak_demand = this.convert2doublemean('off_peak_demand')
             let peak_energy = this.convert2doublemean('peak_energy')
             let off_peak_energy = this.convert2doublemean('off_peak_energy')
-
-            console.log('peak_demand', peak_demand)
-            console.log('off_peak_demand', off_peak_demand)
-            console.log('peak_energy', peak_energy)
-            console.log('off_peak_energy', off_peak_energy)
         
             Promise.all([
                 axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": peak_demand}),

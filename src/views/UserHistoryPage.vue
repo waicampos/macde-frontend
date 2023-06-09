@@ -91,7 +91,6 @@
     methods: {
       load_standard_user_historic() {
         this.$store.dispatch('load_user_data_history', macde_modelo)
-        console.log(this.data_file)
       },
 
       str2date(dt) {

@@ -1,4 +1,11 @@
 export const chartDataConfig = {
+    'demand': {
+        name: 'demand', 
+        label: "Demanda",
+        borderColor: '#36A2EB',
+        backgroundColor: '#9BD0F5',
+    },
+
     'peak_demand': {
         name: 'peak_demand', 
         label: "Demanda de Ponta",
