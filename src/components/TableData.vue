@@ -153,7 +153,7 @@
       ],
     }),
     computed: {
-      ...mapGetters({
+      ...mapGetters('data_history', {
         data_file: 'get_user_data_history'
       }),
       formTitle () {
@@ -182,12 +182,12 @@
 
       deleteItem (item) {
         this.editedIndex = this.data_file.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editedItem = {...item}
         this.dialogDelete = true
       },
 
       deleteItemConfirm () {
-        this.$store.dispatch('delete_item_user_data_history_by_id', this.editedIndex)
+        this.$store.dispatch('data_history/delete_item_user_data_history_by_id', this.editedIndex)
         this.closeDelete()
       },
 
@@ -216,9 +216,9 @@
 
         if (this.editedIndex > -1) {
           let payload = {'index': this.editedIndex, 'value': obj}
-          this.$store.dispatch('set_item_user_data_history', payload)
+          this.$store.dispatch('data_history/set_item_user_data_history', payload)
         } else {
-            this.$store.dispatch('add_user_data_history', obj)
+            this.$store.dispatch('data_history/add_user_data_history', obj)
         }
         this.close()
       },

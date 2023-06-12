@@ -108,7 +108,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
+        ...mapGetters('data_history', {
             data_file: 'get_user_data_history',
         }),
         

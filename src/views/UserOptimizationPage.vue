@@ -2,7 +2,7 @@
     <div class="d-flex flex-column">
         <v-row>
             <v-col cols="12">
-                <FileUploader store_dispatch_name="load_user_data_forecast"/>
+                <FileUploader store_dispatch_name="data_forecast/load_user_data_forecast"/>
             </v-col>
         </v-row>
         <v-row>
@@ -78,7 +78,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
         },
 
         computed: {
-            ...mapGetters({
+            ...mapGetters('data_forecast', {
                 data_file: 'get_user_data_forecast',
             })
         },

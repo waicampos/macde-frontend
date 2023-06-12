@@ -13,7 +13,7 @@
     
      <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
-        <FileUploader  store_dispatch_name="load_user_data_history"/>
+        <FileUploader  store_dispatch_name="data_history/load_user_data_history"/>
       </v-col>
     </v-row>
 
@@ -67,7 +67,7 @@
       }
     },
     computed: {
-      ...mapGetters({
+      ...mapGetters('data_history', {
           data_file: 'get_user_data_history',
       }),
     
@@ -90,7 +90,7 @@
     },
     methods: {
       load_standard_user_historic() {
-        this.$store.dispatch('load_user_data_history', macde_modelo)
+        this.$store.dispatch('data_history/load_user_data_history', macde_modelo)
       },
 
       str2date(dt) {
