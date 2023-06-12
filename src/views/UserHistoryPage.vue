@@ -104,14 +104,14 @@
         this.chartDemand = createDataSetsTimeSeries( 
           ['off_peak_demand', 'peak_demand'], 
           'date',
-          this.data_file)
+          [...this.data_file])
       },
 
       chartDataEnergy() {
         this.chartEnergy = createDataSetsTimeSeries( 
           ['off_peak_energy', 'peak_energy'], 
           'date',
-          this.data_file)
+          [...this.data_file])
       },
     },
     mounted(){
