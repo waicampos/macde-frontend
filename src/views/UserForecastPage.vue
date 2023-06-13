@@ -1,5 +1,53 @@
 <template>
+    <!-- Tipos Modelos -->
     <div class="d-flex flex-column">
+        <v-row class="flex-1-0 ma-2 pa-2">
+            <BtnOptions />
+        </v-row>
+        
+        <!-- Alertas -->
+        <v-alert v-for="(item, index) in info" :key="index"
+            :type="item.type"
+            :title="item.title"
+            :text="item.text"
+            :variant="item.variant"
+        ></v-alert>
+        
+        <!-- File Uploader -->
+         <v-row 
+            class="flex-1-0 ma-2 pa-2"
+            v-if="chosen_forecast_model.type == 'custom'"
+         >
+            <v-col cols="12">
+                <FileUploader store_dispatch_name="data_forecast/set_forecasted_data"/>
+            </v-col>
+        </v-row>
+
+        <!-- Modelos de Previsão -->
+        <v-row v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12">
+                <v-data-table                     
+                    :headers="headers"
+                    :items="this.forecasted_data"
+                    class="elevation-4"
+                >
+                </v-data-table>
+            </v-col>
+        </v-row>
+    </div>
+
+    <div 
+        v-if="this.forecasted_data.length"
+        class="d-flex flex-column"
+    >
+        <!-- Título dos gráficos -->
+        <v-row class="flex-1-0 ma-2 pa-2">
+            <v-col class="text-center" cols='12'>
+                <h1>Gráficos dos Dados Históricos + Previsão</h1>
+            </v-col>
+            <v-divider></v-divider>
+        </v-row>
+
         <!-- Gráficos de demanda -->
         <v-row class="flex-1-0 ma-2 pa-2">
             <v-col cols="12" lg="6">
@@ -21,6 +69,7 @@
                 </v-sheet>
             </v-col>
         </v-row>
+
         <!-- Gráficos de energia -->
         <v-row class="flex-1-0 ma-2 pa-2">
             <v-col cols="12" lg="6">
@@ -42,43 +91,14 @@
                 </v-sheet>
             </v-col>
         </v-row>
-
-        <!-- Modelo de Previsão Naive -->
-         <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12">
-                <v-btn @click="this.loadNaive()">NAIVE</v-btn>
-            </v-col>
-            <v-col cols="12">
-                <v-data-table                     
-                    :headers="headers"
-                    :items="forecast.naive"
-                    class="elevation-4"
-                >
-                </v-data-table>
-            </v-col>
-        </v-row>
-
-        <!-- Modelo de Previsão Média Dupla -->
-         <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12">
-                <v-btn @click="this.loadDoubleMean()">Média Dupla</v-btn>
-            </v-col>     
-             <v-col cols="12">
-                <v-data-table                     
-                    :headers="headers"
-                    :items="forecast.double_mean"
-                    class="elevation-4"                    
-                >
-                </v-data-table>
-            </v-col>       
-        </v-row>
-
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios';
+import BtnOptions from '@/components/BtnOptions.vue';
+import FileUploader from '@/components/FileUploader.vue';
 import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfig, chartDataConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
@@ -86,7 +106,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 export default {
     name: "user-forecast_page",
-    components: {MyLine},
+    components: {MyLine, FileUploader, BtnOptions},
     data() {
         return {
              headers: [
@@ -101,16 +121,25 @@ export default {
                 { title: 'Energia de Ponta', key: 'peak_energy' },
                 { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
             ],
-            forecast: {
-                "naive": [],
-                "double_mean": [],
-            },
+            info: [],
+            info_model: {
+                "type": "info",
+                "title": "Alert title",
+                "text":"",
+                "variant": "tonal",
+            }
         }
     },
     computed: {
         ...mapGetters('data_history', {
-            data_file: 'get_user_data_history',
-        }),
+            data_file: 'get_user_data_history'
+            }
+        ),
+        ...mapGetters('data_forecast', {
+            forecasted_data: 'get_forecasted_data', 
+            chosen_forecast_model: 'get_chosen_forecast_model'
+            }
+        ),
         
         chartTimeSeriesOptionsDemand() {
             let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
@@ -131,45 +160,26 @@ export default {
         },
     },
     methods: {
+        ...mapActions('data_forecast', ['set_forecasted_data', 'set_chosen_forecast_model']),
+
         chartTimeSeriesData(keys) {
-            let dt_series = createDataSetsTimeSeries( 
+            let dt_series = []
+            dt_series = createDataSetsTimeSeries( 
                 keys, 
                 'date',
-                JSON.parse(JSON.stringify(this.data_file))
+                [...this.data_file]
             )
                          
-            if(this.forecast.naive.length) {
-                let dt_naive = createDataSetsTimeSeries( 
-                    keys, 
-                    'date',
-                    JSON.parse(JSON.stringify(this.forecast.naive))
-                )
-                dt_naive.datasets[0].label = chartDataConfig['naive'].label
-                dt_naive.datasets[0].label = chartDataConfig['naive'].label
-                dt_naive.datasets[0].borderColor = chartDataConfig['naive'].borderColor
-                dt_naive.datasets[0].backgroundColor = chartDataConfig['naive'].backgroundColor
-                
-                dt_naive.datasets.forEach( dt => {
-                    dt_series.datasets.push(dt)
-                })
-            }
-
-            if(this.forecast.double_mean.length) {
-                let dt_double_mean = createDataSetsTimeSeries( 
-                    keys, 
-                    'date',
-                    JSON.parse(JSON.stringify(this.forecast.double_mean))
-                )
-                    dt_double_mean.datasets[0].label = chartDataConfig['double_mean'].label
-                    dt_double_mean.datasets[0].label = chartDataConfig['double_mean'].label
-                    dt_double_mean.datasets[0].borderColor = chartDataConfig['double_mean'].borderColor
-                    dt_double_mean.datasets[0].backgroundColor = chartDataConfig['double_mean'].backgroundColor
-
-                    dt_double_mean.datasets.forEach( dt => {
-                        dt_series.datasets.push(dt)
-                })
-            }
-                                            
+            let dt_data = createDataSetsTimeSeries( 
+                keys, 
+                'date',
+                [...this.forecasted_data]
+            )
+                        
+            dt_data.datasets.forEach( dt => {
+                dt_series.datasets.push(dt)
+            })
+                                                        
             return dt_series
         },
 
@@ -235,15 +245,16 @@ export default {
             let off_peak_demand = this.convert2naive('off_peak_demand')
             let peak_energy = this.convert2naive('peak_energy')
             let off_peak_energy = this.convert2naive('off_peak_energy')
+            const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/naive`
             
             Promise.all([
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": peak_demand}),
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": off_peak_demand}),
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": peak_energy}),
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/naive', {"data": off_peak_energy})
+                axios.post(addr, {"data": peak_demand}),
+                axios.post(addr, {"data": off_peak_demand}),
+                axios.post(addr, {"data": peak_energy}),
+                axios.post(addr, {"data": off_peak_energy})
             ])
             .then(response => {
-                this.forecast.naive = this.join_date_arr(response)
+                this.set_forecasted_data(this.join_date_arr(response))
             })
         },
         loadDoubleMean() {
@@ -251,14 +262,14 @@ export default {
             let off_peak_demand = this.convert2doublemean('off_peak_demand')
             let peak_energy = this.convert2doublemean('peak_energy')
             let off_peak_energy = this.convert2doublemean('off_peak_energy')
-        
+            const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/doublemean`
             Promise.all([
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": peak_demand}),
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": off_peak_demand}),
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": peak_energy}),
-                axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/doublemean', {"data": off_peak_energy})
+                axios.post(addr, {"data": peak_demand}),
+                axios.post(addr, {"data": off_peak_demand}),
+                axios.post(addr, {"data": peak_energy}),
+                axios.post(addr, {"data": off_peak_energy})
             ]).then(response => {
-                this.forecast.double_mean = this.join_date_arr(response)                
+                this.set_forecasted_data(this.join_date_arr(response))
             })
         },
         str2date(dt) {
@@ -277,5 +288,30 @@ export default {
             }, {})
         },
     },
+    watch:{
+        chosen_forecast_model: {
+            handler() {
+                console.log(this.data_file.length)
+                if(!this.data_file.length) {
+                    let new_info = {...this.info_model}
+                    new_info.type = "error"
+                    new_info.title = "Sem histórico de dados."
+                    new_info.text = "Os modelos de previsão Naive e Média Dupla, utilizam os dados do histórico para fazer a previsão."
+                    new_info.variant = "flat"
+                    this.info.push(new_info)
+                }
+                else {
+                    if(this.chosen_forecast_model.type == 'naive') {
+                        this.loadNaive()
+                    }
+                    else if(this.chosen_forecast_model.type == 'doublemean') {
+                        this.loadDoubleMean()
+                    }               
+                }
+                
+            },
+            deep: true
+        }
+    }
 }
 </script>

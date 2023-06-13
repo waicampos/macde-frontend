@@ -1,11 +1,6 @@
 <template>
     <div class="d-flex flex-column">
         <v-row>
-            <v-col cols="12">
-                <FileUploader store_dispatch_name="data_forecast/load_user_data_forecast"/>
-            </v-col>
-        </v-row>
-        <v-row>
              <v-col cols="12" lg="6">
                 <v-sheet rounded="lg" min-height="300">
                     <MyLine
@@ -58,7 +53,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import axios from 'axios';
-import FileUploader from '@/components/FileUploader.vue';
 import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
@@ -67,7 +61,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
     export default {
         name: "userOptimizationPage",
-        components: {FileUploader, MyLine},
+        components: {MyLine},
         data() {
             return {                
                 has_demand_variation: "0",
