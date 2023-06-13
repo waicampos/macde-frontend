@@ -215,7 +215,11 @@ export default {
                 'date',
                 [...this.forecasted_data]
             )
-                        
+            dt_data.datasets[0].backgroundColor = "#BDBDBD"
+            dt_data.datasets[0].borderColor = "#757575"
+            dt_data.datasets[0].borderDash = [5, 5]
+            
+            console.log(dt_data)
             dt_data.datasets.forEach( dt => {
                 dt_series.datasets.push(dt)
             })
