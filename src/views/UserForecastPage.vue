@@ -147,7 +147,7 @@ import axios from 'axios';
 import BtnOptions from '@/components/BtnOptions.vue';
 import FileUploader from '@/components/FileUploader.vue';
 import { Line as MyLine} from 'vue-chartjs'
-import { createDataSetsTimeSeries, chartOptionsConfig, chartDataConfig } from '@/components/config/chartConfig'
+import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -156,7 +156,7 @@ export default {
     components: {MyLine, FileUploader, BtnOptions},
     data() {
         return {
-             headers: [
+            headers: [
                 {
                     title: 'Date',
                     align: 'start',

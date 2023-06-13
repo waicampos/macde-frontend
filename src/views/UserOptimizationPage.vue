@@ -1,5 +1,48 @@
 <template>
     <div class="d-flex flex-column">
+        <v-row class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12">
+                <v-card
+                    elevation="0"
+                >
+                    <v-card-title>Etapa Otimização</v-card-title>               
+                    <v-card-subtitle>Otimização dos valores de demanda contratada.</v-card-subtitle>               
+                    <v-divider></v-divider>
+                    <v-card-text>
+                        <v-row class="text-center pa-3">
+                            <v-col>
+                                <p class="text-justify"> 
+                                    Com base nos valores previstos é otimizado o valor da demanda contratada. O processo de otimização busca o valor de demanda, a ser contratada,
+                                    que represente o menor custo.
+                                    <br><br>
+                                </p>
+                                <p class="text-justify"> 
+                                    Atualmente está disponível o modelo de otimização exploratória.
+                                </p>                    
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <!-- Valores Previstos -->
+        <v-row class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12 text-justify">
+                <h3>Tabela dos valores previstos</h3>
+                <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
+            </v-col>
+            <v-col cols="12">
+                <v-data-table                     
+                    :headers="headers1"
+                    :items="this.data_file"
+                    class="elevation-4"
+                >
+                </v-data-table>
+            </v-col>
+        </v-row>
+
         <v-row>
              <v-col cols="12" lg="6">
                 <v-sheet rounded="lg" min-height="300">
@@ -35,16 +78,9 @@
             </v-col>
         </v-row>
     
-
       <v-row>
             <v-col cols="12">
                 <v-btn @click="this.loadExploratory()">Exploratória</v-btn>
-                 <v-data-table
-                    :headers="this.headers()"
-                    :items="forecasted"
-                    class="elevation-4"
-                >
-                </v-data-table>
             </v-col>
         </v-row>
     </div>
@@ -54,7 +90,7 @@
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 import { Line as MyLine} from 'vue-chartjs'
-import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
+import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -67,16 +103,27 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 has_demand_variation: "0",
                 selected_modality: {name: 'Verde', value: '1'},
                 tariff_modality:  [{name: 'Verde', value: '1'}, {name: 'Azul', value: '2'}],
-                forecasted: []
+                forecasted: [],
+                headers1: [
+                    {
+                        title: 'Date',
+                        align: 'start',
+                        sortable: false,
+                        key: 'date',
+                    },
+                    { title: 'Demanda de Ponta', key: 'peak_demand' },
+                    { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
+                    { title: 'Energia de Ponta', key: 'peak_energy' },
+                    { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
+                ]
             }
         },
 
         computed: {
             ...mapGetters('data_forecast', {
-                data_file: 'get_user_data_forecast',
-            })
-        },
-        methods: {
+                data_file: 'get_forecasted_data',
+            }),
+
             headers() {
                 let arr = []
                 arr.push(
@@ -101,6 +148,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 return arr
                 
             },
+        },
+        methods: {
                     
             chartTimeSeriesData() {
                 if(this.selected_modality.value == '1') {
