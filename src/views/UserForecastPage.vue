@@ -43,14 +43,23 @@
 
     <!-- Tipos Modelos -->
     <div class="d-flex flex-column">        
-        <!-- Alertas -->
-        <v-alert v-for="(item, index) in info" :key="index"
-            :type="item.type"
-            :title="item.title"
-            :text="item.text"
-            :variant="item.variant"
-        ></v-alert>
-        
+        <v-row 
+            v-if="!this.data_file.length && this.chosen_forecast_model.type != 'custom'"
+            class="flex-1-0 ma-2 pa-2 bg-grey-lighten-2"
+        >
+            <v-col class="text-center" >
+                <v-icon
+                    icon="mdi-alert"
+                    color="red-accent-4"
+                    size="80"
+                    class="me-2"
+                ></v-icon>
+            </v-col>
+            <v-col class="text-center" cols="12">
+                <h4 class="text-red">Ops. Parece que os dados do histórico não foram carregados. Os modelos Naive e Média Dupla utilizam estes dados.</h4>
+            </v-col>
+        </v-row> 
+
         <!-- File Uploader -->
          <v-row 
             class="flex-1-0 ma-2 pa-2"
@@ -158,14 +167,7 @@ export default {
                 { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
                 { title: 'Energia de Ponta', key: 'peak_energy' },
                 { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
-            ],
-            info: [],
-            info_model: {
-                "type": "info",
-                "title": "Alert title",
-                "text":"",
-                "variant": "tonal",
-            }
+            ]
         }
     },
     computed: {
@@ -328,17 +330,10 @@ export default {
     },
     watch:{
         chosen_forecast_model: {
-            handler() {
-                console.log(this.data_file.length)
-                if(!this.data_file.length) {
-                    let new_info = {...this.info_model}
-                    new_info.type = "error"
-                    new_info.title = "Sem histórico de dados."
-                    new_info.text = "Os modelos de previsão Naive e Média Dupla, utilizam os dados do histórico para fazer a previsão."
-                    new_info.variant = "flat"
-                    this.info.push(new_info)
-                }
-                else {
+            handler() {         
+                this.set_forecasted_data([])
+
+                if(this.data_file.length) {
                     if(this.chosen_forecast_model.type == 'naive') {
                         this.loadNaive()
                     }
