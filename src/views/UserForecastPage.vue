@@ -1,10 +1,48 @@
 <template>
-    <!-- Tipos Modelos -->
     <div class="d-flex flex-column">
         <v-row class="flex-1-0 ma-2 pa-2">
-            <BtnOptions />
+            <v-col cols="12">
+                <v-card
+                    elevation="0"
+                >
+                    <v-card-title>Etapa de Previsão de Demanda</v-card-title>               
+                    <v-card-subtitle>Seleção do Modelo de Previsão</v-card-subtitle>               
+                    <v-divider></v-divider>
+                    <v-card-text>
+                        <v-row class="text-center pa-3">
+                            <v-col>
+                                <p class="text-justify"> 
+                                    Nesta etapa, é realizado a pevisão de demanda com base no histórico do consumidor. Os valores previstos são utilizados como dados de entrada para 
+                                    a etapa de otimização. Atualmente o MACDE oferece dois modelos de previsões: Naïve e Média dupla. Também é possível fazer upload dos valores de previsão
+                                    obtidos com o uso de outros modelos.  
+                                    <br><br>
+                                </p>
+                                <p class="text-justify"> 
+                                    Modelos de Previsão:
+                                </p>
+                                <p class="text-justify"> 
+                                    - <b>Média Dupla:</b> Modelo padrão utilizado pelo MACDE;
+                                </p>
+                                <p class="text-justify"> 
+                                    - <b>Naive:</b> Define todos os valores futuros iguais ao valor da última observação, acrescido da previsão de crescimento da unidade consumidora;
+                                </p>
+                                <p class="text-justify"> 
+                                    - <b>Externo:</b> Permite o envio de um arquivo com os valores futuros adquiridos com um método de previsão externo;
+                                </p>
+                            </v-col>
+                        </v-row>
+                        
+                        <BtnOptions />
+
+                    </v-card-text>
+                    <v-divider></v-divider>
+                </v-card>
+            </v-col>
         </v-row>
-        
+        </div>
+
+    <!-- Tipos Modelos -->
+    <div class="d-flex flex-column">        
         <!-- Alertas -->
         <v-alert v-for="(item, index) in info" :key="index"
             :type="item.type"
