@@ -31,7 +31,7 @@
     </v-row>
 
     <v-row class="flex-1-0 ma-0 pa-0">
-      <v-col cols="12 text-center">
+      <v-col cols="6 text-center">
         <v-btn 
           @click="load_standard_user_historic" 
           color="warning"
@@ -41,8 +41,32 @@
           Carregar Exemplo
         </v-btn>
       </v-col>
+      <v-col cols="6 text-center">
+        <v-btn 
+          @click="clear_user_historic" 
+          color="error"
+          elevation="4" 
+          size="small"
+        >
+          Limpar dados
+        </v-btn>
+      </v-col>
     </v-row>
-            
+
+    <v-row class="flex-1-0 ma-0 pa-0">
+      <v-col cols="12">
+        <Transition name="fade">
+          <v-alert
+              v-if="msg_props.text"
+              density="compact"
+              :type="msg_props.type"
+              title=""
+              :text="msg_props.text"
+          ></v-alert>
+        </Transition>
+      </v-col>
+    </v-row>
+
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
         <FileUploader  store_dispatch_name="data_history/load_user_data_history"/>
@@ -100,6 +124,7 @@
     components: {FileUploader, TableData, MyLine},
     data() {
       return {
+        msg_props: {"text": "", "type": "success"},
         chartEnergy: {datasets: []},
         chartDemand: {datasets: []}
       }
@@ -108,7 +133,7 @@
       ...mapGetters('data_history', {
           data_file: 'get_user_data_history',
       }),
-    
+
       chartOptionsDemand() {
         let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
         opt.plugins.title.text = "Gráfico de Demanda"
@@ -127,8 +152,23 @@
       },
     },
     methods: {
+      set_msg(m, type_msg) {
+        this.msg_props.text = m
+        this.msg_props.type = type_msg
+        setTimeout(() => {
+          this.msg_props.text = ""
+        }, 3000)
+      },
+
+    clear_user_historic() {
+      if(this.data_file.length) {
+        this.$store.dispatch('data_history/clear_user_data_history')
+      }
+    },
+
       load_standard_user_historic() {
         this.$store.dispatch('data_history/load_user_data_history', macde_modelo)
+        this.set_msg("Dados carregados com sucesso.", "success")
       },
 
       str2date(dt) {
@@ -159,6 +199,13 @@
     watch: {
       data_file: {
         handler() {
+          if(this.data_file.length){ 
+            this.set_msg("Dados carregados com sucesso.", "success")
+          }
+          else {
+            this.set_msg("Dados apagados com sucesso.", "info")
+          }
+
           this.chartDataDemand()
           this.chartDataEnergy()
         },
@@ -168,3 +215,21 @@
     },
   }
 </script>
+
+<style>
+    .fade-enter-from{
+        opacity: 0;
+    }
+
+    .fade-enter-active{
+        transition: opacity 1s;
+    }
+
+    .fade-leave-to{
+        opacity: 0;
+    }
+
+    .fade-leave-active{
+        transition: opacity 1s;
+    }
+</style>

@@ -21,6 +21,9 @@ export default {
         delete_item_user_data_history_by_id(state, payload) {
           state.user_data_history.splice(payload, 1)
         },    
+        clear_user_data_history(state) {
+          state.user_data_history = []
+        }
       },
       actions: {
         load_user_data_history({ commit }, payload) {
@@ -34,6 +37,9 @@ export default {
         },
         delete_item_user_data_history_by_id({ commit }, payload) {
           commit("delete_item_user_data_history_by_id", payload)
+        },
+        clear_user_data_history({ commit }) {
+          commit("clear_user_data_history")
         },
       },
 }
