@@ -219,7 +219,6 @@ export default {
             dt_data.datasets[0].borderColor = "#757575"
             dt_data.datasets[0].borderDash = [5, 5]
             
-            console.log(dt_data)
             dt_data.datasets.forEach( dt => {
                 dt_series.datasets.push(dt)
             })
@@ -331,21 +330,27 @@ export default {
                 return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
             }, {})
         },
+        changed_forecast_model_type() {
+            this.set_forecasted_data([])
+
+            if(this.data_file.length) {
+                if(this.chosen_forecast_model.type == 'naive') {
+                    this.loadNaive()
+                }
+                else if(this.chosen_forecast_model.type == 'doublemean') {
+                    this.loadDoubleMean()
+                }               
+            }
+        }
     },
+    mounted() {
+        this.changed_forecast_model_type();
+    },
+
     watch:{
         chosen_forecast_model: {
             handler() {         
-                this.set_forecasted_data([])
-
-                if(this.data_file.length) {
-                    if(this.chosen_forecast_model.type == 'naive') {
-                        this.loadNaive()
-                    }
-                    else if(this.chosen_forecast_model.type == 'doublemean') {
-                        this.loadDoubleMean()
-                    }               
-                }
-                
+                this.changed_forecast_model_type();
             },
             deep: true
         }
