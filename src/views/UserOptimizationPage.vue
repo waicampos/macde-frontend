@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import axios from 'axios';
 import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
@@ -137,7 +137,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 has_demand_variation: "0",
                 selected_modality: {name: 'Verde', value: '1'},
                 tariff_modality:  [{name: 'Verde', value: '1'}, {name: 'Azul', value: '2'}],
-                optimized: [],
                 headers1: [
                     {
                         title: 'Date',
@@ -157,6 +156,11 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
             ...mapGetters('data_forecast', {
                 forecasted: 'get_forecasted_data',
             }),
+
+            ...mapGetters('data_optimize', {
+                optimized: 'get_optimized_data'
+            }
+        ),
 
             headers() {
                 let arr = []
@@ -184,6 +188,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
             },
         },
         methods: {        
+            ...mapActions('data_optimize', ['set_optimized_data']),
             chartTimeSeriesData(keys) {  
                 let data = [...this.forecasted]
 
@@ -280,8 +285,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                             ans[i].off_peak_demand = response.data[1][i]                  
                         }
                     }
-                    
-                    this.optimized = ans;
+                    this.set_optimized_data(ans);
                 })
             },
         }
