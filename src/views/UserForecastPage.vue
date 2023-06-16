@@ -90,7 +90,7 @@
         <!-- Título dos gráficos -->
         <v-row class="flex-1-0 ma-2 pa-2">
             <v-col class="text-center" cols='12'>
-                <h1>Gráficos dos Dados Históricos + Previsão</h1>
+                <h1>Gráficos de Previsão</h1>
             </v-col>
             <v-divider></v-divider>
         </v-row>
