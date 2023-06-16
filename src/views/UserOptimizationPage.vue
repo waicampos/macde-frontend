@@ -27,34 +27,8 @@
             </v-col>
         </v-row>
 
-        <!-- Valores Previstos -->
+        <!-- Seleção modalidade tarifária e aumento e redução de demanda -->
         <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12 text-justify">
-                <h3>Tabela dos valores previstos</h3>
-                <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
-            </v-col>
-            <v-col cols="12">
-                <v-data-table                     
-                    :headers="headers1"
-                    :items="this.data_file"
-                    class="elevation-4"
-                >
-                </v-data-table>
-            </v-col>
-        </v-row>
-
-        <v-row>
-             <v-col cols="12" lg="6">
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-optimization-chart-id"
-                        :data="chartTimeSeriesData()"
-
-                    />
-                </v-sheet>
-            </v-col>
-        </v-row>
-        <v-row>
             <v-col cols="4">
                 <v-select
                     v-model="selected_modality"
@@ -83,6 +57,66 @@
                 <v-btn @click="this.loadExploratory()">Exploratória</v-btn>
             </v-col>
         </v-row>
+
+        <!-- Valores Previstos -->
+        <v-row class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12 text-justify">
+                <h3>Tabela dos valores previstos</h3>
+                <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
+            </v-col>
+            <v-col cols="12">
+                <v-data-table                     
+                    :headers="headers1"
+                    :items="this.forecasted"
+                    class="elevation-4"
+                >
+                </v-data-table>
+            </v-col>
+        </v-row>
+
+        <!-- Gráficos -->
+        <v-row 
+            v-if="this.optimized.length"
+            class="flex-1-0 ma-2 pa-2"
+        >
+            <v-col cols="12 text-justify">
+                <h3>Tabela dos valores previstos</h3>
+                <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
+            </v-col>
+            <v-col                 
+                v-if="this.selected_modality.value == '1'"
+                cols="12"
+            >
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        id="my-optimization-chart-demand-id"
+                        :data="chartTimeSeriesData(['demand'])"
+                    />
+                </v-sheet>
+            </v-col>
+            <v-col 
+                v-if="this.selected_modality.value == '2'"
+                cols="12" lg="6"
+            >
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        id="my-optimization-chart-peak-demand-id"
+                        :data="chartTimeSeriesData(['peak_demand'])"
+                    />
+                </v-sheet>
+            </v-col>
+            <v-col 
+                v-if="this.selected_modality.value == '2'"
+                cols="12" lg="6"
+            >
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        id="my-optimization-chart-off-peak-demand-id"
+                        :data="chartTimeSeriesData(['off_peak_demand'])"
+                    />
+                </v-sheet>
+            </v-col>
+        </v-row>
     </div>
 </template>
 
@@ -103,7 +137,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 has_demand_variation: "0",
                 selected_modality: {name: 'Verde', value: '1'},
                 tariff_modality:  [{name: 'Verde', value: '1'}, {name: 'Azul', value: '2'}],
-                forecasted: [],
+                optimized: [],
                 headers1: [
                     {
                         title: 'Date',
@@ -121,7 +155,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
         computed: {
             ...mapGetters('data_forecast', {
-                data_file: 'get_forecasted_data',
+                forecasted: 'get_forecasted_data',
             }),
 
             headers() {
@@ -149,26 +183,41 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 
             },
         },
-        methods: {
-                    
-            chartTimeSeriesData() {
-                if(this.selected_modality.value == '1') {
-                    return createDataSetsTimeSeries(
-                        ['demand'],
-                        'date',
-                        JSON.parse(JSON.stringify(this.forecasted))
-                    )                    
+        methods: {        
+            chartTimeSeriesData(keys) {  
+                let data = [...this.forecasted]
+
+                if(this.selected_modality.value == 1) {
+                    data = data.map((item) => {
+                        item['demand'] = Math.max(item.peak_demand, item.off_peak_demand)
+                        return item
+                    })              
                 }
-                else {
-                    return createDataSetsTimeSeries(
-                        ['peak_demand', 'off_peak_demand'],
+                
+                let dt = createDataSetsTimeSeries( 
+                    keys, 
+                    'date',
+                    data
+                )
+                
+                let dt_optimized = createDataSetsTimeSeries(
+                        keys,
                         'date',
-                        JSON.parse(JSON.stringify(this.forecasted))
-                    )
-                }
+                        [...this.optimized]
+                )
+                dt_optimized.datasets[0].label += ' Contratada'
+                dt_optimized.datasets[0].backgroundColor = "#BDBDBD"
+                dt_optimized.datasets[0].borderColor = "#757575"
+                dt_optimized.datasets[0].borderDash = [5, 5]
+
+                dt_optimized.datasets.forEach( dt_item => {
+                    dt.datasets.push(dt_item)
+                })
+
+                return dt
             },
             convert2naive(key) {
-                return this.data_file.map((curr) => {
+                return this.forecasted.map((curr) => {
                     return curr[key]
                 })
             },
@@ -185,7 +234,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
             },
 
             get_bigger_date_forecast() {
-                let mod_data = JSON.parse(JSON.stringify(this.data_file));
+                let mod_data = JSON.parse(JSON.stringify(this.forecasted));
                 mod_data.forEach((curr, i, arr) => {
                     let dt = this.str2date(curr.date)
                     arr[i]['year'] = dt.getFullYear()
@@ -202,7 +251,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                     (curr, index) => (curr >= arr2[index]) ? curr : arr2[index]
                 )
             },
-
+                    
             loadExploratory() {
                 let peak_demand = this.convert2naive('peak_demand')
                 let off_peak_demand = this.convert2naive('off_peak_demand')
@@ -231,8 +280,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                             ans[i].off_peak_demand = response.data[1][i]                  
                         }
                     }
-                    this.forecasted = ans;
-
+                    
+                    this.optimized = ans;
                 })
             },
         }
