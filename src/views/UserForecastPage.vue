@@ -27,7 +27,8 @@
                                     - <b>Naive:</b> Define todos os valores futuros iguais ao valor da última observação, acrescido da previsão de crescimento da unidade consumidora;
                                 </p>
                                 <p class="text-justify"> 
-                                    - <b>Externo:</b> Permite o envio de um arquivo com os valores futuros adquiridos com um método de previsão externo;
+                                    - <b>Personalizado:</b> Permite o envio de um arquivo com os valores futuros adquiridos com um método de previsão externo. Outra possibilidade 
+                                    é o carregamento de um arquivo previamente salvo da aplicação MACDE;
                                 </p>
                             </v-col>
                         </v-row>
@@ -39,7 +40,7 @@
                 </v-card>
             </v-col>
         </v-row>
-        </div>
+    </div>
 
     <!-- Tipos Modelos -->
     <div class="d-flex flex-column">        
@@ -70,6 +71,14 @@
             </v-col>
         </v-row>
 
+        <!-- Título tabela de previsão -->
+        <v-row  v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
+            <v-col class="text-center" cols='12'>
+                <h1>Resultados de Previsão</h1>
+            </v-col>
+            <v-divider></v-divider>
+        </v-row>
+
         <!-- Modelos de Previsão -->
         <v-row v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
             <v-col cols="12">
@@ -82,6 +91,25 @@
             </v-col>
         </v-row>
     </div>
+
+        <!-- Download de arquivo -->
+        <v-row v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12" class=" text-end">
+                <v-btn 
+                    class="bg-red"
+                    elevation = 2
+                    @click="download()"
+                >
+                    <v-icon 
+                        color="black"
+                        size="x-large"
+                        icon="mdi-file-download-outline"
+                        start>
+                    </v-icon>
+                    <span class="hidden-sm-and-down">Baixar dados da Previsão</span>
+                </v-btn>
+            </v-col>
+        </v-row>
 
     <div 
         v-if="this.forecasted_data.length"
@@ -143,6 +171,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import fileDownload from 'js-file-download'
 import axios from 'axios';
 import BtnOptions from '@/components/BtnOptions.vue';
 import FileUploader from '@/components/FileUploader.vue';
@@ -201,6 +230,12 @@ export default {
     },
     methods: {
         ...mapActions('data_forecast', ['set_forecasted_data', 'set_chosen_forecast_model']),
+
+        download() {
+            let dt = new Date()
+            let filename = `${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_macde_forecast.json`
+            fileDownload(this.forecasted_data, filename);
+        },
 
         chartTimeSeriesData(keys) {
             let dt_series = []

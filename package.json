@@ -11,6 +11,7 @@
     "@mdi/font": "7.0.96",
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
+    "js-file-download": "^0.4.12",
     "or": "^0.2.0",
     "roboto-fontface": "*",
     "vue": "^3.2.0",
