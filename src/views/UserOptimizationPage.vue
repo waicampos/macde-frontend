@@ -74,6 +74,25 @@
             </v-col>
         </v-row>
 
+        <!-- Download de arquivo -->
+        <v-row v-if="this.forecasted.length" class="flex-1-0 ma-2 pa-2">
+            <v-col cols="12" class=" text-end">
+                <v-btn 
+                    class="bg-red"
+                    elevation = 2
+                    @click="download()"
+                >
+                    <v-icon 
+                        color="black"
+                        size="x-large"
+                        icon="mdi-file-download-outline"
+                        start>
+                    </v-icon>
+                    <span class="hidden-sm-and-down">Baixar dados da Otimização</span>
+                </v-btn>
+            </v-col>
+        </v-row>
+
         <!-- Gráficos -->
         <v-row 
             v-if="this.optimized.length"
@@ -123,6 +142,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import axios from 'axios';
+import fileDownload from 'js-file-download'
 import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
@@ -187,8 +207,16 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 
             },
         },
+
         methods: {        
             ...mapActions('data_optimize', ['set_optimized_data']),
+        
+            download() {
+                let dt = new Date()
+                let filename = `${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_macde_otimizacao.json`
+                fileDownload(JSON.stringify(this.optimized), filename);
+            },
+
             chartTimeSeriesData(keys) {  
                 let data = [...this.forecasted]
 
