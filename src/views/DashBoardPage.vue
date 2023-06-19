@@ -53,6 +53,7 @@ import NavBar from '@/components/NavBar.vue'
         drawer: null,
         items: [
           { text: 'Histórico', icon: 'mdi-file-cabinet', link: "/simulador/historico" },
+          { text: 'Parâmetros', icon: 'mdi-cog-outline', link: "/simulador/parametros" },
           { text: 'Previsão', icon: 'mdi-finance', link: "/simulador/previsao" },
           { text: 'Otimização', icon: 'mdi-desktop-classic', link: "/simulador/otimizacao" },
           { text: 'Resultados', icon: 'mdi-chart-bar-stacked', link: "/simulador/resultados" },

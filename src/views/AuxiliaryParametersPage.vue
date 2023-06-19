@@ -1,0 +1,380 @@
+<template>
+<div>
+    <v-row>
+        <v-col cols=12>
+             <v-card class="elevation-0"
+                title="Parâmetros Auxiliares"
+                subtitle="Configuração dos Parâmetros utilizados na aplicação."
+                text="Os parâmetros auxiliares permitem alterar a forma como a simulação é realizada. Nesta página é possível configurar
+                    o tipo de simulação a ser realizada além dos valores utilizados nos cálculos."
+             ></v-card>
+        </v-col>
+        <!-- Tipo de simulação -->
+         <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-laptop"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Tipo Simulação
+                    </v-card-title>
+                    <v-card-subtitle>Seleção do tipo de simulação que será realizada.</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row >
+                        <v-col cols=12>
+                            <p>As simulações da aplicação MACDE são realizadas para as modalidades tarifárias Verde e Azul. Esta informação é importante pois difere no tipo 
+                                de cobrança ao qual o consumidor é submetido. Consumidores da Modalide Azul são cobrados pela demanda ponta e fora de ponta. Já os Consumidores
+                                da Modalidade Verde são cobrados com um único valor de demanda, indenpendente do horário de uso. Além disso, é possível realizar as simulações 
+                                considerando ou não os valores de energia.
+                            </p>
+                        </v-col>
+                        <v-col>
+                            <v-select
+                                v-model="selected_modality"
+                                label="Modalidade Tarifária"
+                                :items="tariff_modality"
+                                item-title="name"
+                                item-value="value"
+                                variant="outlined"
+                                return-object
+                            ></v-select>
+                        </v-col>
+                        
+                    </v-row>
+                </v-card-text>
+
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+
+        <!-- Aumento ou redução de demanda -->
+         <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-square-wave"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Aumento ou redução de demanda (1x)
+                    </v-card-title>
+                    <v-card-subtitle>Opção que considera dois valores de demanda ótima..</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row >
+                        <v-col cols=12>
+                            <p> Algumas unidades consumidores possuem perfis de carga diferente dependendo do período do ano. Uma possibilidade é considerar essa variação de demanda e contratar dois 
+                                valores de demanda, dependendo do período do ano. É importante destacar que o consumidor deve atender os prazos solicitados pela distribuidora de energia.
+                            </p>
+                        </v-col>
+                        <v-col cols=12>
+                            <v-switch
+                                v-model="increase_decrease_demand"
+                                inset
+                                :label="increase_decrease_demand ? 'Ativado' : 'Desativado'"
+                                color="primary"
+                                value="primary"                                
+                                hide-details
+                            ></v-switch>                            
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+
+        <!-- Possui Sistema Fotovoltaico -->
+        <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-solar-panel"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Possui Sistema Fotovoltaico
+                    </v-card-title>
+                    <v-card-subtitle>Opção para unidades consumidores que possui sistema fotovoltaicos.</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols=12>
+                            <p>A inserção de sistema solar fotovoltaico interfere no valor da demanda a ser contratado. Caso o consumidor instalou sistema fotovoltaico
+                                durante o período de meses utilizados como histórico de entrada dos dados, é necessário informar marcar a opção para que o modelo de previsão 
+                                considere a influência do sistema na demanda a ser contratada.
+                            </p>
+                        </v-col>
+                        <v-col cols=12 md=6>
+                            <v-text-field                                
+                                :disabled= "!has_photovoltaic_system"
+                                v-model="date_installation_photovoltaic_system"
+                                label="Data de instalação"                                 
+                                type="date"
+                            />                             
+                        </v-col>
+                        <v-col cols=12 md=6>
+                            <v-switch
+                                v-model="has_photovoltaic_system"
+                                inset
+                                :label="has_photovoltaic_system ? 'Ativado' : 'Desativado'"
+                                color="primary"
+                                value="primary"                                
+                                hide-details
+                            ></v-switch>                            
+                        </v-col>
+                        
+                    </v-row>
+                </v-card-text>
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+
+        <!-- tarifas -->
+        <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-cash"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Tarifas
+                    </v-card-title>
+                    <v-card-subtitle>Definição dos valores das tarifas de demanda e consumo.</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols=12>
+                            <p>Os valore sde tarifa são aplicados sobre a demanda e a energia. Estes valores são a forma de remunerar a distribuidora pelo serviço de distribuição prestado
+                                e no caso dos consumidores cativos, pela produto entregue.</p>
+                        </v-col>
+                        <v-col 
+                            class="pa-0"
+                            cols=6 
+                            v-for="(item, index) in this.tariffs"
+                            :key="index"
+                        >
+                            <v-text-field class="px-3"
+                                v-model="item.value"
+                                :label="item.name" 
+                                :prefix="item.prefix"
+                                :suffix="item.suffix"
+                                :type="item.type"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-1"
+                        variant="flat"
+                    >
+                        Salvar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Cancelar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Resetar
+                    </v-btn>
+                </v-card-actions>
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+
+     <!-- Demanda contratada -->
+        <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-file-sign"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Demanda Contratada
+                    </v-card-title>
+                    <v-card-subtitle>Valor atual da demanda contratada.</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols=12>
+                            <p>A demanda contratada é o valor de demanda de potência que a distribuidora deve obrigatoriamente disponibilizar ao consumidor. Uma demanda contratada abaixo
+                                da demanda utilizada ocasiona custos adicionais com o pagamento de penalidade. Já uma demanda contratada elevada em relação a demanda utilizada, representa 
+                                o pagamento por um produto não utilizado.
+                            </p>
+                        </v-col>
+                        <v-col cols=12 md=6>
+                            <v-text-field 
+                                v-model="current_contracted_demand"
+                                label="Demanda Contratada Ponta" 
+                                type="number"
+                                prefix="R$"
+                                suffix="por kW"
+                            />
+                        </v-col>
+                        <v-col cols=12 md=6>
+                            <v-text-field
+                                v-model="current_contracted_demand"
+                                label="Demanda Contratada Fora de Ponta" 
+                                type="number"
+                                prefix="R$"
+                                suffix="por kW"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-1"
+                        variant="flat"
+                    >
+                        Salvar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Cancelar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Resetar
+                    </v-btn>
+                </v-card-actions>
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+
+        <!-- Previsão de crescimento -->
+        <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-finance"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Previsão de crescimento
+                    </v-card-title>
+                    <v-card-subtitle>Valor do crescimento previsto para o ano seguitne.</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols=12 class="mb-3">
+                            <p>O modelo de previsão permite considerar a previsão de crescimento da unidade consumidora para o próximo ano. Caso o consumidor 
+                                tenha uma previsão de crescimento é importante informar o valor. O valor padrão é de R$ 5%.
+                            </p>
+                        </v-col>
+                        <v-col cols=12>
+                            <v-slider
+                                v-model="growth_forecast"
+                                color="orange"
+                                min="-100"
+                                max="100"
+                                thumb-label="always"
+                                :step="1.5"
+                                label="Previsão"
+                            >
+                                <template v-slot:append>
+                                    <v-text-field
+                                        v-model="growth_forecast"
+                                        suffix="%"
+                                        type="number"
+                                        style="width: 100px"
+                                        density="compact"
+                                        hide-details
+                                        variant="outlined"
+                                    ></v-text-field>
+                                </template>
+                            </v-slider>                             
+                        </v-col>                              
+                    </v-row>
+                </v-card-text>
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+    </v-row>
+</div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    data() {
+        return {
+            growth_forecast: 5,
+            current_contracted_demand: 0,
+            increase_decrease_demand: false,
+            selected_modality: {name: 'Demanda Verde', value: '1'},
+            tariff_modality:  [
+                {name: 'Demanda Verde', value: '1'}, 
+                {name: 'Demanda + Energia Verde', value: '2'}, 
+                {name: 'Demanda Azul', value: '3'}, 
+                {name: 'Demanda + Energia Azul', value: '4'}, 
+            ],
+            has_photovoltaic_system: false,
+            date_installation_photovoltaic_system: "2023-02-01",
+            tariffs: [
+                {value: 42.4, name:"Tarifa Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
+                {value: 18.38, name:"Tarifa Demanda Fora de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
+                {value: 0.72, name:"Tarifa Energia de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
+                {value: 10.55, name:"Tarifa Energia Fora de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
+            ]
+        }
+    },
+
+    methods: {
+        consultar() {
+            var data = {
+                resource_id: 'fcf2906c-7c32-4b9b-a637-054e7a5234f4', // the resource id
+                limit: 5, // get 5 results
+                q: 'jones' // query for 'jones'
+            };
+
+            axios({
+                method: 'get',
+                data: data,
+                dataType: 'jsonp',
+                url: 'https://dadosabertos.aneel.gov.br/api/3/action/datastore_search'              
+            }).then(response => { 
+                    console.log(response)
+                })
+
+
+               
+                
+        }
+    },
+}
+</script>

@@ -8,6 +8,7 @@ import UserOptimizationPage from '@/views/UserOptimizationPage.vue'
 import UserResultsPage from '@/views/UserResultsPage.vue'
 import ReportPage from '@/views/ReportPage.vue'
 import AccountPage from '@/views/AccountPage.vue'
+import AuxiliaryParametersPage from '@/views/AuxiliaryParametersPage.vue'
 
 const routes = [
   {
@@ -22,6 +23,7 @@ const routes = [
     component: DashBoardPage,
     children: [
       {path: 'historico', component: UserHistoryPage},
+      {path: 'parametros', component: AuxiliaryParametersPage},
       {path: 'previsao', component: UserForecastPage},
       {path: 'otimizacao', component: UserOptimizationPage},
       {path: 'resultados', component: UserResultsPage},
