@@ -35,11 +35,11 @@
                         </v-col>
                         <v-col>
                             <v-select
-                                v-model="selected_modality"
+                                v-model="selected_simulation_type"
                                 label="Modalidade Tarifária"
-                                :items="tariff_modality"
-                                item-title="name"
-                                item-value="value"
+                                :items="simulation_types"
+                                item-title="text"
+                                item-value="name"
                                 variant="outlined"
                                 return-object
                             ></v-select>
@@ -76,13 +76,12 @@
                         </v-col>
                         <v-col cols=12>
                             <v-switch
-                                v-model="increase_decrease_demand"
+                                v-model="has_demand_variation"
                                 inset
-                                :label="increase_decrease_demand ? 'Ativado' : 'Desativado'"
-                                color="primary"
-                                value="primary"                                
+                                :label="has_demand_variation ? 'Ativado' : 'Desativado'"
+                                color="primary"                                                              
                                 hide-details
-                            ></v-switch>                            
+                            ></v-switch>                   
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -127,8 +126,7 @@
                                 v-model="has_photovoltaic_system"
                                 inset
                                 :label="has_photovoltaic_system ? 'Ativado' : 'Desativado'"
-                                color="primary"
-                                value="primary"                                
+                                color="primary"                        
                                 hide-details
                             ></v-switch>                            
                         </v-col>
@@ -162,7 +160,7 @@
                         </v-col>
                         <v-col 
                             class="pa-0"
-                            cols=6 
+                            cols=12 md=6 
                             v-for="(item, index) in this.tariffs"
                             :key="index"
                         >
@@ -226,22 +224,18 @@
                                 o pagamento por um produto não utilizado.
                             </p>
                         </v-col>
-                        <v-col cols=12 md=6>
-                            <v-text-field 
-                                v-model="current_contracted_demand"
-                                label="Demanda Contratada Ponta" 
-                                type="number"
-                                prefix="R$"
-                                suffix="por kW"
-                            />
-                        </v-col>
-                        <v-col cols=12 md=6>
-                            <v-text-field
-                                v-model="current_contracted_demand"
-                                label="Demanda Contratada Fora de Ponta" 
-                                type="number"
-                                prefix="R$"
-                                suffix="por kW"
+
+                        <v-col 
+                            class="pa-0"
+                            cols=12 md=6
+                            v-for="(item, index) in this.current_contracted_demand"
+                            :key="index"
+                        >
+                            <v-text-field class="px-3"
+                                v-model="item.value"
+                                :label="item.name" 
+                                :suffix="item.suffix"
+                                :type="item.type"
                             />
                         </v-col>
                     </v-row>
@@ -295,29 +289,27 @@
                                 tenha uma previsão de crescimento é importante informar o valor. O valor padrão é de R$ 5%.
                             </p>
                         </v-col>
-                        <v-col cols=12>
-                            <v-slider
-                                v-model="growth_forecast"
-                                color="orange"
-                                min="-100"
-                                max="100"
-                                thumb-label="always"
-                                :step="1.5"
-                                label="Previsão"
-                            >
-                                <template v-slot:append>
-                                    <v-text-field
-                                        v-model="growth_forecast"
-                                        suffix="%"
-                                        type="number"
-                                        style="width: 100px"
-                                        density="compact"
-                                        hide-details
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </template>
-                            </v-slider>                             
-                        </v-col>                              
+                        <v-row>
+                            <v-col cols=6 md=4>
+                                <v-text-field
+                                    v-model="growth_forecast"
+                                    suffix="%"
+                                    type="number"                                    
+                                    density="compact"
+                                    hide-details
+                                    variant="outlined"
+                                ></v-text-field>   
+                            </v-col>
+                            <v-col cols=6 md=4>
+                                <v-btn
+                                    class="text-none"
+                                    color="grey-lighten-1"
+                                    variant="flat"
+                                >
+                                    Salvar
+                                </v-btn>                 
+                            </v-col>     
+                        </v-row>
                     </v-row>
                 </v-card-text>
              </v-card>
@@ -329,28 +321,12 @@
 
 <script>
 import axios from 'axios';
+import { SIMULATION_TYPES } from '@/assets/files/consts'
 
 export default {
     data() {
         return {
-            growth_forecast: 5,
-            current_contracted_demand: 0,
-            increase_decrease_demand: false,
-            selected_modality: {name: 'Demanda Verde', value: '1'},
-            tariff_modality:  [
-                {name: 'Demanda Verde', value: '1'}, 
-                {name: 'Demanda + Energia Verde', value: '2'}, 
-                {name: 'Demanda Azul', value: '3'}, 
-                {name: 'Demanda + Energia Azul', value: '4'}, 
-            ],
-            has_photovoltaic_system: false,
-            date_installation_photovoltaic_system: "2023-02-01",
-            tariffs: [
-                {value: 42.4, name:"Tarifa Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
-                {value: 18.38, name:"Tarifa Demanda Fora de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
-                {value: 0.72, name:"Tarifa Energia de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-                {value: 10.55, name:"Tarifa Energia Fora de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-            ]
+            simulation_types: SIMULATION_TYPES,
         }
     },
 
@@ -369,12 +345,66 @@ export default {
                 url: 'https://dadosabertos.aneel.gov.br/api/3/action/datastore_search'              
             }).then(response => { 
                     console.log(response)
-                })
-
-
-               
-                
+                })              
         }
     },
+    computed: {
+        selected_simulation_type: {
+            get() {
+                return this.$store.state.data_parameters.selected_simulation_type
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_selected_simulation_type', payload)
+            }
+        },
+        has_demand_variation: {
+            get() {
+                return this.$store.state.data_parameters.has_demand_variation
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_has_demand_variation', payload)
+            }
+        },
+        has_photovoltaic_system: {
+            get() {
+                return this.$store.state.data_parameters.has_photovoltaic_system
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_has_photovoltaic_system', payload)
+            }
+        },
+        date_installation_photovoltaic_system: {
+            get() {
+                return this.$store.state.data_parameters.date_installation_photovoltaic_system
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_date_installation_photovoltaic_system', payload)
+            }
+        },
+        growth_forecast: {
+            get() {
+                return this.$store.state.data_parameters.growth_forecast
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_growth_forecast', payload)
+            }
+        },
+        tariffs: {
+            get() {
+                return this.$store.state.data_parameters.tariffs
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_tariffs', payload)
+            }
+        },
+        current_contracted_demand: {
+            get() {
+                return this.$store.state.data_parameters.current_contracted_demand
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_current_contracted_demand', payload)
+            }
+        },
+    }
 }
 </script>
