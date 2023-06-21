@@ -45,8 +45,8 @@
                     v-model="has_demand_variation"
                     label="Aumento ou Redução de Demanda (1x)"
                     color="orange"
-                    true-value="1"
-                    false-value="0"
+                    true-value= true
+                    false-value= false
                     hide-details
                 ></v-switch>
             </v-col>
@@ -154,7 +154,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
         components: {MyLine},
         data() {
             return {                
-                has_demand_variation: "0",
                 selected_modality: {name: 'Verde', value: '1'},
                 tariff_modality:  [{name: 'Verde', value: '1'}, {name: 'Azul', value: '2'}],
                 headers1: [
@@ -179,8 +178,16 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
             ...mapGetters('data_optimize', {
                 optimized: 'get_optimized_data'
+            }),
+
+            has_demand_variation: {
+            get() {
+                return this.$store.state.data_parameters.has_demand_variation
+            },
+            set(payload){
+                this.$store.commit('data_parameters/set_has_demand_variation', payload)
             }
-        ),
+        },
 
             headers() {
                 let arr = []
@@ -296,7 +303,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                     arr_demand = [...blue_demand]
                 }
 
-                const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/exploratory/${this.selected_modality.value}/${this.has_demand_variation}`
+                const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/exploratory/${this.selected_modality.value}/${this.has_demand_variation ? "1" : "0"}`
+
                 axios
                 .post(addr, {"data": arr_demand})
                 .then(response => {
