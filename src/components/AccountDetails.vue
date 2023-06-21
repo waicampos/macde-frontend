@@ -44,6 +44,7 @@
                                 label="Código da UC"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
@@ -54,6 +55,7 @@
                                 label="Tensão de fornecimento"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
@@ -64,6 +66,7 @@
                                 label="Logradouro"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
@@ -74,6 +77,7 @@
                                 label="Número"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
@@ -84,6 +88,7 @@
                                 label="CEP"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
@@ -94,6 +99,7 @@
                                 label="UF"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
@@ -104,40 +110,63 @@
                                 label="Cidade"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
                         <!-- Grupo -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="consumer_unit.group"
+                                v-model="group_classification"
                                 label="Grupo"
-                                :items="group_items"                                
+                                :items="group_classification_types" 
+                                item-title="text"
+                                item-value="name"                                
                                 variant="outlined"
-                                return-object
                                 hide-details
+                                return-object
                             ></v-select>                     
-                        </v-col>     
+                        </v-col>       
 
                         <!-- Subgrupo -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="consumer_unit.subgroup"
+                                v-model="subgroup_classification"
                                 label="Subgrupo"
-                                :items="subgroup_items"                                
+                                :items="subgroup_filtered_data" 
+                                item-title="text"
+                                item-value="name"                                
                                 variant="outlined"
                                 hide-details
+                                return-object
                             ></v-select>                     
                         </v-col>   
 
                         <!-- Modalidade Tarifária -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="consumer_unit.tariff_modality"
-                                label="Subgrupo"
-                                :items="tariff_modality_items"                                
+                                v-model="tariff_modality"
+                                label="Modalidade Tarifária"
+                                :items="tariff_modality_types"         
+                                item-title="text"
+                                item-value="name"                       
                                 variant="outlined"
                                 hide-details
+                                return-object
+                            ></v-select>                     
+                        </v-col>      
+
+                        <!-- Classe unidade consumidora -->
+                        <v-col cols=12 md=6>
+                            <v-select
+                                v-model="class_classification_unit_consumer"
+                                label="Classe"
+                                :items="class_classification_unit_consumer_types"         
+                                item-title="text"
+                                item-value="name"                       
+                                variant="outlined"
+                                hide-details
+                                return-object
                             ></v-select>                     
                         </v-col>                          
                     </v-row>
@@ -200,16 +229,18 @@
                                 label="Nome"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>
 
                         <!-- CNPJ -->
                         <v-col cols=12>
                             <v-text-field                                
-                                v-model="consumer_unit.registration_number"
+                                v-model="utility.registration_number"
                                 label="CNPJ"                                 
                                 type="text"
                                 hide-details
+                                return-object
                             />                             
                         </v-col>        
                     </v-row>
@@ -245,31 +276,72 @@
 </template>
 
 <script>
+import { TARIFF_MODALITY_TYPES, GROUP_CLASSIFICATION_TYPES, SUBGROUP_CLASSIFICATION_TYPES, CLASS_CLASSIFICATION_UNITY_CONSUMER } from '@/assets/files/consts'
+
 export default {
     data() {
         return {
-            tariff_modality_items: ['Verde', 'Azul'],
-            group_items: ['A1', 'A2', 'A3a', 'A4', 'AS'], 
-            subgroup_items: ['Residencial', 'Industrial', 'Comercial', 'Rural', 'Poder Público'],
-            consumer_unit: {
-                code: "",
-                supply_voltage: "",
-                tariff_modality: "Verde",
-                group: "A4",
-                subgroup: "Poder Público",
-                address: {
-                    address: "",
-                    number: "",
-                    zip_code: "",
-                    city: "",
-                    state: ""
-                }
-            },
-            utility: {
-                nome: "",
-                registration_number: "",
-            }
+            tariff_modality_types: TARIFF_MODALITY_TYPES,
+            group_classification_types: GROUP_CLASSIFICATION_TYPES,
+            subgroup_classification_types: SUBGROUP_CLASSIFICATION_TYPES,
+            class_classification_unit_consumer_types: CLASS_CLASSIFICATION_UNITY_CONSUMER,
         }
+    },
+    computed: {
+        subgroup_filtered_data(){    
+            let filtered = this.subgroup_classification_types.filter(item => item.group === this.group_classification.name.toUpperCase())
+            //this.subgroup_classification = filtered[0]
+            return filtered
+        },
+
+        tariff_modality: {
+            get() {
+                return this.$store.state.data_configurations.tariff_modality
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_tariff_modality', payload)
+            }
+        },
+        group_classification: {
+            get() {
+                return this.$store.state.data_configurations.group_classification
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_group_classification', payload)
+            }
+        },
+        subgroup_classification: {
+            get() {
+                return this.$store.state.data_configurations.subgroup_classification
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_subgroup_classification', payload)
+            }
+        },
+         class_classification_unit_consumer: {
+            get() {
+                return this.$store.state.data_configurations.class_classification_unit_consumer
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_class_classification_unit_consumer', payload)
+            }
+        },
+        consumer_unit: {
+            get() {
+                return this.$store.state.data_configurations.consumer_unit
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_consumer_unit', payload)
+            }
+        },
+         utility: {
+            get() {
+                return this.$store.state.data_configurations.utility
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_utility', payload)
+            }
+        },
     }
 }
 </script>
