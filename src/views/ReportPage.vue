@@ -17,39 +17,45 @@
                         </v-card-item>
                         
                         <v-card-text class="my-5 py-0 my-0">
-                            <VRow>
-                                <VCol cols="12" lg="6" class="py-0 my-1">
-                                    <p><b>CLIENTE:</b> Instituto Federal de Educação, Ciência e Tecnologia de Santa Catarina</p>
+                            <VRow>                               
+                                <VCol cols=12 class="py-0 my-1">
+                                    <p><b>RAZÃO SOCIAL:</b> {{consumer_unit.name}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="3" class="py-0 my-1">
-                                    <p><b>RAZÃO SOCIAL:</b> Instituto Federal de Santa Catarina</p>
+                                <VCol cols=12 class="py-0 my-1">
+                                    <p><b>CPF/CNPJ:</b> {{consumer_unit.registration_number}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="3" class="py-0 my-1">
-                                    <p><b>CNPJ:</b> 125.200.70/0001</p>
+                                <VCol cols=12 class="py-0 my-1">
+                                     <p><b>DISTRIBUIDORA/CONCESSIONÁRIA/PERMISSIONÁRIA(COOPERATIVA):</b> {{utility.name}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="6" class="py-0 my-1">
-                                     <p><b>DISTRIBUIDORA/CONCESSIONÁRIA/PERMISSIONÁRIA(COOPERATIVA):</b> CELESC</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>CLASSE:</b> {{consumer_unit.class.text}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="3" class="py-0 my-1">
-                                    <p><b>CLASSE:</b> Poder Público</p>
-                                </VCol>
-                                <VCol cols="3" class="py-0 my-1">
-                                    <p><b>UC:</b> 105006</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>UC:</b> {{consumer_unit.code}}</p>
                                 </VCol>                                
-                                <VCol cols="12" lg="6" class="py-0 my-1">
-                                    <p><b>MODALIDADE TARIFÁRIA:</b> Verde</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>MODALIDADE TARIFÁRIA:</b> {{consumer_unit.tariff_modality.text}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="3" class="py-0 my-1">
-                                    <p><b>SUBBGRUPO:</b> A4</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>GRUPO:</b> {{consumer_unit.group.name.toUpperCase()}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="6" class="py-0 my-1">
-                                    <p><b>PIS/PASEP + COFINS + ICMS (%):</b> 0</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>SUBBGRUPO:</b> {{consumer_unit.subgroup.text}}</p>
+                                </VCol>                                
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>PIS/PASEP(%):</b> {{taxes_and_charges.filter(item => item.name === 'pis_pasep')[0].value}}</p>
                                 </VCol>
-                                <VCol cols="12" lg="3" class="py-0 my-1">
-                                    <p><b>CIP ou COSIP (R$):</b> 0</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>COFINS(%):</b> {{taxes_and_charges.filter(item => item.name === 'cofins')[0].value}}</p>
                                 </VCol>
-                                <VCol cols="12" md="3" class="py-0 my-1">
-                                    <p><b>Outros (R$):</b> 0</p>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>ICMS (%):</b> {{taxes_and_charges.filter(item => item.name === 'icms')[0].value}}</p>
+                                </VCol>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>CIP ou COSIP (R$):</b> {{taxes_and_charges.filter(item => item.name === 'cip_cosip')[0].value}}</p>
+                                </VCol>
+                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                    <p><b>Outros (R$):</b> {{taxes_and_charges.filter(item => item.name === 'others')[0].value}}</p>
                                 </VCol>
                             </VRow>
                         </v-card-text>
@@ -202,20 +208,39 @@
 
 <script>
 import macde_report_glossary from '@/assets/files/macde_report_glossary.json'
-    export default {
-        data() {
-            return {
-                items: macde_report_glossary
-            }
-        },
-        methods: {
-            print() {
-                console.log(this.items)
-                console.log(macde_report_glossary)
-            }
-        },
-        mounted() {
-            this.print()
+
+export default {
+    data() {
+        return {
+            items: macde_report_glossary
         }
-    }
+    },
+    computed: {
+        consumer_unit: {
+            get() {
+                return this.$store.state.data_configurations.consumer_unit
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_consumer_unit', payload)
+            }
+        },
+         utility: {
+            get() {
+                return this.$store.state.data_configurations.utility
+            },
+            set(payload){
+                this.$store.commit('data_configurations/set_utility', payload)
+            }
+        },
+        taxes_and_charges: {
+            get() {
+                return this.$store.state.data_parameters.taxes_and_charges
+            },
+            set(payload){
+                this.$store.commit('data_parameters/taxes_and_charges', payload)
+            }
+        },
+    },
+    
+}
 </script>

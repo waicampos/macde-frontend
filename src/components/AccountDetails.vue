@@ -117,7 +117,7 @@
                         <!-- Grupo -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="group_classification"
+                                v-model="consumer_unit.group"
                                 label="Grupo"
                                 :items="group_classification_types" 
                                 item-title="text"
@@ -131,9 +131,9 @@
                         <!-- Subgrupo -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="subgroup_classification"
+                                v-model="consumer_unit.subgroup"
                                 label="Subgrupo"
-                                :items="subgroup_filtered_data" 
+                                :items="subgroup_classification_types" 
                                 item-title="text"
                                 item-value="name"                                
                                 variant="outlined"
@@ -145,7 +145,7 @@
                         <!-- Modalidade Tarifária -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="tariff_modality"
+                                v-model="consumer_unit.tariff_modality"
                                 label="Modalidade Tarifária"
                                 :items="tariff_modality_types"         
                                 item-title="text"
@@ -159,7 +159,7 @@
                         <!-- Classe unidade consumidora -->
                         <v-col cols=12 md=6>
                             <v-select
-                                v-model="class_classification_unit_consumer"
+                                v-model="consumer_unit.class"
                                 label="Classe"
                                 :items="class_classification_unit_consumer_types"         
                                 item-title="text"
@@ -288,44 +288,6 @@ export default {
         }
     },
     computed: {
-        subgroup_filtered_data(){    
-            let filtered = this.subgroup_classification_types.filter(item => item.group === this.group_classification.name.toUpperCase())
-            //this.subgroup_classification = filtered[0]
-            return filtered
-        },
-
-        tariff_modality: {
-            get() {
-                return this.$store.state.data_configurations.tariff_modality
-            },
-            set(payload){
-                this.$store.commit('data_configurations/set_tariff_modality', payload)
-            }
-        },
-        group_classification: {
-            get() {
-                return this.$store.state.data_configurations.group_classification
-            },
-            set(payload){
-                this.$store.commit('data_configurations/set_group_classification', payload)
-            }
-        },
-        subgroup_classification: {
-            get() {
-                return this.$store.state.data_configurations.subgroup_classification
-            },
-            set(payload){
-                this.$store.commit('data_configurations/set_subgroup_classification', payload)
-            }
-        },
-         class_classification_unit_consumer: {
-            get() {
-                return this.$store.state.data_configurations.class_classification_unit_consumer
-            },
-            set(payload){
-                this.$store.commit('data_configurations/set_class_classification_unit_consumer', payload)
-            }
-        },
         consumer_unit: {
             get() {
                 return this.$store.state.data_configurations.consumer_unit

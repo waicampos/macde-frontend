@@ -1,44 +1,40 @@
-import { GROUP_CLASSIFICATION_TYPES } from '@/assets/files/consts'
+import { SUBGROUP_CLASSIFICATION_TYPES, GROUP_CLASSIFICATION_TYPES, CLASS_CLASSIFICATION_UNITY_CONSUMER } from '@/assets/files/consts'
 
 export default {
     namespaced: true,
     state: {
-        tariff_modality: {name: 'green', text: 'Verde'},
-        group_classification: {name: GROUP_CLASSIFICATION_TYPES[0].name, text: GROUP_CLASSIFICATION_TYPES[0].text}, 
-        subgroup_classification: {}, 
-        class_classification_unit_consumer: {name: 'state', text: 'Poder Público'},
         consumer_unit: {
-          code: "",
-          supply_voltage: "",
-          tariff_modality: "Verde",
-          group: "A4",
-          subgroup: "Poder Público",
+          class: {
+            name: CLASS_CLASSIFICATION_UNITY_CONSUMER.filter(item => item.name === 'state')[0].name, 
+            text: CLASS_CLASSIFICATION_UNITY_CONSUMER.filter(item => item.name === 'state')[0].text
+          },
+          registration_number: "123.456/0001",
+          name: "Instituto Federal de Educação, Ciência e Tecnologia de Santa Catarina",
+          code: "123456",
+          supply_voltage: "13800",
+          tariff_modality: {name: 'green', text: 'Verde'},
+          group: {
+            name: GROUP_CLASSIFICATION_TYPES.filter(item => item.name === 'a')[0].name,
+            text: GROUP_CLASSIFICATION_TYPES.filter(item => item.name === 'a')[0].text
+          },
+          subgroup: {
+            name: SUBGROUP_CLASSIFICATION_TYPES.filter(item => item.name === 'a4')[0].name,
+            text: SUBGROUP_CLASSIFICATION_TYPES.filter(item => item.name === 'a4')[0].text
+          },
           address: {
-              address: "",
-              number: "",
-              zip_code: "",
-              city: "",
-              state: ""
+              address: "Avenida Mauro Ramos",
+              number: "950",
+              zip_code: "88020-300",
+              city: "Florianópolis",
+              state: "Santa Catarina"
           },
         },
         utility: {
-          name: "",
-          registration_number: "",
+          name: "CELESC",
+          registration_number: "789.123/000.2",
       }
       },
       getters: {
-        get_tariff_modality(state) {
-          return state.tariff_modality
-        },
-        get_group_classification(state) {
-          return state.group_classification
-        },
-        get_subgroup_classification(state) {
-          return state.subgroup_classification
-        },
-        get_class_classification_unit_consumer(state) {
-          return state.class_classification_unit_consumer
-        },
         get_consumer_unit(state) {
           return state.consumer_unit
         },
@@ -47,18 +43,6 @@ export default {
         },
       },
       mutations: {  
-        set_tariff_modality(state, payload) {
-          state.tariff_modality = payload
-        },
-        set_group_classification(state, payload) {
-          state.group_classification = payload
-        },
-        set_subgroup_classification(state, payload) {
-          state.subgroup_classification = payload
-        },
-        set_class_classification_unit_consumer(state, payload) {
-          state.class_classification_unit_consumer = payload
-        },
         set_consumer_unit(state, payload) {
           state.consumer_unit = payload
         },
@@ -67,18 +51,6 @@ export default {
         },
       },
       actions: {
-        set_tariff_modality({ commit }, payload) {
-          commit("set_tariff_modality", payload)
-        },
-        set_group_classification({ commit }, payload) {
-          commit("set_group_classification", payload)
-        },
-        set_subgroup_classification({ commit }, payload) {
-          commit("set_subgroup_classification", payload)
-        },
-        set_class_classification_unit_consumer({ commit }, payload) {
-          commit("set_class_classification_unit_consumer", payload)
-        },
         set_consumer_unit({ commit }, payload) {
           commit("set_consumer_unit", payload)
         },

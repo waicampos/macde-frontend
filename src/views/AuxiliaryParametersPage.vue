@@ -137,68 +137,53 @@
              <v-divider class="border-opacity-25"></v-divider>
         </v-col>
 
-        <!-- tarifas -->
+        <!-- Previsão de crescimento -->
         <v-col cols=10>
              <v-card class="elevation-0">
                 <v-card-item>
                     <v-card-title>
                         <v-icon
-                            icon="mdi-cash"
+                            icon="mdi-finance"
                             color="green-darken-1"
                             size="large"
                             class="me-2"
                         ></v-icon>
-                        Tarifas
+                        Previsão de crescimento
                     </v-card-title>
-                    <v-card-subtitle>Definição dos valores das tarifas de demanda e consumo.</v-card-subtitle>
+                    <v-card-subtitle>Valor do crescimento previsto para o ano seguitne.</v-card-subtitle>
                 </v-card-item>
                 <v-card-text>
                     <v-row>
-                        <v-col cols=12>
-                            <p>Os valore sde tarifa são aplicados sobre a demanda e a energia. Estes valores são a forma de remunerar a distribuidora pelo serviço de distribuição prestado
-                                e no caso dos consumidores cativos, pela produto entregue.</p>
+                        <v-col cols=12 class="mb-3">
+                            <p>O modelo de previsão permite considerar a previsão de crescimento da unidade consumidora para o próximo ano. Caso o consumidor 
+                                tenha uma previsão de crescimento é importante informar o valor. O valor padrão é de R$ 5%.
+                            </p>
                         </v-col>
-                        <v-col 
-                            class="pa-0"
-                            cols=12 md=6 
-                            v-for="(item, index) in this.tariffs"
-                            :key="index"
-                        >
-                            <v-text-field class="px-3"
-                                v-model="item.value"
-                                :label="item.name" 
-                                :prefix="item.prefix"
-                                :suffix="item.suffix"
-                                :type="item.type"
-                            />
-                        </v-col>
+                        <v-row>
+                            <v-col cols=6 md=4>
+                                <v-text-field
+                                    v-model="growth_forecast"
+                                    suffix="%"
+                                    type="number"                                    
+                                    density="compact"
+                                    hide-details
+                                    variant="outlined"
+                                ></v-text-field>   
+                            </v-col>
+                            <v-col cols=6 md=4>
+                                <v-btn
+                                    class="text-none"
+                                    color="grey-lighten-1"
+                                    variant="flat"
+                                >
+                                    Salvar
+                                </v-btn>                 
+                            </v-col>     
+                        </v-row>
                     </v-row>
                 </v-card-text>
-                <v-card-actions>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-1"
-                        variant="flat"
-                    >
-                        Salvar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Cancelar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Resetar
-                    </v-btn>
-                </v-card-actions>
              </v-card>
-             <v-divider class="border-opacity-25"></v-divider>
+             <v-divider class="border-opacity-25 mt-4"></v-divider>
         </v-col>
 
      <!-- Demanda contratada -->
@@ -267,54 +252,138 @@
              <v-divider class="border-opacity-25"></v-divider>
         </v-col>
 
-        <!-- Previsão de crescimento -->
+        <!-- tarifas -->
         <v-col cols=10>
              <v-card class="elevation-0">
                 <v-card-item>
                     <v-card-title>
                         <v-icon
-                            icon="mdi-finance"
+                            icon="mdi-cash"
                             color="green-darken-1"
                             size="large"
                             class="me-2"
                         ></v-icon>
-                        Previsão de crescimento
+                        Tarifas
                     </v-card-title>
-                    <v-card-subtitle>Valor do crescimento previsto para o ano seguitne.</v-card-subtitle>
+                    <v-card-subtitle>Definição dos valores das tarifas de demanda e consumo.</v-card-subtitle>
                 </v-card-item>
                 <v-card-text>
                     <v-row>
-                        <v-col cols=12 class="mb-3">
-                            <p>O modelo de previsão permite considerar a previsão de crescimento da unidade consumidora para o próximo ano. Caso o consumidor 
-                                tenha uma previsão de crescimento é importante informar o valor. O valor padrão é de R$ 5%.
-                            </p>
+                        <v-col cols=12>
+                            <p>Os valores de tarifa são aplicados sobre a demanda e a energia. Estes valores são a forma de remunerar a distribuidora pelo serviço de distribuição prestado
+                                e no caso dos consumidores cativos, pela produto entregue.</p>
                         </v-col>
-                        <v-row>
-                            <v-col cols=6 md=4>
-                                <v-text-field
-                                    v-model="growth_forecast"
-                                    suffix="%"
-                                    type="number"                                    
-                                    density="compact"
-                                    hide-details
-                                    variant="outlined"
-                                ></v-text-field>   
-                            </v-col>
-                            <v-col cols=6 md=4>
-                                <v-btn
-                                    class="text-none"
-                                    color="grey-lighten-1"
-                                    variant="flat"
-                                >
-                                    Salvar
-                                </v-btn>                 
-                            </v-col>     
-                        </v-row>
+                        <v-col 
+                            class="pa-0"
+                            cols=12 md=6 
+                            v-for="(item, index) in this.tariffs"
+                            :key="index"
+                        >
+                            <v-text-field class="px-3"
+                                v-model="item.value"
+                                :label="item.name" 
+                                :prefix="item.prefix"
+                                :suffix="item.suffix"
+                                :type="item.type"
+                            />
+                        </v-col>
                     </v-row>
                 </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-1"
+                        variant="flat"
+                    >
+                        Salvar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Cancelar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Resetar
+                    </v-btn>
+                </v-card-actions>
              </v-card>
              <v-divider class="border-opacity-25"></v-divider>
         </v-col>
+
+        <!-- Encargos e tributos -->
+        <v-col cols=10>
+             <v-card class="elevation-0">
+                <v-card-item>
+                    <v-card-title>
+                        <v-icon
+                            icon="mdi-calculator"
+                            color="green-darken-1"
+                            size="large"
+                            class="me-2"
+                        ></v-icon>
+                        Tributação
+                    </v-card-title>
+                    <v-card-subtitle>Valores dos tributos incidentes na tarifa final.</v-card-subtitle>
+                </v-card-item>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols=12>
+                            <p>Além das tarifas de Energia e de Uso do Sistema de Distribuição incidem sobre a tarifa final o pagamento compulsório de tributos devidos ao poder público. Os tributos
+                                federais cobrados pela união são o Programa de Integração Social (PIS) e a Contribuição para o financiamento da Seguridade Social(COFINS) que são utilizados para manter programas voltados para
+                                o trabalhador e para atender programas sociais. O imposto estadual que incide sobre a tarifa é o Imposto sobre Circulação de Mercadorias e Serviços (ICMS) previsto na constituição
+                                federal e que possui alíquotas variáveis. O Custeio do Serviço de Iluminação Pública (CIP) não incide sobre a tarifa, este tributo municipal é arrecado pela concessionária e repassado
+                                para o município 
+                                </p>
+                        </v-col>
+                        <v-col 
+                            class="pa-0"
+                            cols=12 md=6 
+                            v-for="(item, index) in this.taxes_and_charges"
+                            :key="index"
+                        >
+                            <v-text-field class="px-3"
+                                v-model="item.value"
+                                :label="item.name" 
+                                :prefix="item.prefix"
+                                :suffix="item.suffix"
+                                :type="item.type"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-1"
+                        variant="flat"
+                    >
+                        Salvar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Cancelar
+                    </v-btn>
+                    <v-btn
+                        class="text-none"
+                        color="grey-lighten-3"
+                        variant="flat"
+                    >
+                        Resetar
+                    </v-btn>
+                </v-card-actions>
+             </v-card>
+             <v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+
     </v-row>
 </div>
 </template>
@@ -395,6 +464,14 @@ export default {
             },
             set(payload){
                 this.$store.commit('data_parameters/set_tariffs', payload)
+            }
+        },
+        taxes_and_charges: {
+            get() {
+                return this.$store.state.data_parameters.taxes_and_charges
+            },
+            set(payload){
+                this.$store.commit('data_parameters/taxes_and_charges', payload)
             }
         },
         current_contracted_demand: {
