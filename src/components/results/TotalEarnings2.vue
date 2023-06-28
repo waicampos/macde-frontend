@@ -5,14 +5,14 @@ const earnings = [
     title: 'Demanda Fora de Ponta',
     color: '#E53935',
     subtitle: 'Custo Demanda',
-    amount: 175584.14,
+    amount: 206168.46,
     progress: 'primary',
   },
   {
     title: 'Demanda de Ponta',
     color: '#9BD0F5',
     subtitle: 'Custo Demanda',
-    amount: 325377.60,
+    amount: 325038.40,
     progress: 'primary',
   },
   {
@@ -34,9 +34,9 @@ const earnings = [
 
 <template>
   <VCard elevation="8">
-    <VCardItem class="bg-blue-darken-2">
+    <VCardItem class="bg-orange-lighten-3">
       <VCardTitle>
-        DEMANDA SUGERIDA 
+        DEMANDA CONTRATADA 
       </VCardTitle>
 
       <VCardSubtitle>
@@ -49,16 +49,9 @@ const earnings = [
         <h4 class="text-h4 text-orange-darken-3 font-weight-medium">
           <span class="text-subtitle-1 text-orange-darken-3 font-weight-medium">R$</span> {{ total_cost}}
         </h4>
-        <span class="text-success">
-          <VIcon
-            size="30"
-            icon="mdi-menu-up"
-          />
-          <span>10%</span>
-        </span>
       </div>
       <div class="d-flex align-center justify-center">
-        <span class="text-caption text-center">Custo anual total considerando a contratação do valor da demanda sugerida pela aplicação MACDE.</span>
+        <span class="text-caption text-center">Custo anual total considerando o valor de demanda contratada atual.</span>
       </div>
       
 
@@ -96,7 +89,7 @@ const earnings = [
 export default {
   data() {
     return {
-      total_cost: 1354965.23
+      total_cost: 1385210.35
     }
   }
 }

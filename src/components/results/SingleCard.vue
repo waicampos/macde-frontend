@@ -1,18 +1,18 @@
 <template>
   <v-card
-    class="mx-auto bg-pink-lighten-4"
-    max-width="368"
+    class="mx-auto bg-yellow-accent-2 rounded-ts-xl rounded-be-xl"
   >
-    <v-card-item title="Demanda Fora de Ponta">
-      <template v-slot:subtitle>
+    <v-card-item>
+      <v-card-title class="text-grey-darken-3 font-weight-bold text-subtitle-1">Demanda Fora de Ponta</v-card-title>
+      <v-card-subtitle class="text-grey-darken-3 font-weight-bold text-caption">
         <v-icon
           icon="mdi-alert"
           size="18"
           color="error"
           class="me-1 pb-1"
         ></v-icon>
-        Demanda Sugerida Ótima 
-      </template>
+        Demanda Sugerida Ótima
+      </v-card-subtitle>
     </v-card-item>
 
     <v-divider 
@@ -23,30 +23,34 @@
     <v-card-text class="py-1">
       <v-row align="center" no-gutters>
         <v-col
-          class="text-h3 text-deep-orange-accent-3 text-center"
+          class="text-h3 font-weight-bold text-light-blue-darken-4 text-center"
           cols="12"
         >
           774
+         <span class="text-subtitle-1 font-weight-bold text-light-blue-darken-4 text-center">kW</span>
+          <v-divider class="ma-3"></v-divider>
         </v-col>
 
       </v-row>
     </v-card-text>
 
-    <div class="d-flex py-3 justify-start">
-      <v-list-item
-        density="compact"
-      >
-        <v-list-item-subtitle>
-            <v-icon
+    <v-row align="center" no-gutters>
+        <v-col
+          class="text-caption font-weight-bold text-red-accent-4 text-center mt-3"
+          cols="12"
+        >
+          <v-icon
                 icon="mdi-cash"
-                color="black"
+                color="grey-darken-3"
                 size="large"
                 class="me-2"
             ></v-icon>
-            Custo anual (R$): 
-            <span class="text-red-accent-4 text-h6">175.584,14</span> 
-        </v-list-item-subtitle>
-      </v-list-item>
-    </div>
+            <span class="text-grey-darken-3 font-weight-bold">Custo anual (R$): </span>
+        </v-col>
+        <v-col class="text-red-accent-4 text-h6 font-weight-bold text-center">
+          206.168,46
+        </v-col>
+      </v-row>
+    
   </v-card>
 </template>
