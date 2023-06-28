@@ -183,20 +183,41 @@
                 <VCol cols="12 text-center">
                     <v-card elevation="1">
                         <v-card-item>
-                            <v-card-title>Glossário Técnico:</v-card-title>
-                        </v-card-item>
-                        
-                        <v-card-text class="py-0 my-0 text-justify">    
-                                    <v-list>
-                                        <v-list-item class="ma-1 pa-0" v-for="(item, idx) in items" :key="idx">                                            
-                                            <p><b> {{item.title}}:</b> {{item.text}}</p>
-                                            <v-list v-if="item.list.length">
-                                                 <v-list-item class="ma-0 pa-0" v-for="(subitem, sub_idx) in item.list" :key="sub_idx">
-                                                    <p><v-icon :icon="item.icon"></v-icon>{{subitem.text}}</p>
-                                                </v-list-item>
-                                            </v-list>
-                                        </v-list-item>
-                                    </v-list>                                
+                            <v-card-title class="text-h6">Glossário Técnico:</v-card-title>
+                        </v-card-item>                        
+                        <v-card-text class="text-justify">                                
+                            <v-list                                                           
+                                lines="three"
+                            >                                    
+                                <v-list-item 
+                                    min-height="88px"   
+                                    class="ma-0 pa-0"                                                                                                           
+                                    v-for="item in items" 
+                                    :key="item.title"                                    
+                                    >                                                  
+                                        <v-list-item-title class="text-subtitle-2 ma-0 pa-0">{{ item.title }}</v-list-item-title>
+                                        <v-list-item-subtitle class="text-caption ma-0 pa-0">{{ item.subtitle }}</v-list-item-subtitle>
+                                        <v-list 
+                                            class="my-0 py-0" 
+                                            v-if="item.list.length"
+                                            lines="one"
+                                            density="compact"                                        
+                                        >
+                                            <v-list-item   
+                                                min-height="10px"  
+                                                class="my-0 py-0" 
+                                                v-for="(subitem, sub_idx) in item.list" 
+                                                :key="sub_idx"                                            
+                                            >
+                                                <v-list-item-subtitle class="text-caption">{{ subitem.subtitle }}</v-list-item-subtitle>
+                                                <template v-slot:prepend>
+                                                    <v-icon :icon="subitem.icon"></v-icon>
+                                                </template>                                                
+                                            </v-list-item>
+                                        </v-list>          
+                                        <v-divider class="my-4"></v-divider>                                  
+                                </v-list-item>
+                            </v-list>                                                                                                                   
                         </v-card-text>  
                     </v-card>  
                 </VCol>
