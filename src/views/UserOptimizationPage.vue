@@ -112,7 +112,7 @@
         </v-row>
 
         <!-- Download de arquivo -->
-        <v-row v-if="this.forecasted.length" class="flex-1-0 ma-2 pa-2">
+        <v-row v-if="this.optimized.length" class="flex-1-0 ma-2 pa-2">
             <v-col cols="12" class=" text-end">
                 <v-btn 
                     class="bg-red"
@@ -133,13 +133,15 @@
         <!-- Valores Previstos -->
         <v-row class="flex-1-0 ma-0pa-0">
             <v-col cols="12 text-justify">
-                <h3>Tabela dos valores previstos</h3>
-                <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
+                <h3>Tabela Otimizados</h3>
+                <p>A tabela abaixo apresenta os valores ótimos de demanda. Caso a opção de Aumento ou Redução de Demanda (1x) esteja habilitada, são apresentados
+                    dois valores diferentes para contratação da demanda.
+                </p>
             </v-col>
             <v-col cols="12">
                 <v-data-table                     
-                    :headers="headers1"
-                    :items="this.forecasted"
+                    :headers="headers"
+                    :items="this.optimized"
                     class="elevation-4"
                 >
                 </v-data-table>
@@ -173,10 +175,9 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                         sortable: false,
                         key: 'date',
                     },
+                    { title: 'Demanda', key: 'demand' },
                     { title: 'Demanda de Ponta', key: 'peak_demand' },
-                    { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
-                    { title: 'Energia de Ponta', key: 'peak_energy' },
-                    { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
+                    { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' }
                 ]
             }
         },
@@ -303,7 +304,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
             },
                     
             loadExploratory() {
-                console.log("ENTROU")
                 this.loading  = true
                 let peak_demand = this.convert2naive('peak_demand')
                 let off_peak_demand = this.convert2naive('off_peak_demand')
@@ -334,7 +334,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                         }
                     }
                     this.set_optimized_data(ans);
-                    this.loading  = false
+                    this.loading  = false         
+                    console.log(this.optimized)           
                 })
             },
         }
