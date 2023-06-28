@@ -45,32 +45,69 @@
                     v-model="has_demand_variation"
                     label="Aumento ou Redução de Demanda (1x)"
                     color="orange"
-                    true-value= true
-                    false-value= false
+                
                     hide-details
                 ></v-switch>
             </v-col>
         </v-row>
     
       <v-row>
-            <v-col cols="12">
-                <v-btn @click="this.loadExploratory()">Exploratória</v-btn>
+            <v-col cols="12 text-center">
+                <v-btn 
+                    :disabled="loading"
+                    :loading="loading"
+                    @click="this.loadExploratory()"
+                    class="text-none mb-4"
+                    color="indigo-darken-3"
+                    variant="flat"
+                    size="x-large"                     
+                >
+                    Otimizar
+                </v-btn>
             </v-col>
         </v-row>
 
-        <!-- Valores Previstos -->
-        <v-row class="flex-1-0 ma-2 pa-2">
+        <!-- Gráficos -->
+        <v-row 
+            v-if="this.optimized.length"
+            class="flex-1-0 ma-0 pa-0"
+        >
             <v-col cols="12 text-justify">
-                <h3>Tabela dos valores previstos</h3>
-                <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
+                <h3>Gráficos dos valores otimizados</h3>
+                <p>Nos gráficos abaixo são apresentados o resultado da otimização da demanda.</p>
             </v-col>
-            <v-col cols="12">
-                <v-data-table                     
-                    :headers="headers1"
-                    :items="this.forecasted"
-                    class="elevation-4"
-                >
-                </v-data-table>
+            <v-col                 
+                v-if="this.selected_modality.value == '1'"
+                cols="12"
+            >
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        id="my-optimization-chart-demand-id"
+                        :data="chartTimeSeriesData(['demand'])"
+                    />
+                </v-sheet>
+            </v-col>
+            <v-col 
+                v-if="this.selected_modality.value == '2'"
+                cols="12" lg="6"
+            >
+                <v-sheet rounded="lg">
+                    <MyLine
+                        id="my-optimization-chart-peak-demand-id"
+                        :data="chartTimeSeriesData(['peak_demand'])"
+                    />
+                </v-sheet>
+            </v-col>
+            <v-col 
+                v-if="this.selected_modality.value == '2'"
+                cols="12" lg="6"
+            >
+                <v-sheet rounded="lg">
+                    <MyLine
+                        id="my-optimization-chart-off-peak-demand-id"
+                        :data="chartTimeSeriesData(['off_peak_demand'])"
+                    />
+                </v-sheet>
             </v-col>
         </v-row>
 
@@ -93,47 +130,19 @@
             </v-col>
         </v-row>
 
-        <!-- Gráficos -->
-        <v-row 
-            v-if="this.optimized.length"
-            class="flex-1-0 ma-2 pa-2"
-        >
+        <!-- Valores Previstos -->
+        <v-row class="flex-1-0 ma-0pa-0">
             <v-col cols="12 text-justify">
                 <h3>Tabela dos valores previstos</h3>
                 <p>A tabela abaixo apresenta os valores obtidos na etapa de previsão e que serão utilizados como entrada para o modelo de otimização.</p>
             </v-col>
-            <v-col                 
-                v-if="this.selected_modality.value == '1'"
-                cols="12"
-            >
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-optimization-chart-demand-id"
-                        :data="chartTimeSeriesData(['demand'])"
-                    />
-                </v-sheet>
-            </v-col>
-            <v-col 
-                v-if="this.selected_modality.value == '2'"
-                cols="12" lg="6"
-            >
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-optimization-chart-peak-demand-id"
-                        :data="chartTimeSeriesData(['peak_demand'])"
-                    />
-                </v-sheet>
-            </v-col>
-            <v-col 
-                v-if="this.selected_modality.value == '2'"
-                cols="12" lg="6"
-            >
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-optimization-chart-off-peak-demand-id"
-                        :data="chartTimeSeriesData(['off_peak_demand'])"
-                    />
-                </v-sheet>
+            <v-col cols="12">
+                <v-data-table                     
+                    :headers="headers1"
+                    :items="this.forecasted"
+                    class="elevation-4"
+                >
+                </v-data-table>
             </v-col>
         </v-row>
     </div>
@@ -153,7 +162,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
         name: "userOptimizationPage",
         components: {MyLine},
         data() {
-            return {                
+            return {         
+                loading: false,       
                 selected_modality: {name: 'Verde', value: '1'},
                 tariff_modality:  [{name: 'Verde', value: '1'}, {name: 'Azul', value: '2'}],
                 headers1: [
@@ -293,6 +303,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
             },
                     
             loadExploratory() {
+                console.log("ENTROU")
+                this.loading  = true
                 let peak_demand = this.convert2naive('peak_demand')
                 let off_peak_demand = this.convert2naive('off_peak_demand')
                 let green_demand = this.maxDemand(peak_demand, off_peak_demand)
@@ -322,6 +334,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                         }
                     }
                     this.set_optimized_data(ans);
+                    this.loading  = false
                 })
             },
         }
