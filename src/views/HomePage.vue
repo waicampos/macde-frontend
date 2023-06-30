@@ -94,8 +94,8 @@
                                 :icon="item.icon"
                               ></v-icon>
                               <div class="ml-6">
-                                <v-list-item-title class="text-h5 ma-0 pa-0">{{ item.title }}</v-list-item-title>
-                                <v-list-item-subtitle class="text-subtitle-2 ma-0 pa-0">{{ item.subtitle }}</v-list-item-subtitle>                                                                                                    
+                                <v-list-item-title class="text-subtitle-1 text-md-h6 text-lg-h5 ma-0 pa-0">{{ item.title }}</v-list-item-title>
+                                <v-list-item-subtitle class="text-caption text-md-subtitle-2 ma-0 pa-0">{{ item.subtitle }}</v-list-item-subtitle>                                                                                                    
                               </div>                          
                             </v-col>                        
                           </v-row>                                                                                        
