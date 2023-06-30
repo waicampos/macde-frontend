@@ -44,7 +44,7 @@
         <v-card-item class="">
           <v-row>
             <v-col>
-              <p class="text-h5 text-justify">
+              <p class="text-subtitle-1 text-justify">
                 O Macde surgiu dentro do IFSC Sustentável - ações de gestão da sustentabilidade no IFSC, 
                 entre 2017 e 2018. Em novembro de 2018, o programa contou com aporte de recursos da Secretaria de Educação 
                 Profissional e Tecnológica (Setec), dentro do Programa Energif, ligado à rede de Instituições Federais de 
@@ -53,7 +53,7 @@
               distribuição de média tensão, em linguagem acessível e de fácil utilização, podendo estender-se 
               ao público em geral.
               </p>
-              <p class="text-h5 text-justify mt-4">O público-alvo do projeto são os Institutos Federais conectados em rede de distribuição de
+              <p class="text-subtitle-1 text-justify mt-4">O público-alvo do projeto são os Institutos Federais conectados em rede de distribuição de
                 média tensão, onde a tarifa de energia é binômia, ou seja, é cobrada em função de dois
                 indicadores, a demanda contratada (kW) e o consumo de energia elétrica (MWh). Pode-se
                 estender a todos os consumidores do Grupo A do mercado cativo de energia.
