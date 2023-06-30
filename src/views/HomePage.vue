@@ -6,7 +6,7 @@
     <v-col>
     <v-parallax
       src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
-      height="480"
+      height="600"
       scale=0.85
     >
     <v-row class="d-flex flex-column justify-start" style="margin-top: 7.5em; margin-left: 8em;">
