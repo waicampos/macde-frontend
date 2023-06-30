@@ -5,6 +5,7 @@
   <v-row class="hidden-xs mb-4 pb-4"> 
     <v-col>
     <v-parallax
+      class="rounded-xl"
       src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
       height="600"
       scale=0.70
