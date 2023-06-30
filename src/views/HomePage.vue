@@ -172,14 +172,14 @@ import energif from '@/assets/logo-energif.png'
             "title": "GESE",
             "subtitle": "Grupo de Estudos em Sistemas de Energia",
             "img": gese,
-            "link": "https://gese.florianopolis.ifsc.edu.br",
+            "href": "https://gese.florianopolis.ifsc.edu.br",
             "text": "O GESE atua nas seguintes áreas: tarifação de energia elétrica, regulação e mercado de energia elétrica, planejamento de sistemas de energia elétrica, gerenciamento pelo lado da demanda, otimização multiobjetivo, supervisão e controle de sistemas de energia elétrica, eficiência energética..."
           },
           {
             "title": "ENERGIF",
             "subtitle": "Programa para Desenvolvimento em Energias Renováveis e Eficiência Energética nas Instituições Federais de Educação",
             "img": energif,
-            "link": "http://energif.mec.gov.br",
+            "href": "http://energif.mec.gov.br",
             "text": "O Programa EnergIF, estruturado no âmbito da Secretaria de Educação Profissional e Tecnológica (SETEC), do Ministério da Educação (MEC), torna possível a aplicação de medidas de melhoria no desempenho energético da Rede Federal, bem como a ampliação da oferta de cursos por suas unidades.     "
           },
           {
