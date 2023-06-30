@@ -1,7 +1,9 @@
 <template>
 <v-container class="py-0 my-0">
   <NavBar />
-  <div> 
+
+  <v-row class="my-4 py-4"> 
+    <v-col>
     <v-parallax
       src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
       height="480"
@@ -29,8 +31,11 @@
       </v-col>
     </v-row>
 </v-parallax>
-</div>
-  <VRow>
+</v-col>
+</v-row>
+
+  <!-- Simples e Fácil de Usar -->
+  <v-row class="my-4 py-4">
     <VCol cols="12 text-center mt-6">
       <v-card elevation="0">
         <v-card-item>
@@ -77,7 +82,42 @@
         </v-card-text>  
       </v-card>  
       </VCol>
-  </VRow>
+  </v-row>
+
+  <!-- Parcerias -->
+  <v-row class="my-4 py-4">
+  <v-col cols=12>
+    <h1 class="text-center text-h4 font-weight-thin">Parcerias</h1>
+  </v-col>
+    <v-col cols=12 md=6 lg=4 v-for="item in partners" :key="item.title">
+      <v-card elevation="4" max-width="600px">
+        <v-card-item class="">
+          <v-img
+            class="align-end text-white"
+            height="150"
+            :src= "item.img"            
+          >
+          </v-img>
+          <v-divider class="my-3"></v-divider>
+          <v-card-title class="text-h4 mt-3 font-weight-thin">{{ item.title }}</v-card-title> 
+          <v-card-subtitle class="pt-4">{{ item.subtitle }}</v-card-subtitle>
+        </v-card-item>                        
+        <v-card-text class="text-justify">         
+            <p>{{ item.text }}</p>
+        </v-card-text>  
+        <v-card-actions>
+          <v-btn
+              :href="item.href"      
+              target="_blank"                  
+              color="indigo-darken-3"
+              variant="flat"
+          >
+              Saiba Mais
+          </v-btn>                  
+        </v-card-actions>
+      </v-card>  
+    </v-col>
+  </v-row>
 
 <div class="d-flex align-center flex-column">      
     <v-row class="text-center">
@@ -149,22 +189,45 @@
         <p class="text-center headline font-weight-bold mb-3">Parcerias</p>
       </v-col>
     </v-row>
-
-    
-
-    <!-- <FooterPage /> -->
-
   </div>
   </v-container>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import gese from '@/assets/logo-gese.png'
+import ifsc from '@/assets/logo-ifsc.png'
+import energif from '@/assets/logo-energif.png'
+
   export default {
     name: 'HomePage',
     components: {NavBar},
     data(){
       return {
+        partners: [
+          {
+            "title": "GESE",
+            "subtitle": "Grupo de Estudos em Sistemas de Energia",
+            "img": gese,
+            "link": "https://gese.florianopolis.ifsc.edu.br",
+            "text": "O GESE atua nas seguintes áreas: tarifação de energia elétrica, regulação e mercado de energia elétrica, planejamento de sistemas de energia elétrica, gerenciamento pelo lado da demanda, otimização multiobjetivo, supervisão e controle de sistemas de energia elétrica, eficiência energética..."
+          },
+          {
+            "title": "ENERGIF",
+            "subtitle": "Programa para Desenvolvimento em Energias Renováveis e Eficiência Energética nas Instituições Federais de Educação",
+            "img": energif,
+            "link": "http://energif.mec.gov.br",
+            "text": "O Programa EnergIF, estruturado no âmbito da Secretaria de Educação Profissional e Tecnológica (SETEC), do Ministério da Educação (MEC), torna possível a aplicação de medidas de melhoria no desempenho energético da Rede Federal, bem como a ampliação da oferta de cursos por suas unidades.     "
+          },
+          {
+            "title": "IFSC",
+            "subtitle": "Instituto Federal de Santa Catarina",
+            "img": ifsc,
+            "href": "https://ifsc.edu.br",
+            "text": "O Instituto Federal de Santa Catarina (IFSC) é uma instituição pública federal de ensino. Atua na oferta de educação profissional, científica e tecnológica, oferecendo cursos nos mais diversos níveis: qualificação profissional, educação de jovens e adultos, cursos técnicos, superiores...    "
+          }
+        ],
+
         how_to_use: [
           {
             "title": "Dados Históricos",
