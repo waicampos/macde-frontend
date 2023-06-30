@@ -7,9 +7,9 @@
     <v-parallax
       src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
       height="600"
-      scale=0.85
+      scale=0.70
     >
-    <v-row class="d-flex flex-column justify-start" style="margin-top: 7.5em; margin-left: 8em;">
+    <v-row class="d-flex flex-column justify-start" style="margin-top: 10.5em; margin-left: 8em;">
       <v-col class="d-flex flex-row align-center justify-start"> 
         <div class="pr-4">
           <v-img            
