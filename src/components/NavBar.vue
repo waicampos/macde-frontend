@@ -10,7 +10,7 @@
             max-width="30"
             contain
           ></v-img>
-          <span class="text-h4 font-weight-thin">MACDE</span>
+          <span class="text-h4 font-weight-thin hidden-xs">MACDE</span>
         </v-btn>  
       </v-app-bar-title>      
       <template v-slot:prepend></template>
