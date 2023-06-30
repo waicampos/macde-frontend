@@ -1,10 +1,17 @@
 <template>
 <v-container>
-    <v-app-bar>        
-      <v-app-bar-title
-      href="/simulador"
-      >
-        MACDE  
+    <v-app-bar>       
+      <v-app-bar-title>
+        <v-btn href="/" class="ma-0 pa-0">
+          <v-img
+            class="mr-0"
+            src="@/assets/logo_simples_150x150.png"
+            max-height="30"
+            max-width="30"
+            contain
+          ></v-img>
+          <span class="text-h4 font-weight-thin">MACDE</span>
+        </v-btn>  
       </v-app-bar-title>      
       <template v-slot:prepend></template>
       <template v-slot:image>
