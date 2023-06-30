@@ -26,7 +26,14 @@
        <div>
             <p class="text-h5 font-weight-light pb-2">Modelo de Avaliação <br />
                                         dos Contratos de Demanda de Energia</p>                             
-            <v-btn size="medium" color="indigo-darken-3">INICIAR SIMULAÇÃO</v-btn>                              
+            <v-btn 
+              size="large" 
+              color="indigo-darken-3"
+              href="/simulador"
+              prepend-icon="mdi-finance"  
+            >
+                ABRIR SIMULADOR
+            </v-btn>                              
         </div>
       </v-col>
     </v-row>
