@@ -2,7 +2,7 @@
 <v-container class="py-0 my-0">
   <NavBar />
 
-  <v-row class="mb-4 pb-4"> 
+  <v-row class="hidden-xs mb-4 pb-4"> 
     <v-col>
     <v-parallax
       src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
