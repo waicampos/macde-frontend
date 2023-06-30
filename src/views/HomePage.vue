@@ -1,7 +1,37 @@
 <template>
-<v-container>
+<v-container class="py-0 my-0">
   <NavBar />
- <div class="d-flex align-center flex-column">      
+  <div> 
+    <v-parallax
+      src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
+      height="480"
+      scale=0.85
+    >
+    <v-row class="d-flex flex-column justify-start" style="margin-top: 7.5em; margin-left: 8em;">
+      <v-col class="d-flex flex-row align-center justify-start"> 
+        <div class="pr-4">
+          <v-img            
+            :width="50"
+            src="@/assets/logo_simples_150x150.png"
+          ></v-img>        
+        </div>
+        <div>
+          <p class="text-h2 font-weight-thin">MACDE</p>                
+        </div>
+      </v-col>
+
+      <v-col class="d-flex flex-row align-center justify-start">
+       <div>
+            <p class="text-h5 font-weight-light pb-2">Modelo de Avaliação <br />
+                                        dos Contratos de Demanda de Energia</p>                             
+            <v-btn size="medium" color="indigo-darken-3">INICIAR SIMULAÇÃO</v-btn>                              
+        </div>
+      </v-col>
+    </v-row>
+</v-parallax>
+</div>
+
+<div class="d-flex align-center flex-column">      
     <v-row class="text-center">
       <v-col cols="12">
         <v-img

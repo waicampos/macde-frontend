@@ -1,5 +1,5 @@
 <template>
-<v-container class="pa-10">
+<v-container>
     <v-app-bar>        
       <v-app-bar-title
       href="/simulador"
