@@ -30,6 +30,54 @@
     </v-row>
 </v-parallax>
 </div>
+  <VRow>
+    <VCol cols="12 text-center mt-6">
+      <v-card elevation="0">
+        <v-card-item>
+            <v-card-title class="text-h4 font-weight-thin">Simples e Fácil de usar!</v-card-title>
+        </v-card-item>                        
+        <v-card-text class="text-justify">         
+            <v-row align="center">
+              <v-col cols=12 lg=7>                
+                <v-list                                                           
+                    lines="two"
+                >                                    
+                    <v-list-item                                           
+                        class="ma-2 pa-2"    
+                        v-for="item in how_to_use" 
+                        :key="item.title"                                    
+                        >    
+                          <v-row>
+                            <v-col class="d-flex align-center">                              
+                              <v-icon
+                                size="50"
+                                color="blue-darken-2"
+                                :icon="item.icon"
+                              ></v-icon>
+                              <div class="ml-6">
+                                <v-list-item-title class="text-h5 ma-0 pa-0">{{ item.title }}</v-list-item-title>
+                                <v-list-item-subtitle class="text-subtitle-2 ma-0 pa-0">{{ item.subtitle }}</v-list-item-subtitle>                                                                                                    
+                              </div>                          
+                            </v-col>                        
+                          </v-row>                                                                                        
+                    </v-list-item>
+                </v-list>  
+              </v-col>
+              <v-col class="hidden-md-and-down" cols="12" lg="">
+                <v-img
+                  class="rounded-xl"  
+                  max-height="300"                
+                  height="100%"
+                  cover                  
+                  src="@/assets/campaign-creators-pypeCEaJeZY-unsplash-640.jpg"
+                >
+                </v-img>
+              </v-col>                     
+              </v-row>
+        </v-card-text>  
+      </v-card>  
+      </VCol>
+  </VRow>
 
 <div class="d-flex align-center flex-column">      
     <v-row class="text-center">
@@ -102,19 +150,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
-       <v-col
-       v-for="(card, i) in cardInfo"
-       :key="i">
-        <CardPage 
-          :title= "card.title"
-          :subtitle= "card.subtitle"
-          :text= "card.text"
-          :btnText= "card.btnText"
-          :srcImage= "card.srcImage"
-        />
-      </v-col>
-    </v-row>
+    
 
     <!-- <FooterPage /> -->
 
@@ -126,6 +162,38 @@
 import NavBar from '@/components/NavBar.vue'
   export default {
     name: 'HomePage',
-    components: {NavBar}
-  }
+    components: {NavBar},
+    data(){
+      return {
+        how_to_use: [
+          {
+            "title": "Dados Históricos",
+            "subtitle": "Entre com os dados de consumo e demanda de energia.",
+            "icon": "mdi-file-document-outline"
+          },
+          {
+            "title": "Parâmetros Auxiliares",
+            "subtitle": "Edite as informações e configure os parâmetros.",
+            "icon": "mdi-cog-outline"
+          },
+          {
+            "title": "Modelo de Previsão",
+            "subtitle": "Escolha entre os modelos de previsão disponíveis ou entre com os resultados de um modelo externo.",
+            "icon": "mdi-chart-line"
+          },
+          {
+            "title": "Modelo de Otimização",
+            "subtitle": "Pronto! É só clicar em otimizar.",
+            "icon": "mdi-laptop"
+          },
+          {
+            "title": "Resultados e Relatório",
+            "subtitle": "Acompanhe os resultados e gere um relatório completo.",
+            "icon": "mdi-chart-tree"
+          },
+        ]
+      }
+  },
+}
+
 </script>
