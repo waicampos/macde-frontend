@@ -2,7 +2,7 @@
 <v-container class="py-0 my-0">
   <NavBar />
 
-  <v-row class="my-4 py-4"> 
+  <v-row class="mb-4 pb-4"> 
     <v-col>
     <v-parallax
       src="@/assets/nordwood-themes-kRNZiGKtz48-unsplash-1920.jpg"
@@ -33,6 +33,40 @@
 </v-parallax>
 </v-col>
 </v-row>
+
+<!-- Objetivos e público Alvo -->
+<v-row class="my-4 py-4">
+  <v-col cols=12>
+    <h1 class="text-center text-h4 font-weight-thin">Modelo de Avaliação dos Contratos de Demanda de Energia (MACDE)</h1>
+  </v-col>
+    <v-col cols=12>
+      <v-card elevation="0">
+        <v-card-item class="">
+          <v-row>
+            <v-col>
+              <p class="text-h5 text-justify">
+                O Macde surgiu dentro do IFSC Sustentável - ações de gestão da sustentabilidade no IFSC, 
+                entre 2017 e 2018. Em novembro de 2018, o programa contou com aporte de recursos da Secretaria de Educação 
+                Profissional e Tecnológica (Setec), dentro do Programa Energif, ligado à rede de Instituições Federais de 
+                Educação Profissional e Tecnológica. O objetivo geral do projeto é criar uma ferramenta web para a otimização 
+              e o planejamento da contratação de energia elétrica dos Institutos Federais conectados à rede de 
+              distribuição de média tensão, em linguagem acessível e de fácil utilização, podendo estender-se 
+              ao público em geral.
+              </p>
+              <p class="text-h5 text-justify mt-4">O público-alvo do projeto são os Institutos Federais conectados em rede de distribuição de
+                média tensão, onde a tarifa de energia é binômia, ou seja, é cobrada em função de dois
+                indicadores, a demanda contratada (kW) e o consumo de energia elétrica (MWh). Pode-se
+                estender a todos os consumidores do Grupo A do mercado cativo de energia.
+              </p>
+            </v-col>
+          </v-row>
+        </v-card-item>                        
+        <v-card-text class="text-justify">         
+        </v-card-text>  
+      </v-card>  
+    </v-col>
+</v-row>
+<v-divider></v-divider>
 
   <!-- Simples e Fácil de Usar -->
   <v-row class="my-4 py-4">
@@ -83,9 +117,10 @@
       </v-card>  
       </VCol>
   </v-row>
+  <v-divider></v-divider>
 
   <!-- Parcerias -->
-  <v-row class="my-4 py-4">
+  <v-row class="mt-4 py-4 mb-8">
   <v-col cols=12>
     <h1 class="text-center text-h4 font-weight-thin">Parcerias</h1>
   </v-col>
@@ -118,78 +153,6 @@
       </v-card>  
     </v-col>
   </v-row>
-
-<div class="d-flex align-center flex-column">      
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          src="@/assets/logo-mcd-origin.png"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
-
-      <v-col class="mb-4">
-        <h1 class="display-1 font-weight-bold mb-3">
-          Modelo de Avaliação dos Contratos de Demanda de Energia (MACDE)
-        </h1>
-        
-        <hr />
-        
-        <p class="subheading font-weight-regular text-justify">
-          O objetivo geral do projeto é criar uma ferramenta web para a otimização 
-          e o planejamento da contratação de energia elétrica dos Institutos Federais conectados à rede de 
-          distribuição de média tensão, em linguagem acessível e de fácil utilização, podendo estender-se 
-          ao público em geral.
-        </p>
-        <p class="subheading font-weight-regular text-justify">
-          O Macde surgiu dentro do IFSC Sustentável - ações de gestão da sustentabilidade no IFSC, 
-          entre 2017 e 2018. Em novembro de 2018, o programa contou com aporte de recursos da Secretaria de Educação 
-          Profissional e Tecnológica (Setec), dentro do Programa Energif, ligado à rede de Instituições Federais de 
-          Educação Profissional e Tecnológica.
-        </p>
-      </v-col>
-    </v-row>
-  
-    <v-row>
-      <v-col cols="6">
-        <v-img
-          class="my-3"
-          contain          
-        />
-        <p class="text-center headline font-weight-bold mb-3">Público Alvo</p>
-        <p class="text-justify">O público-alvo do projeto são os Institutos Federais conectados em rede de distribuição de
-          média tensão, onde a tarifa de energia é binômia, ou seja, é cobrada em função de dois
-          indicadores, a demanda contratada (kW) e o consumo de energia elétrica (MWh). Pode-se
-          estender a todos os consumidores do Grupo A do mercado cativo de energia.
-        </p>
-      </v-col>
-
-      <v-col cols="6">
-        <v-img
-          class="my-3"
-          contain          
-        />
-        <p class="text-center headline font-weight-bold mb-3">Simples e fácil de usar!</p>
-        <p class="text-justify ">O público-alvo do projeto são os Institutos Federais conectados em rede de distribuição de
-          média tensão, onde a tarifa de energia é binômia, ou seja, é cobrada em função de dois
-          indicadores, a demanda contratada (kW) e o consumo de energia elétrica (MWh). Pode-se
-          estender a todos os consumidores do Grupo A do mercado cativo de energia.
-        </p>
-      </v-col>
-    </v-row>
-
-    <v-row>
-     <v-col cols="12">
-        <v-img
-          class="my-3"
-          contain          
-        />
-        <p class="text-center headline font-weight-bold mb-3">Parcerias</p>
-      </v-col>
-    </v-row>
-  </div>
   </v-container>
 </template>
 
