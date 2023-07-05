@@ -218,7 +218,7 @@
                         >
                             <v-text-field class="px-3"
                                 v-model="item.value"
-                                :label="item.name" 
+                                :label="item.title" 
                                 :suffix="item.suffix"
                                 :type="item.type"
                             />
@@ -281,7 +281,7 @@
                         >
                             <v-text-field class="px-3"
                                 v-model="item.value"
-                                :label="item.name" 
+                                :label="item.title" 
                                 :prefix="item.prefix"
                                 :suffix="item.suffix"
                                 :type="item.type"
