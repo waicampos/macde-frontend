@@ -85,21 +85,19 @@
 </template>
 
 <script>
-    import LineChart from '@/components/charts/LineChart.vue'
     import LineChartResults from '@/components/results/LineChartResults.vue'
     import TotalEarnings from '@/components/results/TotalEarnings.vue'
     import TotalEarnings2 from '@/components/results/TotalEarnings2.vue'
     import TableResults from '@/components/results/TableResults.vue'
     import SingleCard from '@/components/results/SingleCard.vue'
     import SingleCard2 from '@/components/results/SingleCard2.vue'
-    import ProgressCircular from '@/components/results/ProgressCircular.vue'
     import { Chart as ChartJS, Title, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
     import { Pie } from 'vue-chartjs'
     import { Bar } from 'vue-chartjs'
     ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend)
 
     export default {
-      components: {LineChart, LineChartResults, TotalEarnings, TotalEarnings2, TableResults, SingleCard, SingleCard2, ProgressCircular, Pie, Bar},
+      components: {LineChartResults, TotalEarnings, TotalEarnings2, TableResults, SingleCard, SingleCard2, Pie, Bar},
       data() {
         return {
           data_graph: {
