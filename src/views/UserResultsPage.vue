@@ -1,8 +1,8 @@
 <template>
   <VRow>
     <v-col>
-      <v-btn @click="calculate_optimized_demand_cost">Otimizada</v-btn>
-      <v-btn @click="calculate_contracted_demand_cost">Contratada</v-btn>
+      <v-btn @click="calculate_optimized_demand_cost();total_cost(this.optimized_demand_cost.peak_demand)">Otimizada</v-btn>
+      <v-btn @click="calculate_contracted_demand_cost();total_cost(this.contracted_demand_cost.peak_demand)">Contratada</v-btn>
     </v-col>
     <VCol cols=6>
       <v-card elevation="3">
@@ -179,7 +179,12 @@
       methods: {
         ...mapActions('data_results', ['set_optimized_demand_cost', 'set_contracted_demand_cost']),
 
+        total_cost(costs) {
+          return costs.reduce((acc, cur) => acc + cur, 0)
+        },
+
         calculate_optimized_demand_cost() {
+          console.log("calculate_optimized_demand_cost")
           let optimized_peak_demand = this.optimized.map(item => item.peak_demand)
           let optimized_off_peak_demand = this.optimized.map(item => item.off_peak_demand)
           let forecasted_peak_demand = this.forecasted.map(item => item.peak_demand)
@@ -192,6 +197,7 @@
           ])
           .then(response => {
             this.set_optimized_demand_cost({"peak_demand": response[0].data, "off_peak_demand": response[1].data})
+            console.log(this.optimized_demand_cost)
           })            
         },
 
