@@ -1,9 +1,9 @@
 <template>
   <v-card
-    class="mx-auto bg-yellow-accent-2 rounded-ts-xl rounded-be-xl"
+    class="mx-auto elevation-6 rounded-ts-xl rounded-be-xl"
   >
     <v-card-item>
-      <v-card-title class="text-grey-darken-3 font-weight-bold text-subtitle-1">Demanda Fora de Ponta</v-card-title>
+      <v-card-title class="text-grey-darken-3 font-weight-bold text-subtitle-1">{{ title }}</v-card-title>
       <v-card-subtitle class="text-grey-darken-3 font-weight-bold text-caption">
         <v-icon
           icon="mdi-alert"
@@ -11,7 +11,7 @@
           color="error"
           class="me-1 pb-1"
         ></v-icon>
-        Demanda Sugerida Ótima
+        {{ subtitle }}
       </v-card-subtitle>
     </v-card-item>
 
@@ -26,7 +26,7 @@
           class="text-h3 font-weight-bold text-light-blue-darken-4 text-center"
           cols="12"
         >
-          774
+          {{ demand_value }}
          <span class="text-subtitle-1 font-weight-bold text-light-blue-darken-4 text-center">kW</span>
           <v-divider class="ma-3"></v-divider>
         </v-col>
@@ -48,9 +48,33 @@
             <span class="text-grey-darken-3 font-weight-bold">Custo anual (R$): </span>
         </v-col>
         <v-col class="text-red-accent-4 text-h6 font-weight-bold text-center">
-          206.168,46
+          {{ annual_cost }}
         </v-col>
       </v-row>
     
   </v-card>
 </template>
+
+<script>
+export default {
+  props: {
+    annual_cost: Number,
+    demand: Array,
+    title: String,
+    subtitle: String,
+  },
+  computed: {
+    demand_value() {
+        let ans=""
+        console.log("this.demand", this.demand)
+        console.log("this.y", typeof this.demand)
+        for(let value of this.demand){
+          ans = ans + value
+        }
+
+      return ans
+    }
+  }
+  
+}
+</script>

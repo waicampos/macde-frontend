@@ -1,10 +1,6 @@
 <template>
-  <VRow>
-    <v-col>
-      <v-btn @click="calculate_optimized_demand_cost();total_cost(this.optimized_demand_cost.peak_demand)">Otimizada</v-btn>
-      <v-btn @click="calculate_contracted_demand_cost();total_cost(this.contracted_demand_cost.peak_demand)">Contratada</v-btn>
-    </v-col>
-    <VCol cols=6>
+  <VRow>   
+    <VCol cols=12>
       <v-card elevation="3">
         <v-card-item class="bg-green">               
           <v-card-title>Economia anual</v-card-title>               
@@ -18,7 +14,7 @@
                   cols="8"
                 >
                     <span class="text-green text-h6">R$</span>
-                    35.584,14
+                    {{ total_cost_savings }}
                 </v-col>
                 <v-col class="text-right">
                   <v-icon
@@ -32,17 +28,28 @@
           </v-card-text>
         </v-card>
   </VCol>
-
-    <VCol
-        cols="3"
-      >
-      <SingleCard />
-      </VCol>
-    <VCol
-      cols="3"
+  <VCol
+    v-for="item in Object.keys(optimized_demand_total_cost)" :key="item"
+    cols=12 md=6 lg=3
     >
-      <SingleCard2 />
-    </VCol>
+    <SingleCard         
+      :annual_cost="optimized_demand_total_cost[item]"
+      :demand="unique_optimized_demand_cost[item]"
+      title="Demanda Sugerida"
+      subtitle="Demanda Sugerida"
+    />
+  </VCol>
+  <VCol
+    v-for="item in Object.keys(contracted_demand_total_cost)" :key="item"
+    cols=12 md=6 lg=3
+    >
+    <SingleCard         
+      :annual_cost="contracted_demand_total_cost[item]"
+      :demand="[current_contracted_demand.filter(curr => curr.name == item)[0].value]"
+      title="Demanda Contratada"
+      subtitle="Demanda Atual"
+    />
+  </VCol>
   </VRow>
 
   <VRow>
@@ -96,16 +103,16 @@
     import TotalEarnings2 from '@/components/results/TotalEarnings2.vue'
     import TableResults from '@/components/results/TableResults.vue'
     import SingleCard from '@/components/results/SingleCard.vue'
-    import SingleCard2 from '@/components/results/SingleCard2.vue'
     import { Chart as ChartJS, Title, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
     import { Pie } from 'vue-chartjs'
     import { Bar } from 'vue-chartjs'
     ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend)
 
     export default {
-      components: {LineChartResults, TotalEarnings, TotalEarnings2, TableResults, SingleCard, SingleCard2, Pie, Bar},
+      components: {LineChartResults, TotalEarnings, TotalEarnings2, TableResults, SingleCard, Pie, Bar},
       data() {
         return {
+          demand_names: ['demand'],
           data_graph: {
             labels: ['Demanda de Ponta', 'Demanda Fora de Ponta', 'Energia Fora de Ponta', 'Energia de Ponta'],
             datasets: [
@@ -179,58 +186,90 @@
       methods: {
         ...mapActions('data_results', ['set_optimized_demand_cost', 'set_contracted_demand_cost']),
 
-        total_cost(costs) {
-          return costs.reduce((acc, cur) => acc + cur, 0)
-        },
-
-        calculate_optimized_demand_cost() {
-          console.log("calculate_optimized_demand_cost")
-          let optimized_peak_demand = this.optimized.map(item => item.peak_demand)
-          let optimized_off_peak_demand = this.optimized.map(item => item.off_peak_demand)
-          let forecasted_peak_demand = this.forecasted.map(item => item.peak_demand)
-          let forecasted_off_peak_demand = this.forecasted.map(item => item.off_peak_demand)
-
+        calculate_demand_cost(data, contracted, type) {
           const addr = '//localhost:5010/demand_cost'
-          Promise.all([
-              axios.post(addr, {"data": forecasted_peak_demand, "contracted": optimized_peak_demand}),
-              axios.post(addr, {"data": forecasted_off_peak_demand, "contracted": optimized_off_peak_demand}),
-          ])
-          .then(response => {
-            this.set_optimized_demand_cost({"peak_demand": response[0].data, "off_peak_demand": response[1].data})
-            console.log(this.optimized_demand_cost)
-          })            
-        },
+          let arr_req = []
+          this.demand_names.map(curr => {
+            arr_req.push(
+              axios.post(addr, {
+                'data': data.map(item => item[curr]),
+                'contracted': contracted.map(item => item[curr])
+              })
+            )
+          })
+          Promise.all(arr_req).then(response => {            
+            let demand_costs = {}
+            this.demand_names.map((curr, index) => {
+              demand_costs[curr] = response[index].data
+            })
 
-         calculate_contracted_demand_cost() {
-          let forecasted_peak_demand = this.forecasted.map(item => item.peak_demand)
-          let forecasted_off_peak_demand = this.forecasted.map(item => item.off_peak_demand)
-          let contracted_peak_demand = Array(forecasted_peak_demand.length).fill(this.current_contracted_demand.filter(i => i.name == 'peak_demand')[0].value)
-          let contracted_off_peak_demand = Array(forecasted_peak_demand.length).fill(this.current_contracted_demand.filter(i => i.name == 'off_peak_demand')[0].value)
+            if(type == 'optimized'){
+              this.set_optimized_demand_cost(demand_costs)
+            }else {
+              this.set_contracted_demand_cost(demand_costs)
+            }
           
-          const addr = '//localhost:5010/demand_cost'
-          Promise.all([
-              axios.post(addr, {"data": forecasted_peak_demand, "contracted": contracted_peak_demand}),
-              axios.post(addr, {"data": forecasted_off_peak_demand, "contracted": contracted_off_peak_demand}),
-          ])
-          .then(response => {
-            this.set_contracted_demand_cost({"peak_demand": response[0].data, "off_peak_demand": response[1].data})
-          })            
+            return demand_costs
+          })           
         },
       },
         computed: {
           ...mapGetters('data_parameters', {
               current_contracted_demand: 'get_current_contracted_demand'
           }),
+
           ...mapGetters('data_optimize', {
               optimized: 'get_optimized_data'
           }),
+
           ...mapGetters('data_forecast', {
             forecasted: 'get_forecasted_data',
           }),
+
           ...mapGetters('data_results', {
             contracted_demand_cost: 'get_contracted_demand_cost',
+            contracted_demand_total_cost: 'get_contracted_demand_total_cost',
             optimized_demand_cost: 'get_optimized_demand_cost',
+            optimized_demand_total_cost: 'get_optimized_demand_total_cost',
           }),
+
+          total_cost_savings() {
+            let total = 0
+            this.demand_names.map(key => {              
+              total -= this.optimized_demand_total_cost[key]
+              total += this.contracted_demand_total_cost[key]
+            })
+            
+            return total
+          },       
+
+          converted_current_contracted_demand(){
+            let curr_demand_costs = {}
+            this.demand_names.map(curr => {
+              let value = this.current_contracted_demand.filter(i => i.name == curr)[0].value
+              curr_demand_costs[curr] =  value
+            })
+
+            return Array(12).fill(curr_demand_costs)
+          },
+
+          unique_optimized_demand_cost() {
+            let unique = {}
+            this.demand_names.map(dname => {
+              let values = this.optimized.map(curr => curr[dname])
+              unique[dname] = Array.from(new Set(values))
+            })
+            
+            return unique
+          },
+        },
+
+        mounted() {
+          if(this.optimized.length){
+            this.demand_names = Object.keys(this.optimized[0]).filter(i => i != 'date')    
+            this.calculate_demand_cost(this.forecasted, this.optimized, 'optimized')
+            this.calculate_demand_cost(this.forecasted, this.converted_current_contracted_demand, 'contracted')
+          }          
         }
 }
 
