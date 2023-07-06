@@ -1,5 +1,9 @@
 <template>
   <VRow>
+    <v-col>
+      <v-btn @click="calculate_optimized_demand_cost">Otimizada</v-btn>
+      <v-btn @click="calculate_contracted_demand_cost">Contratada</v-btn>
+    </v-col>
     <VCol cols=6>
       <v-card elevation="3">
         <v-card-item class="bg-green">               
@@ -85,6 +89,8 @@
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex';
+    import axios from 'axios';
     import LineChartResults from '@/components/results/LineChartResults.vue'
     import TotalEarnings from '@/components/results/TotalEarnings.vue'
     import TotalEarnings2 from '@/components/results/TotalEarnings2.vue'
@@ -169,7 +175,57 @@
             }
           } 
         }
-      }
+      },
+      methods: {
+        ...mapActions('data_results', ['set_optimized_demand_cost', 'set_contracted_demand_cost']),
+
+        calculate_optimized_demand_cost() {
+          let optimized_peak_demand = this.optimized.map(item => item.peak_demand)
+          let optimized_off_peak_demand = this.optimized.map(item => item.off_peak_demand)
+          let forecasted_peak_demand = this.forecasted.map(item => item.peak_demand)
+          let forecasted_off_peak_demand = this.forecasted.map(item => item.off_peak_demand)
+
+          const addr = '//localhost:5010/demand_cost'
+          Promise.all([
+              axios.post(addr, {"data": forecasted_peak_demand, "contracted": optimized_peak_demand}),
+              axios.post(addr, {"data": forecasted_off_peak_demand, "contracted": optimized_off_peak_demand}),
+          ])
+          .then(response => {
+            this.set_optimized_demand_cost({"peak_demand": response[0].data, "off_peak_demand": response[1].data})
+          })            
+        },
+
+         calculate_contracted_demand_cost() {
+          let forecasted_peak_demand = this.forecasted.map(item => item.peak_demand)
+          let forecasted_off_peak_demand = this.forecasted.map(item => item.off_peak_demand)
+          let contracted_peak_demand = Array(forecasted_peak_demand.length).fill(this.current_contracted_demand.filter(i => i.name == 'peak_demand')[0].value)
+          let contracted_off_peak_demand = Array(forecasted_peak_demand.length).fill(this.current_contracted_demand.filter(i => i.name == 'off_peak_demand')[0].value)
+          
+          const addr = '//localhost:5010/demand_cost'
+          Promise.all([
+              axios.post(addr, {"data": forecasted_peak_demand, "contracted": contracted_peak_demand}),
+              axios.post(addr, {"data": forecasted_off_peak_demand, "contracted": contracted_off_peak_demand}),
+          ])
+          .then(response => {
+            this.set_contracted_demand_cost({"peak_demand": response[0].data, "off_peak_demand": response[1].data})
+          })            
+        },
+      },
+        computed: {
+          ...mapGetters('data_parameters', {
+              current_contracted_demand: 'get_current_contracted_demand'
+          }),
+          ...mapGetters('data_optimize', {
+              optimized: 'get_optimized_data'
+          }),
+          ...mapGetters('data_forecast', {
+            forecasted: 'get_forecasted_data',
+          }),
+          ...mapGetters('data_results', {
+            contracted_demand_cost: 'get_contracted_demand_cost',
+            optimized_demand_cost: 'get_optimized_demand_cost',
+          }),
+        }
 }
 
 </script>
