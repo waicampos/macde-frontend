@@ -178,32 +178,22 @@ import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+import { MEAS_INFO } from '@/assets/files/consts'
 
 export default {
     name: "user-forecast_page",
     components: {MyLine, FileUploader, BtnOptions},
-    data() {
-        return {
-            headers: [
-                {
-                    title: 'Date',
-                    align: 'start',
-                    sortable: false,
-                    key: 'date',
-                },
-                { title: 'Demanda', key: 'demand' },
-                { title: 'Demanda de Ponta', key: 'peak_demand' },
-                { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
-                { title: 'Energia de Ponta', key: 'peak_energy' },
-                { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
-            ]
-        }
-    },
     computed: {
         ...mapGetters('data_history', {
             data_file: 'get_user_data_history',
             }
         ),
+
+        ...mapGetters('data_configurations', {
+            measurements_names: 'get_measurements_names',
+            }
+        ),
+        
         ...mapGetters('data_forecast', {
             forecasted_data: 'get_forecasted_data', 
             chosen_forecast_model: 'get_chosen_forecast_model',
@@ -211,6 +201,19 @@ export default {
             }
         ),
         
+        headers() {
+            let names = this.measurements_names.map(key => MEAS_INFO[key])
+            names.unshift(
+                {
+                    title: 'Date',
+                    align: 'start',
+                    sortable: false,
+                    key: 'date',
+                }
+            )
+            return names
+        },
+
         chartTimeSeriesOptionsDemand() {
             let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
             opt.plugins.title.text = "Gráfico de Demanda"
@@ -264,8 +267,8 @@ export default {
         
         changed_forecast_model_type() {
             this.set_forecasted_data([])
-            if(this.data_file.length) {
-                this.forecast                
+            if(this.data_file.length > 0 &&  this.chosen_forecast_model.type != 'custom' ) {
+                this.forecast
             }
         }
     },

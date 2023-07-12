@@ -29,20 +29,15 @@ export default {
       },
 
       forecast(state, getters, rootState, rootGetters) {
-        let meas_names = rootGetters['data_configurations/get_demand_measurements_names']
+        let meas_names = rootGetters['data_configurations/get_measurements_names']
 
         let get_data = rootGetters['data_history/get_user_data_history_by_serie']
         if(state.chosen_forecast_model.type == 'doublemean') {
           get_data = rootGetters['data_history/get_user_data_history_by_group']
         }
                 
-        let arr_req = []
         const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/${state.chosen_forecast_model.type}`
-        meas_names.map(key => {
-            arr_req.push(                
-                axios.post(addr, {'data': get_data(key)})
-            )
-        })
+        let arr_req = meas_names.map(key => axios.post(addr, {'data': get_data(key)}))
         
         Promise.all(arr_req).then(response => {   
             let forecasted = []
@@ -75,7 +70,7 @@ export default {
       }
     },
     actions: {
-      set_forecasted_data({ commit, getters, rootGetters }, payload) {
+      set_forecasted_data({ commit }, payload) {
         commit("set_forecasted_data", payload)
       },
 
