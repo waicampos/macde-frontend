@@ -172,7 +172,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import fileDownload from 'js-file-download'
-import axios from 'axios';
 import BtnOptions from '@/components/BtnOptions.vue';
 import FileUploader from '@/components/FileUploader.vue';
 import { Line as MyLine} from 'vue-chartjs'
@@ -192,6 +191,7 @@ export default {
                     sortable: false,
                     key: 'date',
                 },
+                { title: 'Demanda', key: 'demand' },
                 { title: 'Demanda de Ponta', key: 'peak_demand' },
                 { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
                 { title: 'Energia de Ponta', key: 'peak_energy' },
@@ -201,12 +201,13 @@ export default {
     },
     computed: {
         ...mapGetters('data_history', {
-            data_file: 'get_user_data_history'
+            data_file: 'get_user_data_history',
             }
         ),
         ...mapGetters('data_forecast', {
             forecasted_data: 'get_forecasted_data', 
-            chosen_forecast_model: 'get_chosen_forecast_model'
+            chosen_forecast_model: 'get_chosen_forecast_model',
+            forecast: 'forecast',
             }
         ),
         
@@ -229,7 +230,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions('data_forecast', ['set_forecasted_data', 'set_chosen_forecast_model']),
+        ...mapActions('data_forecast', ['set_forecasted_data']),
 
         download() {
             let dt = new Date()
@@ -260,121 +261,11 @@ export default {
                                                         
             return dt_series
         },
-
-        convert2naive(key) {            
-            return this.data_file.map((curr) => {
-                return curr[key]
-            })
-        },
-
-        convert2doublemean(key) {                        
-            let mod_data = JSON.parse(JSON.stringify(this.data_file));
-            mod_data.forEach((curr, i, arr) => {
-                let dt = this.str2date(curr.date)
-                arr[i]['month'] = dt.getMonth().toString()
-                arr[i]['year'] = dt.getFullYear().toString()         
-            })
-            let agrouped = this.groupBy(mod_data, 'year')
-            let arr = []
-
-            for(let name in agrouped){                
-                arr.push(
-                    agrouped[name].map((curr) => {
-                        return curr[key]
-                    })
-                )
-            }
-            
-            return arr
-        },
         
-        join_date_arr(arr) {            
-            let current_year = this.get_bigger_date_forecast() + 1
-            let ans = []
-            let range = [...Array(12).keys()]
-            for(let i in range){
-                let date = new Date(current_year, i)
-                ans.push({                    
-                    'date': `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`,
-                    'peak_demand':  arr[0].data[i],
-                    'off_peak_demand': arr[1].data[i],
-                    'peak_energy':  arr[2].data[i],
-                    'off_peak_energy':  arr[3].data[i]                    
-                })
-            }
-            return ans
-        },
-
-        get_bigger_date_forecast() {
-            let mod_data = JSON.parse(JSON.stringify(this.data_file));
-            mod_data.forEach((curr, i, arr) => {
-                let dt = this.str2date(curr.date)
-                arr[i]['year'] = dt.getFullYear()
-            })
-
-            let all_date = mod_data.map(curr => {
-                return curr['year']
-            })
-            return Math.max(...all_date)
-        },
-
-        loadNaive() {
-            let peak_demand = this.convert2naive('peak_demand')
-            let off_peak_demand = this.convert2naive('off_peak_demand')
-            let peak_energy = this.convert2naive('peak_energy')
-            let off_peak_energy = this.convert2naive('off_peak_energy')
-            const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/naive`
-            
-            Promise.all([
-                axios.post(addr, {"data": peak_demand}),
-                axios.post(addr, {"data": off_peak_demand}),
-                axios.post(addr, {"data": peak_energy}),
-                axios.post(addr, {"data": off_peak_energy})
-            ])
-            .then(response => {
-                this.set_forecasted_data(this.join_date_arr(response))
-            })
-        },
-        loadDoubleMean() {
-            let peak_demand = this.convert2doublemean('peak_demand')
-            let off_peak_demand = this.convert2doublemean('off_peak_demand')
-            let peak_energy = this.convert2doublemean('peak_energy')
-            let off_peak_energy = this.convert2doublemean('off_peak_energy')
-            const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/doublemean`
-            Promise.all([
-                axios.post(addr, {"data": peak_demand}),
-                axios.post(addr, {"data": off_peak_demand}),
-                axios.post(addr, {"data": peak_energy}),
-                axios.post(addr, {"data": off_peak_energy})
-            ]).then(response => {
-                this.set_forecasted_data(this.join_date_arr(response))
-            })
-        },
-        str2date(dt) {
-            let curr = dt.split('/')
-            
-            // Função Date o mês inicia em 0
-            return new Date(curr[2], curr[1] - 1, curr[0])
-        },
-        date2str(dt) {
-            return `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`
-        },
-        groupBy(array, key) {
-            return array.reduce((hash, obj) => {
-                if(obj[key] === undefined) return hash; 
-                return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
-            }, {})
-        },
         changed_forecast_model_type() {
             this.set_forecasted_data([])
-
             if(this.data_file.length) {
-                if(this.chosen_forecast_model.type == 'naive') {
-                    this.loadNaive()
-                }
-                else if(this.chosen_forecast_model.type == 'doublemean') {
-                    this.loadDoubleMean()
-                }               
+                this.forecast                
             }
         }
     },

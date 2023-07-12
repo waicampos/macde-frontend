@@ -36,3 +36,29 @@ export const SUBGROUP_CLASSIFICATION_TYPES = [
         {name: 'b4', text: 'B4', group: 'B'},
 ]
 
+export function groupBy(array, key){
+    return array.reduce((hash, obj) => {
+        if(obj[key] === undefined) return hash; 
+        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+    }, {})
+}
+
+export function str2date(dt){
+    let curr = dt.split('/')
+    
+    //The Date function the month starts at 0
+    return new Date(curr[2], curr[1] - 1, curr[0])
+}
+
+export function get_serie_by_key(data, key){
+    if(!key) {
+      return data
+    }
+
+    if(data.length) {
+      if(Object.keys(data[0]).includes(key)) {
+        return data.map(item => item[key])
+      }
+    }
+    return []
+}

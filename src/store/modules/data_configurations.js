@@ -38,9 +38,31 @@ export default {
         get_consumer_unit(state) {
           return state.consumer_unit
         },
+
         get_utility(state) {
           return state.utility
         },
+
+        get_tariff_modality(state) {
+          return state.consumer_unit.tariff_modality.name
+        },
+
+        get_demand_measurements_names(state, getters) {
+          let names = []
+          if(getters.get_tariff_modality == 'green') {
+            names.push('demand')
+          }
+          else {
+            names.push('peak_demand', 'off_peak_demand')
+          }
+          return names
+        },
+
+        get_measurements_names(state, getters) {
+          let names = getters.get_demand_measurements_names
+          names.push('peak_energy', 'off_peak_energy')
+          return names
+        }
       },
       mutations: {  
         set_consumer_unit(state, payload) {

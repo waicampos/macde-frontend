@@ -170,13 +170,6 @@
         this.$store.dispatch('data_history/load_user_data_history', macde_modelo)
         this.set_msg("Dados carregados com sucesso.", "success")
       },
-
-      str2date(dt) {
-        let curr = dt.split('/')
-        
-        // Função Date o mês inicia em 0
-        return new Date(curr[2], curr[1] - 1, curr[0])
-      },
       
       chartDataDemand() {
         this.chartDemand = createDataSetsTimeSeries( 
