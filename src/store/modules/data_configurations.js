@@ -1,4 +1,4 @@
-import { SUBGROUP_CLASSIFICATION_TYPES, GROUP_CLASSIFICATION_TYPES, CLASS_CLASSIFICATION_UNITY_CONSUMER } from '@/assets/files/consts'
+import { SUBGROUP_CLASSIFICATION_TYPES, GROUP_CLASSIFICATION_TYPES, CLASS_CLASSIFICATION_UNITY_CONSUMER, TARIFF_MODALITY_TYPES } from '@/assets/files/consts'
 
 export default {
     namespaced: true,
@@ -12,7 +12,7 @@ export default {
           name: "Instituto Federal de Educação, Ciência e Tecnologia de Santa Catarina",
           code: "123456",
           supply_voltage: "13800",
-          tariff_modality: {name: 'green', text: 'Verde'},
+          tariff_modality: TARIFF_MODALITY_TYPES[0],
           group: {
             name: GROUP_CLASSIFICATION_TYPES.filter(item => item.name === 'a')[0].name,
             text: GROUP_CLASSIFICATION_TYPES.filter(item => item.name === 'a')[0].text
@@ -44,40 +44,33 @@ export default {
         },
 
         get_tariff_modality(state) {
-          return state.consumer_unit.tariff_modality.name
+          return state.consumer_unit.tariff_modality
         },
-
-        get_demand_measurements_names(state, getters) {
-          let names = []
-          if(getters.get_tariff_modality == 'green') {
-            names.push('demand')
-          }
-          else {
-            names.push('peak_demand', 'off_peak_demand')
-          }
-          return names
-        },
-
-        get_measurements_names(state, getters) {
-          let names = getters.get_demand_measurements_names
-          names.push('peak_energy', 'off_peak_energy')
-          return names
-        }
       },
       mutations: {  
         set_consumer_unit(state, payload) {
           state.consumer_unit = payload
         },
+
         set_utility(state, payload) {
           state.utility = payload
+        },
+
+        set_tariff_modality(state, payload) {
+          state.consumer_unit.tariff_modality = payload
         },
       },
       actions: {
         set_consumer_unit({ commit }, payload) {
           commit("set_consumer_unit", payload)
         },
+
         set_utility({ commit }, payload) {
           commit("set_utility", payload)
+        },
+
+        set_tariff_modality({ commit }, payload) {
+          commit("set_tariff_modality", payload)
         },
       },
     }

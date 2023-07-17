@@ -27,14 +27,14 @@
             </v-col>
         </v-row>
 
-        <!-- Seleção modalidade tarifária e aumento e redução de demanda -->
+        <!-- Seleção aumento e redução de demanda -->
         <v-row class="flex-1-0 ma-2 pa-2">
             <v-col cols="4">
                 <v-select
-                    v-model="selected_modality"
+                    v-model="tariff_modality"
                     label="Modalidade tarifária"
-                    :items="tariff_modality"
-                    item-title="name"
+                    :items="tariff_modality_types"
+                    item-title="text"
                     item-value="value"
                     variant="outlined"
                     return-object
@@ -69,7 +69,7 @@
 
         <!-- Gráficos -->
         <v-row 
-            v-if="this.optimized.length"
+            v-if="this.get_optimized.length"
             class="flex-1-0 ma-0 pa-0"
         >
             <v-col cols="12 text-justify">
@@ -77,7 +77,7 @@
                 <p>Nos gráficos abaixo são apresentados o resultado da otimização da demanda.</p>
             </v-col>
             <v-col                 
-                v-if="this.selected_modality.value == '1'"
+                v-if="this.tariff_modality.value == '1'"
                 cols="12"
             >
                 <v-sheet rounded="lg" min-height="300">
@@ -88,7 +88,7 @@
                 </v-sheet>
             </v-col>
             <v-col 
-                v-if="this.selected_modality.value == '2'"
+                v-if="this.tariff_modality.value == '2'"
                 cols="12" lg="6"
             >
                 <v-sheet rounded="lg">
@@ -99,7 +99,7 @@
                 </v-sheet>
             </v-col>
             <v-col 
-                v-if="this.selected_modality.value == '2'"
+                v-if="this.tariff_modality.value == '2'"
                 cols="12" lg="6"
             >
                 <v-sheet rounded="lg">
@@ -112,7 +112,7 @@
         </v-row>
 
         <!-- Download de arquivo -->
-        <v-row v-if="this.optimized.length" class="flex-1-0 ma-2 pa-2">
+        <v-row v-if="this.get_optimized.length" class="flex-1-0 ma-2 pa-2">
             <v-col cols="12" class=" text-end">
                 <v-btn 
                     class="bg-red"
@@ -141,7 +141,7 @@
             <v-col cols="12">
                 <v-data-table                     
                     :headers="headers"
-                    :items="this.optimized"
+                    :items="this.get_optimized"
                     class="elevation-4"
                 >
                 </v-data-table>
@@ -151,94 +151,83 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import axios from 'axios';
-import fileDownload from 'js-file-download'
-import { Line as MyLine} from 'vue-chartjs'
-import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-
+    import { mapGetters, mapActions } from 'vuex';
+    import fileDownload from 'js-file-download'
+    import { Line as MyLine} from 'vue-chartjs'
+    import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
+    import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+    ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+    import { MEAS_INFO,TARIFF_MODALITY_TYPES, get_demand_measurements_names } from '@/assets/files/consts'    
 
     export default {
         name: "userOptimizationPage",
         components: {MyLine},
         data() {
-            return {         
+            return {      
+                tariff_modality_types: TARIFF_MODALITY_TYPES,   
                 loading: false,       
-                selected_modality: {name: 'Verde', value: '1'},
-                tariff_modality:  [{name: 'Verde', value: '1'}, {name: 'Azul', value: '2'}],
-                headers1: [
-                    {
-                        title: 'Date',
-                        align: 'start',
-                        sortable: false,
-                        key: 'date',
-                    },
-                    { title: 'Demanda', key: 'demand' },
-                    { title: 'Demanda de Ponta', key: 'peak_demand' },
-                    { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' }
-                ]
             }
         },
 
         computed: {
             ...mapGetters('data_forecast', {
-                forecasted: 'get_forecasted_data',
+                get_forecasted: 'get_forecasted_data',
             }),
 
             ...mapGetters('data_optimize', {
-                optimized: 'get_optimized_data'
+                get_optimized: 'get_optimized_data',
             }),
 
-            has_demand_variation: {
-            get() {
-                return this.$store.state.data_parameters.has_demand_variation
+            ...mapGetters('data_configurations', {
+              get_tariff_modality: 'get_tariff_modality'
+            }),
+
+            tariff_modality: {
+                get() {
+                    return this.get_tariff_modality
+                },
+                set(payload){
+                    this.set_tariff_modality(payload)
+                }
             },
-            set(payload){
-                this.$store.commit('data_parameters/set_has_demand_variation', payload)
-            }
-        },
+
+            has_demand_variation: {
+                get() {
+                    return this.$store.state.data_parameters.has_demand_variation
+                },
+                set(payload){
+                    this.$store.commit('data_parameters/set_has_demand_variation', payload)
+                }
+            },
 
             headers() {
-                let arr = []
-                arr.push(
+                let names = get_demand_measurements_names(this.get_tariff_modality.name).map(key => MEAS_INFO[key])
+                names.unshift(
                     {
-                        title: 'Date',                       
+                        title: 'Date',
                         align: 'start',
                         sortable: false,
                         key: 'date',
                     }
                 )
-
-                if(this.selected_modality.value == 1) {
-                    arr.push({ title: 'Demanda', key: 'demand' })
-                } 
-                else {
-                    arr.push(
-                        { title: 'Demanda de Ponta', key: 'peak_demand' },
-                        { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' }
-                    )
-                }
-
-                return arr
-                
+                return names
             },
         },
 
         methods: {        
-            ...mapActions('data_optimize', ['set_optimized_data']),
+            ...mapActions('data_optimize', ['set_optimized_data', 'optimize']),
+            ...mapActions('data_configurations', ['set_tariff_modality']),
         
             download() {
                 let dt = new Date()
                 let filename = `${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_macde_otimizacao.json`
-                fileDownload(JSON.stringify(this.optimized), filename);
+                fileDownload(JSON.stringify(this.get_optimized), filename);
             },
 
             chartTimeSeriesData(keys) {  
-                let data = [...this.forecasted]
+                let data = [...this.get_forecasted]
 
-                if(this.selected_modality.value == 1) {
+                if(this.tariff_modality.value == 1) {
                     data = data.map((item) => {
                         item['demand'] = Math.max(item.peak_demand, item.off_peak_demand)
                         return item
@@ -254,7 +243,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
                 let dt_optimized = createDataSetsTimeSeries(
                         keys,
                         'date',
-                        [...this.optimized]
+                        [...this.get_optimized]
                 )
                 dt_optimized.datasets[0].label += ' Contratada'
                 dt_optimized.datasets[0].backgroundColor = "#BDBDBD"
@@ -267,77 +256,22 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
                 return dt
             },
-            convert2naive(key) {
-                return this.forecasted.map((curr) => {
-                    return curr[key]
-                })
-            },
-            create_dates(size, current_year) {
-                let ans = []
-                let range = [...Array(size).keys()]
-                for(let i in range){
-                    let date = new Date(current_year, i)
-                    ans.push({
-                        'date': `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`,
-                    })
-                }
-                return ans
-            },
 
-            get_bigger_date_forecast() {
-                let mod_data = JSON.parse(JSON.stringify(this.forecasted));
-                mod_data.forEach((curr, i, arr) => {
-                    let dt = this.str2date(curr.date)
-                    arr[i]['year'] = dt.getFullYear()
-                })
-
-                let all_date = mod_data.map(curr => {
-                    return curr['year']
-                })
-                return Math.max(...all_date)
-            },
-
-            maxDemand(arr1, arr2) {
-                return arr1.map(
-                    (curr, index) => (curr >= arr2[index]) ? curr : arr2[index]
-                )
-            },
-                    
             loadExploratory() {
                 this.loading  = true
-                let peak_demand = this.convert2naive('peak_demand')
-                let off_peak_demand = this.convert2naive('off_peak_demand')
-                let green_demand = this.maxDemand(peak_demand, off_peak_demand)
-                let blue_demand = [[...peak_demand], ...[off_peak_demand]]
-
-                let arr_demand = [...green_demand]
-                if(this.selected_modality.value == 2) {
-                    arr_demand = [...blue_demand]
-                }
-
-                const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/exploratory/${this.selected_modality.value}/${this.has_demand_variation ? "1" : "0"}`
-
-                axios
-                .post(addr, {"data": arr_demand})
-                .then(response => {
-                    let ans = this.create_dates(12, '2022')
-                    
-                    if(this.selected_modality.value == 1) {
-                        for(let i in ans) {
-                            ans[i].demand = response.data[i]
-                        }
-                    }
-                    else{
-                        for(let i in ans) {
-                            ans[i].peak_demand = response.data[0][i],
-                            ans[i].off_peak_demand = response.data[1][i]                  
-                        }
-                    }
-                    this.set_optimized_data(ans);
-                    this.loading  = false         
-                    console.log(this.optimized)           
-                })
+                this.optimize()
+                               
             },
+        },
+
+        watch: {
+            get_optimized: {
+                handler() {
+                    if(this.loading) {
+                        this.loading  = false  
+                    }
+                }
+            }
         }
     }
 </script>

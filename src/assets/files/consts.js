@@ -14,8 +14,8 @@ export const SIMULATION_TYPES = [
 ]
 
 export const TARIFF_MODALITY_TYPES = [
-    {name: 'green', text: 'Verde'},
-    {name: 'blue', text: 'Azul'}
+    {name: 'green', text: 'Verde', value: 1},
+    {name: 'blue', text: 'Azul', value: 2}
 ]
 
 export const GROUP_CLASSIFICATION_TYPES = [
@@ -69,4 +69,18 @@ export function get_serie_by_key(data, key){
       }
     }
     return []
+}
+
+export function get_demand_measurements_names(tariff_modality) {
+    return tariff_modality == 'green' ? ['demand'] : ['peak_demand', 'off_peak_demand']
+}
+
+export function get_all_measurements_names() {
+    return ['demand', 'peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
+}
+
+export function get_measurements_names(tariff_modality) {
+    let names = get_demand_measurements_names(tariff_modality)
+    names.push('peak_energy', 'off_peak_energy')
+    return names
 }

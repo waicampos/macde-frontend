@@ -178,7 +178,7 @@ import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-import { MEAS_INFO } from '@/assets/files/consts'
+import { MEAS_INFO, get_measurements_names } from '@/assets/files/consts'
 
 export default {
     name: "user-forecast_page",
@@ -188,21 +188,19 @@ export default {
             data_file: 'get_user_data_history',
             }
         ),
-
-        ...mapGetters('data_configurations', {
-            measurements_names: 'get_measurements_names',
-            }
-        ),
         
         ...mapGetters('data_forecast', {
             forecasted_data: 'get_forecasted_data', 
             chosen_forecast_model: 'get_chosen_forecast_model',
-            forecast: 'forecast',
             }
         ),
+
+        ...mapGetters('data_configurations', {
+            tariff_modality: 'get_tariff_modality'
+        }),
         
         headers() {
-            let names = this.measurements_names.map(key => MEAS_INFO[key])
+            let names = get_measurements_names(this.tariff_modality.name).map(key => MEAS_INFO[key])            
             names.unshift(
                 {
                     title: 'Date',
@@ -233,7 +231,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions('data_forecast', ['set_forecasted_data']),
+        ...mapActions('data_forecast', ['set_forecasted_data', 'forecast']),
 
         download() {
             let dt = new Date()
@@ -267,8 +265,8 @@ export default {
         
         changed_forecast_model_type() {
             this.set_forecasted_data([])
-            if(this.data_file.length > 0 &&  this.chosen_forecast_model.type != 'custom' ) {
-                this.forecast
+            if(this.data_file.length > 0 && this.chosen_forecast_model.type != 'custom' ) {
+                this.forecast()
             }
         }
     },
