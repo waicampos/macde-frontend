@@ -41,14 +41,25 @@ export default {
       get_date_installation_photovoltaic_system(state) {
         return state.date_installation_photovoltaic_system
       },
-      get_current_contracted_demand(state) {
-        return state.current_contracted_demand
+      get_current_contracted_demand: (state) => (key) => {
+        if(!key) {
+          return state.current_contracted_demand
+        }
+        else {
+          return state.current_contracted_demand.filter(item => item.name == key)  
+        }
       },
+      
       get_growth_forecast(state) {
         return state.growth_forecast
       },
-      get_tariffs(state) {
-        return state.tariffs
+      get_tariffs: (state) => (key) => {
+        if(!key) {
+          return state.tariffs
+        }
+        else {
+          return state.tariffs.filter(item => item.name == key)
+        }
       },
     },
     mutations: {  

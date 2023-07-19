@@ -1,4 +1,16 @@
 <template>
+<v-btn @click="this.calculate_optimized_demand_cost()"> OPT</v-btn>
+<v-btn @click="this.calculate_contracted_demand_cost()"> CONT</v-btn>
+<br />
+<br />
+TOTAL: OPT
+{{optimized_demand_total_cost}}
+<br />
+<br />
+TOTAL: CONTR
+{{contracted_demand_total_cost}}
+
+
   <VRow>   
     <VCol cols=12>
       <v-card elevation="3">
@@ -45,7 +57,7 @@
     >
     <SingleCard         
       :annual_cost="contracted_demand_total_cost[item]"
-      :demand="[current_contracted_demand.filter(curr => curr.name == item)[0].value]"
+      :demand="[current_contracted_demand().filter(curr => curr.name == item)[0].value]"
       title="Demanda Contratada"
       subtitle="Demanda Atual"
     />
@@ -97,7 +109,6 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
-    import axios from 'axios';
     import LineChartResults from '@/components/results/LineChartResults.vue'
     import TotalEarnings from '@/components/results/TotalEarnings.vue'
     import TotalEarnings2 from '@/components/results/TotalEarnings2.vue'
@@ -184,34 +195,7 @@
         }
       },
       methods: {
-        ...mapActions('data_results', ['set_optimized_demand_cost', 'set_contracted_demand_cost']),
-
-        calculate_demand_cost(data, contracted, type) {
-          const addr = '//localhost:5010/demand_cost'
-          let arr_req = []
-          this.demand_names.map(curr => {
-            arr_req.push(
-              axios.post(addr, {
-                'data': data.map(item => item[curr]),
-                'contracted': contracted.map(item => item[curr])
-              })
-            )
-          })
-          Promise.all(arr_req).then(response => {            
-            let demand_costs = {}
-            this.demand_names.map((curr, index) => {
-              demand_costs[curr] = response[index].data
-            })
-
-            if(type == 'optimized'){
-              this.set_optimized_demand_cost(demand_costs)
-            }else {
-              this.set_contracted_demand_cost(demand_costs)
-            }
-          
-            return demand_costs
-          })           
-        },
+        ...mapActions('data_results', ['calculate_contracted_demand_cost', 'calculate_optimized_demand_cost']),
       },
         computed: {
           ...mapGetters('data_parameters', {
@@ -231,27 +215,8 @@
             contracted_demand_total_cost: 'get_contracted_demand_total_cost',
             optimized_demand_cost: 'get_optimized_demand_cost',
             optimized_demand_total_cost: 'get_optimized_demand_total_cost',
-          }),
-
-          total_cost_savings() {
-            let total = 0
-            this.demand_names.map(key => {              
-              total -= this.optimized_demand_total_cost[key]
-              total += this.contracted_demand_total_cost[key]
-            })
-            
-            return total
-          },       
-
-          converted_current_contracted_demand(){
-            let curr_demand_costs = {}
-            this.demand_names.map(curr => {
-              let value = this.current_contracted_demand.filter(i => i.name == curr)[0].value
-              curr_demand_costs[curr] =  value
-            })
-
-            return Array(12).fill(curr_demand_costs)
-          },
+            total_cost_savings: 'get_total_cost_savings',
+          }),   
 
           unique_optimized_demand_cost() {
             let unique = {}
@@ -264,11 +229,13 @@
           },
         },
 
-        mounted() {
+        mounted() {          
           if(this.optimized.length){
             this.demand_names = Object.keys(this.optimized[0]).filter(i => i != 'date')    
-            this.calculate_demand_cost(this.forecasted, this.optimized, 'optimized')
-            this.calculate_demand_cost(this.forecasted, this.converted_current_contracted_demand, 'contracted')
+            //this.get_demand_cost(this.forecasted, this.optimized)
+            // if(this.contracted_demand_cost) {
+            //   this.calculate_contracted_demand_cost()
+            // }
           }          
         }
 }

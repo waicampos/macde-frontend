@@ -66,8 +66,6 @@ export default {
   computed: {
     demand_value() {
         let ans=""
-        console.log("this.demand", this.demand)
-        console.log("this.y", typeof this.demand)
         for(let value of this.demand){
           ans = ans + value
         }

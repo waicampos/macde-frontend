@@ -7,8 +7,17 @@ export default {
       chosen_optimize_model: {'type': 'exploratory'}
     },
     getters: {
-      get_optimized_data(state) {
+      get_optimized_data(state){        
         return state.optimized_data
+      },
+
+      get_optimized_data_by_key: (state) => (key) => {
+        if(!key) {
+          return state.optimized_data
+        }
+        else {          
+          return state.optimized_data.map(item => item[key])  
+        }
       },
 
       get_chosen_optimize_model(state) {
