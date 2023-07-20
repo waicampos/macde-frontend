@@ -1,7 +1,13 @@
 <template>
 <v-btn @click="this.calculate_optimized_demand_cost()"> OPT</v-btn>
 <v-btn @click="this.calculate_contracted_demand_cost()"> CONT</v-btn>
+<v-btn @click="this.calculate_energy_cost()"> ENERGY</v-btn>
+
+
+ENERGY: {{ get_energy_cost }}
 <br />
+Total costs:
+{{get_energy_total_cost}}
 <br />
 TOTAL: OPT
 {{optimized_demand_total_cost}}
@@ -9,6 +15,10 @@ TOTAL: OPT
 <br />
 TOTAL: CONTR
 {{contracted_demand_total_cost}}
+<br />
+<br />
+TOTAL COST CONTRACTED
+{{get_contracted_total_cost}}
 
 
   <VRow>   
@@ -40,7 +50,7 @@ TOTAL: CONTR
           </v-card-text>
         </v-card>
   </VCol>
-  <VCol
+  <!-- <VCol
     v-for="item in Object.keys(optimized_demand_total_cost)" :key="item"
     cols=12 md=6 lg=3
     >
@@ -61,7 +71,7 @@ TOTAL: CONTR
       title="Demanda Contratada"
       subtitle="Demanda Atual"
     />
-  </VCol>
+  </VCol> -->
   </VRow>
 
   <VRow>
@@ -195,7 +205,7 @@ TOTAL: CONTR
         }
       },
       methods: {
-        ...mapActions('data_results', ['calculate_contracted_demand_cost', 'calculate_optimized_demand_cost']),
+        ...mapActions('data_results', ['calculate_contracted_demand_cost', 'calculate_optimized_demand_cost', 'calculate_energy_cost',]),
       },
         computed: {
           ...mapGetters('data_parameters', {
@@ -216,6 +226,9 @@ TOTAL: CONTR
             optimized_demand_cost: 'get_optimized_demand_cost',
             optimized_demand_total_cost: 'get_optimized_demand_total_cost',
             total_cost_savings: 'get_total_cost_savings',
+            get_energy_cost: 'get_energy_cost',
+            get_energy_total_cost: 'get_energy_total_cost',
+            get_contracted_total_cost: 'get_contracted_total_cost',
           }),   
 
           unique_optimized_demand_cost() {

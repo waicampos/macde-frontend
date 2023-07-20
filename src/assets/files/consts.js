@@ -75,6 +75,10 @@ export function get_demand_measurements_names(tariff_modality) {
     return tariff_modality == 'green' ? ['demand'] : ['peak_demand', 'off_peak_demand']
 }
 
+export function get_energy_measurements_names() {
+    return ['peak_energy', 'off_peak_energy']
+}
+
 export function get_all_measurements_names() {
     return ['demand', 'peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
 }
@@ -84,3 +88,5 @@ export function get_measurements_names(tariff_modality) {
     names.push('peak_energy', 'off_peak_energy')
     return names
 }
+
+export const sum = (acc, cur) => acc + cur;

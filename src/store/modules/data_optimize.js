@@ -7,7 +7,8 @@ export default {
       chosen_optimize_model: {'type': 'exploratory'}
     },
     getters: {
-      get_optimized_data(state){        
+      get_optimized_data(state){
+        console.log("OPTIMIZED", state.optimized_data)        
         return state.optimized_data
       },
 

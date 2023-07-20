@@ -1,13 +1,22 @@
 import axios from 'axios'
-import { get_demand_measurements_names } from '@/assets/files/consts'
+import { get_demand_measurements_names, get_energy_measurements_names, sum } from '@/assets/files/consts'
 
 export default {
     namespaced: true,
     state: {
       contracted_demand_cost: [],
       optimized_demand_cost: [],
+      energy_cost: [],
     },
     getters: {
+      get_contracted_total_cost(state, getters) {
+        let total_cost = 0
+        total_cost += Object.values(getters.get_contracted_demand_total_cost).reduce(sum ,0)
+        total_cost += Object.values(getters.get_energy_total_cost).reduce(sum ,0)
+        
+        return total_cost
+      },
+
       get_contracted_demand_cost(state, getters, rootState, rootGetters) {
         return rootGetters['data_parameters/get_current_contracted_demand']
       },
@@ -18,8 +27,10 @@ export default {
         let costs = {}
 
         demand_names.forEach(key => {            
-          costs[key] = state.contracted_demand_cost.map(item => item[key]).reduce((acc, cur) => acc + cur, 0)
+          costs[key] = state.contracted_demand_cost.map(item => item[key]).reduce(sum, 0)
         })
+        console.log("COSTS", costs)
+        
         return costs
       },
 
@@ -38,6 +49,24 @@ export default {
             state.optimized_demand_cost.map(item => {
               costs[key] += item[key]
             })  
+          })
+        }
+        return costs
+      },
+
+      get_energy_cost(state) {
+        return state.energy_cost
+      },
+
+      get_energy_total_cost(state) {
+        const energy_names = get_energy_measurements_names()
+        let costs = {}
+        if(state.energy_cost.length) {
+          energy_names.forEach(key => {
+            costs[key] = 0
+            state.energy_cost.forEach(item => {
+              costs[key] += item[key]
+            })
           })
         }
         return costs
@@ -65,7 +94,11 @@ export default {
 
       set_optimized_demand_cost(state, payload) {
         state.optimized_demand_cost = payload
-      }
+      },
+
+      set_energy_cost(state, payload) {
+        state.energy_cost = payload
+      },
     },
     actions: {
       set_contracted_demand_cost({ commit }, payload) {
@@ -74,6 +107,22 @@ export default {
 
       set_optimized_demand_cost({ commit }, payload) {
         commit("set_optimized_demand_cost", payload)
+      },
+
+      calculate_energy_cost({ commit, rootGetters }) {      
+        const get_tariff = rootGetters['data_parameters/get_tariffs']
+        const energy_names = get_energy_measurements_names()
+        const forecasted = rootGetters['data_forecast/get_forecasted_data_by_key']()
+        let costs = []
+        
+        forecasted.forEach(item => {
+          let prov = {}
+          energy_names.forEach(key => {
+            prov[key] = item[key] * get_tariff(key)[0].value
+          })
+          costs.push(prov)
+        })
+        commit("set_energy_cost", costs)
       },
 
       calculate_contracted_demand_cost({ dispatch, rootGetters }) {
