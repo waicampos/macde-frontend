@@ -94,9 +94,6 @@ export function get_measurements_names(tariff_modality) {
 }
 
 export function demand_cost_assembly_request(data, contracted, tariff) {
-    console.log("TARIFF", tariff)
-    console.log("CONTRACTED", contracted)
-    console.log("DATA", data)
     let arr_req = []
     Object.keys(contracted[0]).forEach(key => {
       arr_req.push(

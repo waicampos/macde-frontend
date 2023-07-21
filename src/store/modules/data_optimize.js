@@ -1,14 +1,15 @@
 import axios from 'axios'
+import { demand_cost_assembly_request, demand_cost_response_disassembly } from '@/assets/files/consts'
 
 export default {
     namespaced: true,
     state: {
       optimized_data: [],
-      chosen_optimize_model: {'type': 'exploratory'}
+      chosen_optimize_model: {'type': 'exploratory'},
+      optimized_demand_cost: [],
     },
     getters: {
-      get_optimized_data(state){
-        console.log("OPTIMIZED", state.optimized_data)        
+      get_optimized_data(state){     
         return state.optimized_data
       },
 
@@ -24,6 +25,10 @@ export default {
       get_chosen_optimize_model(state) {
         return state.chosen_optimize_model
       },
+
+      get_optimized_demand_cost(state) {
+        return state.optimized_demand_cost
+      },
     },
 
     mutations: {  
@@ -32,7 +37,11 @@ export default {
       },  
       set_chosen_optimize_model(state, payload) {
         state.chosen_optimize_model = payload
-      }
+      },
+
+      set_optimized_demand_cost(state, payload) {
+        state.optimized_demand_cost = payload
+      },
     },
 
     actions: {
@@ -83,8 +92,22 @@ export default {
 
           dispatch('set_optimized_data', optimized)
         })
+      },
 
-      }
+      calculate_optimized_demand_cost({ state, commit, rootGetters }) {        
+        let optimized = JSON.parse(JSON.stringify(state.optimized_data))
+        optimized.forEach(item => delete item.date)
+        const arr_req = demand_cost_assembly_request(
+          rootGetters['data_forecast/get_forecasted_data'], 
+          optimized, 
+          rootGetters['data_parameters/get_tariffs']
+        )
+          
+        Promise.all(arr_req).then(response => {   
+          const demand_costs = demand_cost_response_disassembly(optimized, response)
+          commit("set_optimized_demand_cost", demand_costs)
+        })
+      },
     },
   }
   
