@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { get_all_measurements_names, demand_cost_assembly_request, demand_cost_response_disassembly } from '@/assets/files/consts'
+import { 
+  get_all_measurements_names, 
+  demand_cost_assembly_request, 
+  demand_cost_response_disassembly, 
+  get_energy_measurements_names 
+} 
+from '@/assets/files/consts'
 
 export default {
     namespaced: true,
@@ -7,6 +13,7 @@ export default {
       forecasted_data: [],
       chosen_forecast_model: {'type': 'doublemean'},
       contracted_demand_cost: [],
+      energy_cost: [],
     },
     getters: {
       get_forecasted_data(state) {
@@ -31,7 +38,11 @@ export default {
 
       get_contracted_demand_cost(state) {
         return state.contracted_demand_cost
-      }
+      },
+
+      get_energy_cost(state) {
+        return state.energy_cost
+      },
     },
 
     mutations: {  
@@ -46,13 +57,13 @@ export default {
       set_contracted_demand_cost(state, payload) {
         state.contracted_demand_cost = payload
       },
+
+      set_energy_cost(state, payload) {
+        state.energy_cost = payload
+      },
     },
 
     actions: {
-      set_contracted_demand_cost({ commit }, payload) {
-        commit("set_contracted_demand_cost", payload)
-      },
-
       set_forecasted_data({ commit }, payload) {
         commit("set_forecasted_data", payload)
       },
@@ -90,10 +101,8 @@ export default {
       },
 
       calculate_contracted_demand_cost({ state, commit, rootGetters }) {
-        const get_current_contracted_demand = rootGetters['data_parameters/get_current_contracted_demand']
-        
         let current_contracted = {}
-        get_current_contracted_demand().forEach(item => {
+        rootGetters['data_parameters/get_current_contracted_demand']().forEach(item => {
           current_contracted[item.name] = item.value
         })
         current_contracted = Array(state.forecasted_data.length).fill(current_contracted) 
@@ -108,6 +117,20 @@ export default {
           const demand_costs = demand_cost_response_disassembly(current_contracted, response)
           commit("set_contracted_demand_cost", demand_costs)
         })
+      },
+
+      calculate_energy_cost({ state, commit, rootGetters }) {      
+        const get_tariff = rootGetters['data_parameters/get_tariffs']
+        const energy_names = get_energy_measurements_names()
+        let costs = []
+        state.forecasted_data.forEach(item => {
+          let prov = {}
+          energy_names.forEach(key => {
+            prov[key] = (item[key] * get_tariff(key).value).toFixed(2)
+          })
+          costs.push(prov)
+        })
+        commit("set_energy_cost", costs)
       },
     }
 }
