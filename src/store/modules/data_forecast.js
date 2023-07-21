@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { get_all_measurements_names } from '@/assets/files/consts'
+import { get_all_measurements_names, demand_cost_assembly_request, demand_cost_response_disassembly } from '@/assets/files/consts'
 
 export default {
     namespaced: true,
     state: {
       forecasted_data: [],
-      chosen_forecast_model: {'type': 'doublemean'}
+      chosen_forecast_model: {'type': 'doublemean'},
+      contracted_demand_cost: [],
     },
     getters: {
       get_forecasted_data(state) {
@@ -27,6 +28,10 @@ export default {
       get_chosen_forecast_model(state) {
         return state.chosen_forecast_model
       },
+
+      get_contracted_demand_cost(state) {
+        return state.contracted_demand_cost
+      }
     },
 
     mutations: {  
@@ -36,9 +41,18 @@ export default {
 
       set_chosen_forecast_model(state, payload) {
         state.chosen_forecast_model = payload
-      }
+      },
+
+      set_contracted_demand_cost(state, payload) {
+        state.contracted_demand_cost = payload
+      },
     },
+
     actions: {
+      set_contracted_demand_cost({ commit }, payload) {
+        commit("set_contracted_demand_cost", payload)
+      },
+
       set_forecasted_data({ commit }, payload) {
         commit("set_forecasted_data", payload)
       },
@@ -74,6 +88,27 @@ export default {
           dispatch('set_forecasted_data', forecasted)
         })
       },
-    },
-  }
+
+      calculate_contracted_demand_cost({ state, commit, rootGetters }) {
+        const get_current_contracted_demand = rootGetters['data_parameters/get_current_contracted_demand']
+        
+        let current_contracted = {}
+        get_current_contracted_demand().forEach(item => {
+          current_contracted[item.name] = item.value
+        })
+        current_contracted = Array(state.forecasted_data.length).fill(current_contracted) 
+        
+        const arr_req = demand_cost_assembly_request(
+          state.forecasted_data, 
+          current_contracted, 
+          rootGetters['data_parameters/get_tariffs']
+        )
+
+        Promise.all(arr_req).then(response => {   
+          const demand_costs = demand_cost_response_disassembly(current_contracted, response)
+          commit("set_contracted_demand_cost", demand_costs)
+        })
+      },
+    }
+}
   

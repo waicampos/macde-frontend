@@ -53,12 +53,13 @@ export default {
       get_growth_forecast(state) {
         return state.growth_forecast
       },
+      
       get_tariffs: (state) => (key) => {
         if(!key) {
           return state.tariffs
         }
         else {
-          return state.tariffs.filter(item => item.name == key)
+          return state.tariffs.filter(item => item.name == key)[0]
         }
       },
     },

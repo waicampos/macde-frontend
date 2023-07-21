@@ -1,3 +1,7 @@
+import axios from 'axios'
+
+export const sum = (acc, cur) => acc + cur;
+
 export const MEAS_INFO = {
     "demand":{key:"demand", "title": "Demanda", "prefix":"R$", "suffix":"por kW", "type":"number"},
     "peak_demand": {key: "peak_demand", title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
@@ -89,4 +93,33 @@ export function get_measurements_names(tariff_modality) {
     return names
 }
 
-export const sum = (acc, cur) => acc + cur;
+export function demand_cost_assembly_request(data, contracted, tariff) {
+    console.log("TARIFF", tariff)
+    console.log("CONTRACTED", contracted)
+    console.log("DATA", data)
+    let arr_req = []
+    Object.keys(contracted[0]).forEach(key => {
+      arr_req.push(
+        axios.post('//localhost:5010/demand_cost', {
+          'data': data.map(item => item[key]),
+          'contracted': contracted.map(item => item[key]),
+          'tariff': tariff(key).value
+        })            
+      )
+    })
+
+    return arr_req
+}
+
+export function demand_cost_response_disassembly(contracted, response) {
+    let lentgh_res = response[0].data.length
+    let demand_costs = []
+    for(let i in [...Array(lentgh_res).keys()]){
+      let prov = {}
+      Object.keys(contracted[0]).forEach((key, index) => {
+        prov[key] = response[index].data[i]
+      })
+      demand_costs.push(prov)
+    }
+    return demand_costs
+}
