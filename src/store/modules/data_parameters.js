@@ -13,7 +13,7 @@ export default {
           {value: 42.4, name: 'peak_demand', title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
           {value: 18.38, name: 'off_peak_demand', title: "Demanda Fora de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
           {value: 0.72, name: 'peak_energy', title:"Energia de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-          {value: 10.55, name:'off_peak_energy', title:"Energia Fora de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
+          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
         ],
         taxes_and_charges: [
           {value: 0.50, name:'pis_pasep', title:"pis_pasep", text:"PIS/PASEP", prefix:"", suffix:"%", type:"number"},

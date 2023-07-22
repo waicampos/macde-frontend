@@ -58,7 +58,7 @@
 <script>
 export default {
   props: {
-    annual_cost: Number,
+    annual_cost: String,
     demand: Array,
     title: String,
     subtitle: String,

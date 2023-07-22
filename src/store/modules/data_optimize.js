@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { demand_cost_assembly_request, demand_cost_response_disassembly } from '@/assets/files/consts'
+import { 
+  demand_cost_assembly_request, 
+  demand_cost_response_disassembly, 
+  get_demand_measurements_names } 
+from '@/assets/files/consts'
 
 export default {
     namespaced: true,
@@ -29,6 +33,34 @@ export default {
       get_optimized_demand_cost(state) {
         return state.optimized_demand_cost
       },
+
+      get_optimized_demand_total_cost(state, getters, rootState, rootGetters) {
+        let tariff_modality = rootGetters['data_configurations/get_tariff_modality']
+        let demand_names = get_demand_measurements_names(tariff_modality.name)
+        let costs = {}
+        if(state.optimized_demand_cost.length) {
+          demand_names.forEach(key => {
+            costs[key] = 0
+            state.optimized_demand_cost.map(item => {
+              costs[key] += item[key]
+            })  
+          })
+        }
+        return costs
+      },
+
+      get_total_cost_savings(state, getters, rootState, rootGetters) {
+        let total = 0
+        const contracted_demand_cost = rootGetters['data_forecast/get_contracted_demand_total_cost']        
+          let tariff_modality = rootGetters['data_configurations/get_tariff_modality']
+          let demand_names = get_demand_measurements_names(tariff_modality.name)
+          demand_names.map(key => {              
+            total -= getters.get_optimized_demand_total_cost[key]
+            total += contracted_demand_cost[key]
+          })
+        
+        return total
+      },       
     },
 
     mutations: {  

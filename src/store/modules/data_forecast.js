@@ -3,7 +3,9 @@ import {
   get_all_measurements_names, 
   demand_cost_assembly_request, 
   demand_cost_response_disassembly, 
-  get_energy_measurements_names 
+  get_energy_measurements_names ,
+  get_demand_measurements_names,
+  sum
 } 
 from '@/assets/files/consts'
 
@@ -39,9 +41,35 @@ export default {
       get_contracted_demand_cost(state) {
         return state.contracted_demand_cost
       },
+      
+      get_contracted_demand_total_cost(state, getters, rootState, rootGetters){
+        let tariff_modality = rootGetters['data_configurations/get_tariff_modality']
+        let demand_names = get_demand_measurements_names(tariff_modality.name)
+        let costs = {}
 
+        demand_names.forEach(key => {            
+          costs[key] = state.contracted_demand_cost.map(item => item[key]).reduce(sum, 0)
+        })
+        
+        return costs
+      },
+      
       get_energy_cost(state) {
         return state.energy_cost
+      },
+
+      get_energy_total_cost(state) {
+        const energy_names = get_energy_measurements_names()
+        let costs = {}
+        
+        energy_names.forEach(key => {
+          costs[key] = 0
+          state.energy_cost.forEach(item => {
+            costs[key] += item[key]
+          })
+        })
+        
+        return costs
       },
     },
 
@@ -126,7 +154,7 @@ export default {
         state.forecasted_data.forEach(item => {
           let prov = {}
           energy_names.forEach(key => {
-            prov[key] = (item[key] * get_tariff(key).value).toFixed(2)
+            prov[key] = Number((item[key] * get_tariff(key).value).toFixed(2))
           })
           costs.push(prov)
         })
