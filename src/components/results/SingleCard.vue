@@ -26,7 +26,7 @@
           class="text-h3 font-weight-bold text-light-blue-darken-4 text-center"
           cols="12"
         >
-          {{ demand_value }}
+          {{ demand }}
          <span class="text-subtitle-1 font-weight-bold text-light-blue-darken-4 text-center">kW</span>
           <v-divider class="ma-3"></v-divider>
         </v-col>
@@ -64,14 +64,7 @@ export default {
     subtitle: String,
   },
   computed: {
-    demand_value() {
-        let ans=""
-        for(let value of this.demand){
-          ans = ans + value
-        }
-
-      return ans
-    }
+   
   }
   
 }

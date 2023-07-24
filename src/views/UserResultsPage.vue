@@ -14,7 +14,10 @@
                   cols="8"
                 >
                     <span class="text-green text-h6">R$</span>
-                    {{ total_cost_savings.toFixed(2) }}
+                    {{ get_total_cost_savings.toFixed(2) }}                    
+                </v-col>
+                <v-col class="text-left">
+                  
                 </v-col>
                 <v-col class="text-right">
                   <v-icon
@@ -29,31 +32,33 @@
         </v-card>
   </VCol>
   <!-- <VCol
-    v-for="item in Object.keys(optimized_demand_total_cost)" :key="item"
+    v-for="item in get_demand_measurements_names" :key="item"
     cols=12 md=6 lg=3
     >
     <SingleCard         
-      :annual_cost="optimized_demand_total_cost[item]"
-      :demand="unique_optimized_demand_cost[item]"
+      :annual_cost="get_optimized_data_by_key(item)"
+      :demand="unique_optimized_demand_cost"
       title="Demanda Sugerida"
       subtitle="Demanda Sugerida"
     />
   </VCol> -->
-  <VCol
-    v-for="item in Object.keys(contracted_demand_total_cost)" :key="item"
+  <!-- <VCol
+    v-for="item in get_total_contracted_cost_by_key" :key="item"
     cols=12 md=6 lg=3
     >
+    {{get_demand_measurements_names}}
+    {{get_total_contracted_cost_by_key[item]}}
     <SingleCard         
-      :annual_cost="contracted_demand_total_cost[item].toFixed(2)"
-      :demand="[current_contracted_demand().filter(curr => curr.name == item)[0].value]"
+      :annual_cost="(get_total_contracted_cost_by_key[item]).toFixed(2)"
+      :demand="[get_current_contracted_demand(item).value]"
       title="Demanda Contratada"
       subtitle="Demanda Atual"
     />
-  </VCol>
+  </VCol> -->
   </VRow>
 
   <VRow>
-    <VCol
+    <!-- <VCol
       cols="12" lg="6"
     >
       <v-card>
@@ -87,28 +92,30 @@
       />        
       </v-card-text>
       </v-card>
-    </VCol>
+    </VCol> -->
     
     <VCol
-      cols="12"
+      cols="12" lg="6"
     >
-      <Bar 
-        id="bar-costs-results-chart-id"
-        :data="chartTimeSeriesData(get_all_measurements_names, this.add_date(this.get_all_costs))"
-        :options="options_bar"
-      />
+      <v-sheet rounded="lg" min-height="300">
+        <Bar 
+          id="bar-costs-results-chart-id"
+          :data="chartTimeSeriesData(get_measurements_names, get_optimized_cost)"
+          :options="options_bar"
+        />
+      </v-sheet>
     </VCol>
-  </VRow>
-
-  <VRow>
+ 
     <VCol
-      cols="12"
+      cols="12" lg="6"
     >
-      <MyLine
-          id="my-line-costs-results-chart-id"
-          :data="chartTimeSeriesData(get_demand_measurements_names, this.optimized)"
-          :options="this.chartTimeSeriesOptionsDemand"
-      />
+      <v-sheet rounded="lg" min-height="300">
+        <MyLine
+            id="my-line-costs-results-chart-id"
+            :data="chartTimeSeriesData(get_demand_measurements_names, get_optimized_data)"
+            :options="this.chartTimeSeriesOptionsDemand"
+        />
+      </v-sheet>
     </VCol>
   </VRow>
 
@@ -117,41 +124,40 @@
       cols="12"
       lg="6"
     >
-      <TotalEarnings />
+      <TotalEarnings cost_type="optimized"/>
     </VCol>
 
     <VCol      
       cols="12"
       lg="6"
     >
-      <TotalEarnings2 />
+      <TotalEarnings cost_type="contracted"/>
     </VCol>
 
-      <VCol
+      <!-- <VCol
       cols="12"
       >
         <TableResults />
-      </VCol>   
+      </VCol>    -->
   </VRow>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
     import { Line as MyLine} from 'vue-chartjs'
-    import LineChartResults from '@/components/results/LineChartResults.vue'
+
     import TotalEarnings from '@/components/results/TotalEarnings.vue'
-    import TotalEarnings2 from '@/components/results/TotalEarnings2.vue'
     import TableResults from '@/components/results/TableResults.vue'
     import SingleCard from '@/components/results/SingleCard.vue'
     import { Chart as ChartJS, Title, ArcElement, PointElement, LineElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
     import { Pie } from 'vue-chartjs'
     import { Bar } from 'vue-chartjs'
-    import { get_all_measurements_names, get_demand_measurements_names, sum, MEAS_INFO } from '@/assets/files/consts'
+    import { sum, MEAS_INFO } from '@/assets/files/consts'
     ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, BarElement, Title, ArcElement, Tooltip, Legend)
     import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 
     export default {
-      components: {MyLine, LineChartResults, TotalEarnings, TotalEarnings2, TableResults, SingleCard, Pie, Bar},
+      components: {MyLine, TotalEarnings, TableResults, SingleCard, Pie, Bar},
       data() {
         return {
           demand_names: ['demand'],         
@@ -217,8 +223,31 @@
         }
       },
       methods: {
-        ...mapActions('data_forecast', ['calculate_contracted_demand_cost', 'calculate_energy_cost']),
-        ...mapActions('data_optimize', ['calculate_optimized_demand_cost']),
+        ...mapActions('data_results', ['calculate_contracted_demand_cost', 'calculate_energy_cost', 'calculate_optimized_demand_cost']),
+
+        get_all_costs(arr_cost) {
+          let alfa = arr_cost.map((item, index) => {
+            return Object.assign(item, this.get_energy_cost[index])
+          })
+          return JSON.parse(JSON.stringify(alfa))
+        },
+
+        calculate_total_cost_by_meas(arr) {
+          let costs = {}
+          if(arr.length) {
+            Object.keys(arr[0]).forEach(key => {
+              costs[key] = 0
+              arr.forEach(item => {
+                costs[key] += item[key]
+              })  
+            })
+          }
+          return costs
+        },
+
+        calculate_total_cost(arr) {          
+          return Object.values(this.calculate_total_cost_by_meas(arr)).reduce(sum, 0)
+        },
 
         add_date(arr) {
           return JSON.parse(JSON.stringify(arr)).map((item, index) => {
@@ -238,105 +267,97 @@
           return dt_series
         },        
       },
-        computed: {
-          ...mapGetters('data_parameters', {
-              current_contracted_demand: 'get_current_contracted_demand'
-          }),
+      computed: {
+        ...mapGetters('data_results', {
+          get_contracted_demand_cost: 'get_contracted_demand_cost',
+          get_optimized_demand_cost: 'get_optimized_demand_cost',
+          get_energy_cost: 'get_energy_cost',
+          get_contracted_cost: 'get_contracted_cost',
+          get_optimized_cost: 'get_optimized_cost',
+          get_total_cost_savings: 'get_total_cost_savings',
+          get_total_optimized_cost_by_key: 'get_total_optimized_cost_by_key',
+          get_total_contracted_cost_by_key: 'get_total_contracted_cost_by_key',
+          get_proportional_optimized_cost: 'get_proportional_optimized_cost',
+        }),
 
-          ...mapGetters('data_forecast', {
-            contracted_demand_cost: 'get_contracted_demand_cost',
-            energy_cost: 'get_energy_cost',
-            energy_total_cost: 'get_energy_total_cost',
-            contracted_demand_total_cost: 'get_contracted_demand_total_cost',
-          }),
-          ...mapGetters('data_optimize', {
-            optimized_demand_cost: 'get_optimized_demand_cost',
-            optimized_demand_total_cost: 'get_optimized_demand_total_cost',
-            total_cost_savings: 'get_total_cost_savings',
-            optimized: 'get_optimized_data',
-          }),
+        ...mapGetters('data_parameters', {
+            get_current_contracted_demand: 'get_current_contracted_demand'
+        }),
 
-          get_all_costs() {
-            let alfa = this.optimized_demand_cost.map((item, index) => {
-              return Object.assign(item, this.energy_cost[index])
-            })
-            return JSON.parse(JSON.stringify(alfa))
-          },
-          
-          get_all_optimized_costs_proportional() {
-            let data_graph = {
-              labels: [],
-              datasets: [
-                {
-                  backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-                  data: []
-                }
-              ]
-            }
+        ...mapGetters('data_optimize', {
+            get_optimized_data: 'get_optimized_data',
+            get_optimized_data_by_key: 'get_optimized_data_by_key',
+        }),
 
-            let total_cost_meas = Object.assign({}, this.optimized_demand_total_cost, this.energy_total_cost)
-            let total_Cost = Object.values(total_cost_meas).reduce(sum, 0)            
-            Object.keys(total_cost_meas).forEach(key => {              
-              data_graph.labels.push(MEAS_INFO[key].title)
-              data_graph.datasets[0].data.push(Number(((total_cost_meas[key] / total_Cost) * 100).toFixed(2)))
-            })    
-            return data_graph
-          },
+        ...mapGetters('data_configurations', {
+            get_measurements_names: 'get_measurements_names',
+            get_demand_measurements_names: 'get_demand_measurements_names',
+        }),
+                        
+        get_all_optimized_costs_proportional() {
+          let data_graph = {
+            labels: [],
+            datasets: [
+              {
+                backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+                data: []
+              }
+            ]
+          }
 
-          get_all_contracted_costs_proportional() {
-            let data_graph = {
-              labels: [],
-              datasets: [
-                {
-                  backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-                  data: []
-                }
-              ]
-            }
-
-            let total_cost_meas = Object.assign({}, this.contracted_demand_total_cost, this.energy_total_cost)
-            let total_Cost = Object.values(total_cost_meas).reduce(sum, 0)            
-            Object.keys(total_cost_meas).forEach(key => {              
-              data_graph.labels.push(MEAS_INFO[key].title)
-              data_graph.datasets[0].data.push(Number(((total_cost_meas[key] / total_Cost) * 100).toFixed(2)))
-            })
-    
-            return data_graph
-          },
-
-          unique_optimized_demand_cost() {
-            let unique = {}
-            this.demand_names.map(dname => {
-              let values = this.optimized.map(curr => curr[dname])
-              unique[dname] = Array.from(new Set(values))
-            })
-            
-            return unique
-          },
-
-          get_all_measurements_names() {
-            return get_all_measurements_names()
-          },
-
-          get_demand_measurements_names() {
-            return get_demand_measurements_names()
-          },
-
-          chartTimeSeriesOptionsDemand() {
-            let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
-            opt.plugins.title.text = "Gráfico de Demanda"
-            opt.scales.x.title.text = "Data"
-            opt.scales.y.title.text = "Demanda [kW]"
-
-            return opt
-          },          
+          let total_cost_meas = Object.assign({}, this.optimized_demand_total_cost, this.get_energy_total_cost)
+          let total_Cost = Object.values(total_cost_meas).reduce(sum, 0)            
+          Object.keys(total_cost_meas).forEach(key => {              
+            data_graph.labels.push(MEAS_INFO[key].title)
+            data_graph.datasets[0].data.push(Number(((total_cost_meas[key] / total_Cost) * 100).toFixed(2)))
+          })    
+          return data_graph
         },
 
-        beforeMount() {          
-          this.calculate_contracted_demand_cost()
-          this.calculate_optimized_demand_cost()
-          this.calculate_energy_cost()
-        }
-}
+        get_all_contracted_costs_proportional() {
+          let data_graph = {
+            labels: [],
+            datasets: [
+              {
+                backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+                data: []
+              }
+            ]
+          }
+
+          let total_cost_meas = Object.assign({}, this.get_total_contracted_cost_by_key, this.get_energy_total_cost)
+          let total_Cost = Object.values(total_cost_meas).reduce(sum, 0)            
+          Object.keys(total_cost_meas).forEach(key => {              
+            data_graph.labels.push(MEAS_INFO[key].title)
+            data_graph.datasets[0].data.push(Number(((total_cost_meas[key] / total_Cost) * 100).toFixed(2)))
+          })
+  
+          return data_graph
+        },
+
+        unique_optimized_demand_cost() {
+          let unique = {}
+          this.get_demand_measurements_names.map(dname => {
+            let values = this.get_optimized_data.map(curr => curr[dname])
+            unique[dname] = Array.from(new Set(values))
+          })
+          return unique
+        },
+
+        chartTimeSeriesOptionsDemand() {
+          let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
+          opt.plugins.title.text = "Gráfico de Demanda"
+          opt.scales.x.title.text = "Data"
+          opt.scales.y.title.text = "Demanda [kW]"
+
+          return opt
+        },        
+      },
+      beforeMount() {          
+        this.calculate_contracted_demand_cost()
+        this.calculate_optimized_demand_cost()
+        this.calculate_energy_cost()
+      }
+    }
 
 </script>

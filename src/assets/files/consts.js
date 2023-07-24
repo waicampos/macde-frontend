@@ -75,27 +75,9 @@ export function get_serie_by_key(data, key){
     return []
 }
 
-export function get_demand_measurements_names(tariff_modality) {
-    return tariff_modality == 'green' ? ['demand'] : ['peak_demand', 'off_peak_demand']
-}
-
-export function get_energy_measurements_names() {
-    return ['peak_energy', 'off_peak_energy']
-}
-
-export function get_all_measurements_names() {
-    return ['demand', 'peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
-}
-
-export function get_measurements_names(tariff_modality) {
-    let names = get_demand_measurements_names(tariff_modality)
-    names.push('peak_energy', 'off_peak_energy')
-    return names
-}
-
-export function demand_cost_assembly_request(data, contracted, tariff) {
+export function demand_cost_assembly_request(data, contracted, tariff, demand_names) {
     let arr_req = []
-    Object.keys(contracted[0]).forEach(key => {
+    demand_names.forEach(key => {
       arr_req.push(
         axios.post('//localhost:5010/demand_cost', {
           'data': data.map(item => item[key]),

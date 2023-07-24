@@ -178,7 +178,7 @@ import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-import { MEAS_INFO, get_measurements_names } from '@/assets/files/consts'
+import { MEAS_INFO } from '@/assets/files/consts'
 
 export default {
     name: "user-forecast_page",
@@ -196,11 +196,12 @@ export default {
         ),
 
         ...mapGetters('data_configurations', {
-            tariff_modality: 'get_tariff_modality'
+            tariff_modality: 'get_tariff_modality',
+            get_measurements_names: 'get_measurements_names'
         }),
         
         headers() {
-            let names = get_measurements_names(this.tariff_modality.name).map(key => MEAS_INFO[key])            
+            let names = this.get_measurements_names.map(key => MEAS_INFO[key])            
             names.unshift(
                 {
                     title: 'Date',

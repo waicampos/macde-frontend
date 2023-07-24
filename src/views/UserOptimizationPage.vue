@@ -157,7 +157,7 @@
     import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-    import { MEAS_INFO,TARIFF_MODALITY_TYPES, get_demand_measurements_names } from '@/assets/files/consts'    
+    import { MEAS_INFO,TARIFF_MODALITY_TYPES } from '@/assets/files/consts'    
 
     export default {
         name: "userOptimizationPage",
@@ -179,7 +179,8 @@
             }),
 
             ...mapGetters('data_configurations', {
-              get_tariff_modality: 'get_tariff_modality'
+              get_tariff_modality: 'get_tariff_modality',
+              get_demand_measurements_names: 'get_demand_measurements_names'
             }),
 
             tariff_modality: {
@@ -201,7 +202,7 @@
             },
 
             headers() {
-                let names = get_demand_measurements_names(this.get_tariff_modality.name).map(key => MEAS_INFO[key])
+                let names = this.get_demand_measurements_names.map(key => MEAS_INFO[key])
                 names.unshift(
                     {
                         title: 'Date',

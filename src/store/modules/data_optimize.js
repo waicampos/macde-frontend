@@ -1,66 +1,23 @@
 import axios from 'axios'
-import { 
-  demand_cost_assembly_request, 
-  demand_cost_response_disassembly, 
-  get_demand_measurements_names } 
-from '@/assets/files/consts'
 
 export default {
     namespaced: true,
     state: {
       optimized_data: [],
       chosen_optimize_model: {'type': 'exploratory'},
-      optimized_demand_cost: [],
     },
     getters: {
       get_optimized_data(state){     
         return state.optimized_data
       },
 
-      get_optimized_data_by_key: (state) => (key) => {
-        if(!key) {
-          return state.optimized_data
-        }
-        else {          
-          return state.optimized_data.map(item => item[key])  
-        }
+      get_optimized_data_by_key: (state) => (key) => {      
+        return (!key) ? state.optimized_data : state.optimized_data.map(item => item[key])  
       },
 
       get_chosen_optimize_model(state) {
         return state.chosen_optimize_model
-      },
-
-      get_optimized_demand_cost(state) {
-        return state.optimized_demand_cost
-      },
-
-      get_optimized_demand_total_cost(state, getters, rootState, rootGetters) {
-        let tariff_modality = rootGetters['data_configurations/get_tariff_modality']
-        let demand_names = get_demand_measurements_names(tariff_modality.name)
-        let costs = {}
-        if(state.optimized_demand_cost.length) {
-          demand_names.forEach(key => {
-            costs[key] = 0
-            state.optimized_demand_cost.map(item => {
-              costs[key] += item[key]
-            })  
-          })
-        }
-        return costs
-      },
-
-      get_total_cost_savings(state, getters, rootState, rootGetters) {
-        let total = 0
-        const contracted_demand_cost = rootGetters['data_forecast/get_contracted_demand_total_cost']        
-          let tariff_modality = rootGetters['data_configurations/get_tariff_modality']
-          let demand_names = get_demand_measurements_names(tariff_modality.name)
-          demand_names.map(key => {              
-            total -= getters.get_optimized_demand_total_cost[key]
-            total += contracted_demand_cost[key]
-          })
-        
-        return total
-      },       
+      },  
     },
 
     mutations: {  
@@ -70,22 +27,14 @@ export default {
       set_chosen_optimize_model(state, payload) {
         state.chosen_optimize_model = payload
       },
-
-      set_optimized_demand_cost(state, payload) {
-        state.optimized_demand_cost = payload
-      },
     },
 
     actions: {
-      set_optimized_data({ commit }, payload) {
-        commit("set_optimized_data", payload)
-      },
-
       set_chosen_optimize_model({ commit }, payload) {
         commit('set_chosen_optimize_model', payload)
       },
 
-      optimize({dispatch, rootGetters}){
+      optimize({ commit, rootGetters }){
         const tariff_modality = rootGetters['data_configurations/get_tariff_modality']
         const get_data = rootGetters['data_forecast/get_forecasted_data_by_key']
         const has_demand_variation = rootGetters['data_parameters/get_has_demand_variation']
@@ -122,22 +71,7 @@ export default {
             item.date = '1/' + month + '/' + year
           })
 
-          dispatch('set_optimized_data', optimized)
-        })
-      },
-
-      calculate_optimized_demand_cost({ state, commit, rootGetters }) {        
-        let optimized = JSON.parse(JSON.stringify(state.optimized_data))
-        optimized.forEach(item => delete item.date)
-        const arr_req = demand_cost_assembly_request(
-          rootGetters['data_forecast/get_forecasted_data'], 
-          optimized, 
-          rootGetters['data_parameters/get_tariffs']
-        )
-          
-        Promise.all(arr_req).then(response => {   
-          const demand_costs = demand_cost_response_disassembly(optimized, response)
-          commit("set_optimized_demand_cost", demand_costs)
+          commit("set_optimized_data", optimized)
         })
       },
     },
