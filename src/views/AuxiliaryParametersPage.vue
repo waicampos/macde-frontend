@@ -276,7 +276,7 @@
                         <v-col 
                             class="pa-0"
                             cols=12 md=6 
-                            v-for="(item, index) in this.tariffs"
+                            v-for="(item, index) in this.tariffs[get_tariff_modality.name]"
                             :key="index"
                         >
                             <v-text-field class="px-3"
@@ -389,7 +389,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { mapGetters } from 'vuex';
 import { SIMULATION_TYPES } from '@/assets/files/consts'
 
 export default {
@@ -399,25 +399,11 @@ export default {
         }
     },
 
-    methods: {
-        consultar() {
-            var data = {
-                resource_id: 'fcf2906c-7c32-4b9b-a637-054e7a5234f4', // the resource id
-                limit: 5, // get 5 results
-                q: 'jones' // query for 'jones'
-            };
-
-            axios({
-                method: 'get',
-                data: data,
-                dataType: 'jsonp',
-                url: 'https://dadosabertos.aneel.gov.br/api/3/action/datastore_search'              
-            }).then(response => { 
-                    console.log(response)
-                })              
-        }
-    },
     computed: {
+        ...mapGetters('data_configurations', {
+            get_tariff_modality: 'get_tariff_modality',
+        }),
+
         selected_simulation_type: {
             get() {
                 return this.$store.state.data_parameters.selected_simulation_type

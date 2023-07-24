@@ -132,11 +132,11 @@
       <TotalEarnings cost_type="contracted"/>
     </VCol>
 
-      <VCol
+      <!-- <VCol
       cols="12"
       >
         <TableResults />
-      </VCol>   
+      </VCol>    -->
   </VRow>
 </template>
 
@@ -312,7 +312,6 @@
             data_graph.labels.push(MEAS_INFO[key].title)
             data_graph.datasets[0].data.push(this.get_proportional_optimized_cost[key])
           })    
-          console.log("OPTIMIZED: ", data_graph)
           return data_graph
         },
 
@@ -331,7 +330,6 @@
             data_graph.labels.push(MEAS_INFO[key].title)
             data_graph.datasets[0].data.push(this.get_proportional_contracted_cost[key])
           })    
-          console.log("CONTRACTED: ", data_graph)
           return data_graph
         },
 
