@@ -23,10 +23,10 @@
     <v-card-text class="py-1">
       <v-row align="center" no-gutters>
         <v-col
-          class="text-h3 font-weight-bold text-light-blue-darken-4 text-center"
+          class="text-h4 font-weight-bold text-light-blue-darken-4 text-center"
           cols="12"
         >
-          {{ demand }}
+          {{ this.demand.join('/') }}
          <span class="text-subtitle-1 font-weight-bold text-light-blue-darken-4 text-center">kW</span>
           <v-divider class="ma-3"></v-divider>
         </v-col>
@@ -47,8 +47,11 @@
             ></v-icon>
             <span class="text-grey-darken-3 font-weight-bold">Custo anual (R$): </span>
         </v-col>
-        <v-col class="text-red-accent-4 text-h6 font-weight-bold text-center">
-          {{ annual_cost }}
+        <v-col 
+          class="text-red-accent-4 text-h6 font-weight-bold text-center">
+          
+          <span v-if="annual_cost">{{ annual_cost.toFixed(2) }}</span>
+          <span v-else>-</span>
         </v-col>
       </v-row>
     
@@ -58,13 +61,13 @@
 <script>
 export default {
   props: {
-    annual_cost: String,
+    annual_cost: Number,
     demand: Array,
     title: String,
     subtitle: String,
   },
-  computed: {
-   
+  methods: {
+    
   }
   
 }

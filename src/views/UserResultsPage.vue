@@ -31,34 +31,32 @@
           </v-card-text>
         </v-card>
   </VCol>
-  <!-- <VCol
+  <VCol
     v-for="item in get_demand_measurements_names" :key="item"
     cols=12 md=6 lg=3
     >
     <SingleCard         
-      :annual_cost="get_optimized_data_by_key(item)"
-      :demand="unique_optimized_demand_cost"
-      title="Demanda Sugerida"
+      :annual_cost="get_total_optimized_cost_by_key[item]"
+      :demand="unique_optimized_demand_cost[item]"
+      :title="this.get__title_single_card(item)"
       subtitle="Demanda Sugerida"
     />
-  </VCol> -->
-  <!-- <VCol
-    v-for="item in get_total_contracted_cost_by_key" :key="item"
+  </VCol>
+  <VCol
+    v-for="item in get_demand_measurements_names" :key="item"
     cols=12 md=6 lg=3
     >
-    {{get_demand_measurements_names}}
-    {{get_total_contracted_cost_by_key[item]}}
     <SingleCard         
-      :annual_cost="(get_total_contracted_cost_by_key[item]).toFixed(2)"
+      :annual_cost="get_total_contracted_cost_by_key[item]"
       :demand="[get_current_contracted_demand(item).value]"
-      title="Demanda Contratada"
+      :title="this.get__title_single_card(item)"
       subtitle="Demanda Atual"
     />
-  </VCol> -->
+  </VCol>
   </VRow>
 
   <VRow>
-    <!-- <VCol
+    <VCol
       cols="12" lg="6"
     >
       <v-card>
@@ -69,7 +67,7 @@
       <v-card-text>
       <Pie
         id="pie-costs-results-chart-id"
-        :data="this.get_all_contracted_costs_proportional"
+        :data="get_all_contracted_costs_proportional"
         :options="options_pie" 
       />        
       </v-card-text>
@@ -87,12 +85,12 @@
       <v-card-text>
       <Pie
         id="pie-costs-results-chart-id"
-        :data="this.get_all_optimized_costs_proportional"
+        :data="get_all_optimized_costs_proportional"
         :options="options_pie" 
       />        
       </v-card-text>
       </v-card>
-    </VCol> -->
+    </VCol>
     
     <VCol
       cols="12" lg="6"
@@ -134,11 +132,11 @@
       <TotalEarnings cost_type="contracted"/>
     </VCol>
 
-      <!-- <VCol
+      <VCol
       cols="12"
       >
         <TableResults />
-      </VCol>    -->
+      </VCol>   
   </VRow>
 </template>
 
@@ -225,6 +223,10 @@
       methods: {
         ...mapActions('data_results', ['calculate_contracted_demand_cost', 'calculate_energy_cost', 'calculate_optimized_demand_cost']),
 
+        get__title_single_card(key) {
+          return MEAS_INFO[key].title
+        },
+
         get_all_costs(arr_cost) {
           let alfa = arr_cost.map((item, index) => {
             return Object.assign(item, this.get_energy_cost[index])
@@ -278,6 +280,7 @@
           get_total_optimized_cost_by_key: 'get_total_optimized_cost_by_key',
           get_total_contracted_cost_by_key: 'get_total_contracted_cost_by_key',
           get_proportional_optimized_cost: 'get_proportional_optimized_cost',
+          get_proportional_contracted_cost: 'get_proportional_contracted_cost',
         }),
 
         ...mapGetters('data_parameters', {
@@ -304,13 +307,12 @@
               }
             ]
           }
-
-          let total_cost_meas = Object.assign({}, this.optimized_demand_total_cost, this.get_energy_total_cost)
-          let total_Cost = Object.values(total_cost_meas).reduce(sum, 0)            
-          Object.keys(total_cost_meas).forEach(key => {              
+                
+          Object.keys(this.get_proportional_optimized_cost).forEach(key => {              
             data_graph.labels.push(MEAS_INFO[key].title)
-            data_graph.datasets[0].data.push(Number(((total_cost_meas[key] / total_Cost) * 100).toFixed(2)))
+            data_graph.datasets[0].data.push(this.get_proportional_optimized_cost[key])
           })    
+          console.log("OPTIMIZED: ", data_graph)
           return data_graph
         },
 
@@ -325,21 +327,18 @@
             ]
           }
 
-          let total_cost_meas = Object.assign({}, this.get_total_contracted_cost_by_key, this.get_energy_total_cost)
-          let total_Cost = Object.values(total_cost_meas).reduce(sum, 0)            
-          Object.keys(total_cost_meas).forEach(key => {              
+           Object.keys(this.get_proportional_contracted_cost).forEach(key => {              
             data_graph.labels.push(MEAS_INFO[key].title)
-            data_graph.datasets[0].data.push(Number(((total_cost_meas[key] / total_Cost) * 100).toFixed(2)))
-          })
-  
+            data_graph.datasets[0].data.push(this.get_proportional_contracted_cost[key])
+          })    
+          console.log("CONTRACTED: ", data_graph)
           return data_graph
         },
 
         unique_optimized_demand_cost() {
-          let unique = {}
-          this.get_demand_measurements_names.map(dname => {
-            let values = this.get_optimized_data.map(curr => curr[dname])
-            unique[dname] = Array.from(new Set(values))
+          let unique = {}          
+          this.get_demand_measurements_names.forEach(key => {
+            unique[key] = Array.from(new Set(this.get_optimized_data_by_key(key)))
           })
           return unique
         },
