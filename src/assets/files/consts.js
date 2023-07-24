@@ -79,7 +79,7 @@ export function demand_cost_assembly_request(data, contracted, tariff, demand_na
     let arr_req = []
     demand_names.forEach(key => {
       arr_req.push(
-        axios.post('//localhost:5010/demand_cost', {
+        axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/demand_cost', {
           'data': data.map(item => item[key]),
           'contracted': contracted.map(item => item[key]),
           'tariff': tariff(key).value
