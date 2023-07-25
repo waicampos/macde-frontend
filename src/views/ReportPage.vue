@@ -155,16 +155,17 @@
                                 este estudo precisará ser reexecutado.
                             </p>
                             <p class="text-justify  pt-4">
-                                Solicitações que devem ser feitas à distribuidora <b>AmE</b>:
+                                Solicitações que devem ser feitas à distribuidora <b>{{ get_utility.name }}</b>:
                             </p>
-                            <p class="text-justify pt-2">
-                                1) Alteração do valor contratado de <b>Demanda de Ponta</b> para <b>540 kW</b>.
-                            </p>
-                            <p class="text-justify pb-4">
-                                2) Alteração do valor contratado de <b>Demanda Fora de Ponta</b> para <b>774 kW</b>.
-                            </p>
+                            <p 
+                                v-for="(demand_name, index) in get_demand_measurements_names" :key="demand_name"
+                                class="text-justify pt-2 mt-2 mb-2 pt-2"
+                            >                                
+                                {{ index + 1 }}) Alteração do valor contratado de <b>{{get_demand_title(demand_name).toUpperCase() }}</b>
+                                para <b><span class="text-h6">{{ get_unique_optimized_demand_cost[demand_name].join('/') }} </span> kW</b>.
+                            </p>                            
                             
-                            <p class="text-justify">
+                            <p class="text-justify pt-4">
                                 A distribuidora deve atender à solicitação de redução da demanda contratada, desde que formalizada com antecedência 
                                 de pelo menos 90 (noventa) dias para o consumidor do subgrupo AS ou A4 ou 180 (cento e oitenta) dias para os demais usuários. 
                                 (É vedada mais de uma redução de demanda em um período de 12 (doze) meses, exceto para casos envolvendo eficiência energética). 
@@ -250,6 +251,7 @@
 import { mapGetters } from 'vuex';
 import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
 import macde_report_glossary from '@/assets/files/macde_report_glossary.json'
+import { MEAS_INFO } from '@/assets/files/consts'
 
 import { Line as MyLine} from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
@@ -264,6 +266,10 @@ export default {
     },
 
     methods: {
+        get_demand_title(key) {
+            return MEAS_INFO[key].title
+        },
+
         chartTimeSeriesData(keys) {  
             let data = [...this.get_forecasted]
             let dt = createDataSetsTimeSeries( 
@@ -300,13 +306,15 @@ export default {
 
         ...mapGetters('data_optimize', {
             get_optimized_data: 'get_optimized_data',
+            get_unique_optimized_demand_cost: 'get_unique_optimized_demand_cost',
         }),
 
         ...mapGetters('data_configurations', {
+            get_utility: 'get_utility',
             get_tariff_modality: 'get_tariff_modality',
-            get_demand_measurements_names: 'get_demand_measurements_names'
-        }),
-
+            get_demand_measurements_names: 'get_demand_measurements_names',
+        }),        
+        
         consumer_unit: {
             get() {
                 return this.$store.state.data_configurations.consumer_unit
