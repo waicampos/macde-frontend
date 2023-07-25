@@ -111,6 +111,25 @@
 
             <v-divider class="py-2 my-4"></v-divider>
 
+        <!-- Gráficos -->
+        <v-row 
+            class="flex-1-0 ma-0 pa-0"
+        >
+            <v-col cols="12 text-center">
+                <h3>Previsão de Demanda</h3>
+            </v-col>
+            <v-col                 
+                v-for="demand_name in get_demand_measurements_names" :key="demand_name"
+                cols=12 :lg="get_tariff_modality.name == 'green' ? 12 : 6"
+            >
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        :data="chartTimeSeriesData([demand_name])"
+                    />
+                </v-sheet>
+            </v-col>    
+        </v-row>
+
             <!--Ajustando o Contrato-->
             <VRow>
                 <VCol cols="12" class="text-center">
@@ -228,15 +247,66 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
 import macde_report_glossary from '@/assets/files/macde_report_glossary.json'
 
+import { Line as MyLine} from 'vue-chartjs'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+
 export default {
+    components: {MyLine},
     data() {
         return {
             items: macde_report_glossary
         }
     },
+
+    methods: {
+        chartTimeSeriesData(keys) {  
+            let data = [...this.get_forecasted]
+            let dt = createDataSetsTimeSeries( 
+                keys, 
+                'date',
+                data
+            )
+
+            this.get_forecasted.forEach((item, index) => {
+                this.get_optimized_data[index].date = item.date
+            })
+            let dt_optimized = createDataSetsTimeSeries(
+                    keys,
+                    'date',
+                    [...this.get_optimized_data]
+            )
+            dt_optimized.datasets[0].label += ' Sugerida'
+            dt_optimized.datasets[0].backgroundColor = "#BDBDBD"
+            dt_optimized.datasets[0].borderColor = "#757575"
+            dt_optimized.datasets[0].borderDash = [5, 5]
+
+            dt_optimized.datasets.forEach( dt_item => {
+                dt.datasets.push(dt_item)
+            })
+
+            return dt
+        },
+    },
+
     computed: {
+        ...mapGetters('data_forecast', {
+            get_forecasted: 'get_forecasted_data',
+        }),
+
+        ...mapGetters('data_optimize', {
+            get_optimized_data: 'get_optimized_data',
+        }),
+
+        ...mapGetters('data_configurations', {
+            get_tariff_modality: 'get_tariff_modality',
+            get_demand_measurements_names: 'get_demand_measurements_names'
+        }),
+
         consumer_unit: {
             get() {
                 return this.$store.state.data_configurations.consumer_unit
@@ -245,7 +315,8 @@ export default {
                 this.$store.commit('data_configurations/set_consumer_unit', payload)
             }
         },
-         utility: {
+
+        utility: {
             get() {
                 return this.$store.state.data_configurations.utility
             },
@@ -253,6 +324,7 @@ export default {
                 this.$store.commit('data_configurations/set_utility', payload)
             }
         },
+        
         taxes_and_charges: {
             get() {
                 return this.$store.state.data_parameters.taxes_and_charges

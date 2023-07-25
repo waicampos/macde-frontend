@@ -76,39 +76,16 @@
                 <h3>Gráficos dos valores otimizados</h3>
                 <p>Nos gráficos abaixo são apresentados o resultado da otimização da demanda.</p>
             </v-col>
-            <v-col                 
-                v-if="this.tariff_modality.value == '1'"
-                cols="12"
+             <v-col                 
+                v-for="demand_name in get_demand_measurements_names" :key="demand_name"
+                cols=12 :lg="get_tariff_modality.name == 'green' ? 12 : 6"
             >
                 <v-sheet rounded="lg" min-height="300">
                     <MyLine
-                        id="my-optimization-chart-demand-id"
-                        :data="chartTimeSeriesData(['demand'])"
+                        :data="chartTimeSeriesData([demand_name])"
                     />
                 </v-sheet>
-            </v-col>
-            <v-col 
-                v-if="this.tariff_modality.value == '2'"
-                cols="12" lg="6"
-            >
-                <v-sheet rounded="lg">
-                    <MyLine
-                        id="my-optimization-chart-peak-demand-id"
-                        :data="chartTimeSeriesData(['peak_demand'])"
-                    />
-                </v-sheet>
-            </v-col>
-            <v-col 
-                v-if="this.tariff_modality.value == '2'"
-                cols="12" lg="6"
-            >
-                <v-sheet rounded="lg">
-                    <MyLine
-                        id="my-optimization-chart-off-peak-demand-id"
-                        :data="chartTimeSeriesData(['off_peak_demand'])"
-                    />
-                </v-sheet>
-            </v-col>
+            </v-col>    
         </v-row>
 
         <!-- Download de arquivo -->
