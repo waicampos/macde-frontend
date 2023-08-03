@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+export const TIME_SERIES_DATE_FORMAT = 'dd/MM/yyyy'
+
 export const sum = (acc, cur) => acc + cur;
 
 export const MEAS_INFO = {

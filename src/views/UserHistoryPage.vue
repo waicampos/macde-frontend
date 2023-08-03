@@ -55,6 +55,23 @@
 
     <v-row class="flex-1-0 ma-0 pa-0">
       <v-col cols="12">
+        <Transition           
+          v-for="error in get_time_serie_errors"
+          :key="error.code"
+          class="ma-1"
+          name="fade">
+          <v-alert             
+              density="compact"
+              :type="error.type"
+              title=""
+              :text="error.message"
+          ></v-alert>
+        </Transition>
+      </v-col>
+    </v-row>
+
+    <v-row class="flex-1-0 ma-0 pa-0">
+      <v-col cols="12">
         <Transition name="fade">
           <v-alert
               v-if="msg_props.text"
@@ -69,7 +86,7 @@
 
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
-        <FileUploader  store_dispatch_name="data_history/load_user_data_history"/>
+        <FileUploader  store_dispatch_name="data_history/load_user_data_history_raw"/>
       </v-col>
     </v-row>
 
@@ -110,7 +127,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import FileUploader from '@/components/FileUploader.vue'
   import macde_modelo from '@/assets/files/modelo_macde.json'
   import TableData from '@/components/TableData.vue'
@@ -126,12 +143,14 @@
       return {
         msg_props: {"text": "", "type": "success"},
         chartEnergy: {datasets: []},
-        chartDemand: {datasets: []}
+        chartDemand: {datasets: []},
       }
     },
     computed: {
       ...mapGetters('data_history', {
           data_file: 'get_user_data_history',
+          data_file_raw: 'get_user_data_history_raw',
+          get_time_serie_errors: 'get_time_serie_errors',
       }),
 
       chartOptionsDemand() {
@@ -152,6 +171,8 @@
       },
     },
     methods: {
+      ...mapActions('data_history', ['clear_time_serie_errors']),
+
       set_msg(m, type_msg) {
         this.msg_props.text = m
         this.msg_props.type = type_msg
@@ -197,6 +218,7 @@
           }
           else {
             this.set_msg("Dados apagados com sucesso.", "info")
+            this.clear_time_serie_errors
           }
 
           this.chartDataDemand()

@@ -21,8 +21,6 @@ export default {
 
       get_unique_optimized_demand_cost(state, getters, rootState, rootGetters) {
         let unique = {}          
-        console.log("DEMAND NAMES", rootGetters['data_configurations/get_demand_measurements_names'])
-        console.log("OPTMIZED", getters.get_optimized_data)
         rootGetters['data_configurations/get_demand_measurements_names'].forEach(key => {
           unique[key] = Array.from(new Set(getters.get_optimized_data_by_key(key)))
         })
