@@ -43,7 +43,19 @@
                     cols="12"
                     sm="6"
                   >
-                    <v-text-field                    
+                    <InputNumberFormatted  
+                    :initial="item.value"
+                      v-if="item.name !== 'date'"
+                      maxFractionDigits='12'
+                      lang="pt-BR"
+                      prefix="R$"
+                      :label="item.label"
+                      :suffix= "item.suffix"
+                      @changedValue="changedInputNumberValue($event, item.value, index)"
+                    />
+
+                    <v-text-field   
+                      v-else
                       v-model= "item.value"
                       :label= "item.label"
                       :suffix= "item.suffix"
@@ -85,7 +97,7 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.action="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
       <v-icon
         size="small"
         class="me-2"
@@ -119,7 +131,10 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
+
   export default {
+    components: {InputNumberFormatted},
     data: () => ({
       dialog: false,
       dialogDelete: false,
@@ -134,7 +149,7 @@
         { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
         { title: 'Energia de Ponta', key: 'peak_energy' },
         { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
-        { title: 'Opções', key: 'action', sortable: false },
+        { title: 'Opções', key: 'actions', sortable: false },
       ],
       editedIndex: -1,
       editedItem: [
@@ -161,15 +176,11 @@
       },
     },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {''
-        val || this.closeDelete()
-      },
-    },
     methods: {
+      changedInputNumberValue(e, param, index) {
+        this.editedItem[index].value = e;
+      },
+
       editItem (item) {
         this.editedIndex = this.data_file.indexOf(item)
 
@@ -221,6 +232,15 @@
             this.$store.dispatch('data_history/add_user_data_history', obj)
         }
         this.close()
+      },
+    },
+
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {''
+        val || this.closeDelete()
       },
     },
   }
