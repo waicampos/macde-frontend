@@ -18,6 +18,10 @@ export default {
    },
 
   props: {
+    initial: {
+      type: Number,
+      default: 0
+    },
     label: {
       type: String,
       default: 'Type a Number'
@@ -36,7 +40,7 @@ export default {
     },
     maxFractionDigits: {
       type: String,
-      default: 12
+      default: '12'
     }
   },
 
@@ -65,10 +69,13 @@ export default {
             } 
 
             this.$nextTick(() => {
-              this.$emit('changedValue', this.local_number)
+              this.$emit('changedValue', parseFloat(this.local_number))
             })
           }
         },
+  },
+  created() {
+    this.local_number = this.initial
   },
 }
 </script>
