@@ -44,22 +44,21 @@
                     sm="6"
                   >
                     <InputNumberFormatted  
-                    :initial="item.value"
+                      :initial="item.value"
                       v-if="item.name !== 'date'"
+                      input-placeholder='dd/mm/yyyy'
                       maxFractionDigits='12'
                       lang="pt-BR"
-                      prefix="R$"
                       :label="item.label"
                       :suffix= "item.suffix"
                       @changedValue="changedInputNumberValue($event, item.value, index)"
                     />
 
-                    <v-text-field   
+                    <InputDatePicker 
                       v-else
-                      v-model= "item.value"
-                      :label= "item.label"
-                      :suffix= "item.suffix"
-                    ></v-text-field>
+                      :value="item.value"
+                      :label="item.label"
+                    />
                   </v-col>
                 </v-row>
               </v-container>
@@ -132,9 +131,11 @@
 <script>
   import { mapGetters } from 'vuex'
   import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
+  import InputDatePicker from '@/components/InputDatePicker.vue'
+
 
   export default {
-    components: {InputNumberFormatted},
+    components: {InputNumberFormatted, InputDatePicker},
     data: () => ({
       dialog: false,
       dialogDelete: false,
