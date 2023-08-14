@@ -116,7 +116,6 @@
     </v-row>    
 
     <v-row 
-      v-if="data_file.length"
       class="flex-1-0 ma-2 pa-2"
     >
       <v-col cols="12">
