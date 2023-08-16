@@ -1,6 +1,6 @@
 <template>
     <v-menu
-      v-model="menu"
+      v-model="menu"      
       :close-on-content-click="false"
       :nudge-right="40"
       transition="scale-transition"
@@ -11,7 +11,7 @@
       <template v-slot:activator="{ props }">
         <v-text-field
           v-bind="props"
-          :modelValue="dateFormatted"    
+          :modelValue="valueStr"    
           readonly              
           append-inner-icon="mdi-calendar"
           :label="label"
@@ -20,26 +20,25 @@
       </template>
       <v-locale-provider locale="pt-BR">
         <VDatePicker
-          :modelValue="getDate"
+          v-model="value"
           show-adjacent-months
-          input-placeholder="MM/dd/yyyy"
           color="primary"
-          title="Selecione uma data"
-          cancel-text="Cancel"
-          ok-text="Ok"
-          input-text="Digite uma data"
-          @click:cancel="closeMenu"
-          @click:save="closeMenu"
-          @update:modelValue="updateDate"
-          @update:inputMode="updateInputMode"
-        ></VDatePicker>
+          title=""
+          cancel-text="Cancelar"
+          ok-text="Ok"          
+          @click:cancel="menu = false"
+          @click:save="menu = false"
+        >
+          <template v-slot:header>
+          </template>
+        </VDatePicker>
       </v-locale-provider>
     </v-menu>
 </template>
 
 <script>
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { format as fns_format, parse as fns_parse } from 'date-fns'
+import { format as fns_format } from 'date-fns'
 import { TIME_SERIES_DATE_FORMAT } from '@/assets/files/consts'
 
 export default {
@@ -47,57 +46,47 @@ export default {
   data() {
     return {
       menu: false,
-      input: null,
-      inputMode: 'calendar',
+      localValue: null,
     };
   },
 
   computed: {
-    dateFormatted() {  
-      const date = this.input ? new Date(this.input) : new Date();      
-      
-      return fns_format(date, this.inputMode == 'keyboard' ? 'MM/dd/yyyy': TIME_SERIES_DATE_FORMAT)
+    value: {
+      get() {
+        return this.localValue
+      },
+      set(val) {        
+        this.$emit('update:modelValue', val)
+      }
     },
 
-    getDate() {
-      return this.input ? new Date(this.input) : new Date();
-    },
-  },
-
-  methods: {
-    updateDate(val) {
-      this.input = val      
-    },
-    updateInputMode(val) {
-      this.inputMode = val
-    },
-
-    closeMenu() {
-      this.menu = false;
+    valueStr() {
+      return fns_format(this.value, TIME_SERIES_DATE_FORMAT)
     },
   },
 
   props: {
-    value: {
-      type: String,
-      default() {
-        return Date()
-      },
+    modelValue: {      
+      default: new Date()
     },
     label: {
       type: String,
       default: 'Data'
     },
   },
+  
+  created() {    
+    this.localValue = this.modelValue || new Date()
+    this.value = this.modelValue || new Date()
+  },
 
   watch: {
-    value: {
-      handler(val) {
-        const formatted = fns_parse(val, TIME_SERIES_DATE_FORMAT, new Date());
-        this.input = formatted == 'Invalid Date' ? null : formatted;
-      },
-      immediate: true,
+      modelValue: {
+        handler() {
+          this.localValue = this.modelValue
+        },
+        imediate: true,
+      }
     },
-  },
 };
 </script>

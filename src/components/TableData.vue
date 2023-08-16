@@ -56,7 +56,7 @@
 
                     <InputDatePicker 
                       v-else
-                      :value="item.value"
+                      v-model="item.value"
                       :label="item.label"
                     />
                   </v-col>
