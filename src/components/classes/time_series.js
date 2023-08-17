@@ -3,6 +3,7 @@ import {
     parse as fns_parse,
     min as fns_min,
     max as fns_max,
+    isValid as fns_isValid,
     eachMonthOfInterval,
     eachYearOfInterval,
     eachWeekOfInterval,
@@ -30,6 +31,11 @@ export class ValidationTimeSerie{
         this.ts = ts
         this.minimum_size = minimum_size
         this.maximum_size = maximum_size
+        this.errors = []
+    }
+    
+    clear_erros() {
+        this.errors = []
     }
 
     get_minimum_size() {
@@ -48,18 +54,6 @@ export class ValidationTimeSerie{
         this.maximum_size = value
     }
 
-    valid_min_size() {
-        return this.ts.size() >= this.minimum_size
-    }
-
-    valid_max_size() {
-        return this.ts.size() <= this.maximum_size
-    }
-
-    valid_ideal_size(){
-        return this.ideal_size() == this.ts.size()
-    }
-
     ideal_size() {
         let size = 0 
         if(this.ts.size()) {
@@ -71,11 +65,92 @@ export class ValidationTimeSerie{
         return size * this.ts.get_frequency()
     }
 
-    is_correct_size(){
-        return this.valid_min_size() && this.valid_max_size() && this.valid_ideal_size()
+    valid_allNumbers() {
+        const isValid = this.ts.get_data().every(item => {                           
+            return this.ts.get_required_keys_series().every(key => {
+              return typeof item[key] == 'number'
+            }) 
+          })
+
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_IS_NUMBER',
+                'Algumas amostras não possuem números válidos.'
+            ))
+        }
+        return isValid
     }
 
-    isDateSequence() {
+    valid_required_keys(){
+        const isValid = this.ts.get_data().every(item => { 
+            return this.ts.get_required_keys_series().every(key => {
+                return Object.prototype.hasOwnProperty.call(item, key)
+            }) 
+        })
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_REQ_KEYS',
+                `O arquivo não possui um ou mais propriedades obrigatórias (${this.ts.get_required_keys_series().join(', ')}) em todas as amostras.`
+            ))
+        }
+        return isValid
+    }
+    
+    valid_isValidDate() {
+        const isValid = this.ts.get_data().every(item => fns_isValid(item.date))
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_INVALID_DATE',
+                'Série Temporal possui uma ou mais datas inválidas.'
+            ))
+        }
+        return isValid
+    }
+
+    valid_has_key_date() {
+        const isValid = this.ts.get_data().every(item => 'date' in item)
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_MISSING_KEY_DATE',
+                'Série Temporal possui uma ou mais amostras sem informação de data.'
+            ))
+        }
+        return isValid
+    }
+    valid_min_size() {
+        const isValid = this.ts.size() >= this.minimum_size
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_MIN_SIZE',
+                `A série informada possui um tamanho de ${this.ts.size()} amostras, sendo que o tamanho mínimo aceitável é de ${this.ts.get_frequency()} amostras.`
+            ))
+        }
+        return isValid
+    }
+
+    valid_max_size() {
+        const isValid = this.ts.size() <= this.maximum_size
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_MAX_SIZE',
+                `A série informada possui um tamanho de ${this.ts.size()} amostras, sendo que o tamanho máximo aceitável é de ${this.ts.get_frequency()} amostras.`
+            ))
+        }
+        return isValid
+    }
+
+    valid_ideal_size(){
+        const isValid = this.ideal_size() == this.ts.size()
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_IDEAL_SIZE',
+                `A série deve ter um tamanho múltiplo de ${this.ts.get_frequency()} amostras. O tamanho atual é de ${this.ts.size()} amostras. O tamanho correto deveria ser de ${this.ideal_size()}`
+            ))
+        }
+        return isValid        
+    }
+
+    valid_date_sequence() {
         this.ts.sort()
         const dt = this.ts.get_data()
         let index_out = []
@@ -85,10 +160,17 @@ export class ValidationTimeSerie{
             index_out.push(i + 1)
           }
         }
-        return index_out
+        const isValid = !index_out.length
+        if(!isValid && this.valid_isValidDate()) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_DATE_SEQ',
+                `A série deve ter uma sequência cronológica. As seguintes Datas não estão em sequência: ${index_out.map(index => fns_format(dt[index].date, TIME_SERIES_DATE_FORMAT)).join(', ')}`
+            ))
+        }
+        return isValid         
     }
 
-    hasDuplicatesDates() {
+    valid_DuplicatesDates() {
         const dt = this.ts.toString()
         const distinct = new Set(dt.map(i => i.date));     
         const filtered = dt.filter(item => {
@@ -99,22 +181,39 @@ export class ValidationTimeSerie{
                 return true;
             }
         });
-        return [...new Set(filtered)]
+        const repeated = [...new Set(filtered)]
+        const isValid = !repeated.length
+        if(!isValid) {            
+            this.errors.push(new TimeSeriesError(
+                'ERROR_DUPLICATED_VALUE',
+                `A série não deve ter valores repetidos. As seguintes Datas possuem mais de um valor: ${repeated.map(item => item.date).join(', ')}`
+            ))
+        }
+        return isValid    
     }
 }
 
 export class TimeSeries {
-    constructor(data, start, frequency = ts_frequency.monthly, date_format = TIME_SERIES_DATE_FORMAT) {
-        this.date_format = date_format
-        this.data = data.map(item => Object.assign({}, item))
-        this.start = start
+    constructor(data, 
+        start = new Date(), 
+        frequency = ts_frequency.monthly, 
+        date_format = TIME_SERIES_DATE_FORMAT,
+        required_keys_series = ['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
+    ) {
+        this.date_format = date_format;
+        this.data = data.map(item => Object.assign({}, item));
+        this.start = start;
         this.frequency = frequency;
+        this.required_keys_series = required_keys_series
 
-        this.parse()
+        this.parse()        
     }
 
     parse() {        
         this.data.forEach(item => {
+            if(!('date' in item)) {
+                item.date = ''
+            }
             if(typeof item.date === 'string') {
                 item.date = fns_parse(item.date, this.date_format, new Date())
             }
@@ -123,7 +222,7 @@ export class TimeSeries {
 
     toString() {
         return this.get_data().map(item => {
-            if(typeof item.date !== 'string') {
+            if(fns_isValid(item.date)) {
                 item.date = fns_format(item.date, this.date_format)                
             }
             return item
@@ -132,6 +231,10 @@ export class TimeSeries {
 
     sort() {
         this.data.sort((a, b) => compareAsc(a.date, b.date))
+    }
+
+    get_required_keys_series() {
+        return this.required_keys_series
     }
 
     get_data() {
@@ -160,7 +263,7 @@ export class TimeSeries {
 
     create_date_serie() {        
         let amount = this.size() - 1
-        let start_date = fns_parse(this.start, this.date_format, new Date())
+        let start_date = (typeof this.start === 'string') ? fns_parse(this.start, this.date_format, new Date()) : this.start
         
         let each_interval;
         let add;
