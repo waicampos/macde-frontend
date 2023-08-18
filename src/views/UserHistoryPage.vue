@@ -70,7 +70,7 @@
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
         <FileUploader  
-          store_dispatch_name="data_history/load_user_data_history_raw"
+          store_dispatch_name="data_history/load_user_data_history"
           @messages="fileUploaderMsg"  
         />
       </v-col>

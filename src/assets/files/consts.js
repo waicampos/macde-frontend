@@ -1,13 +1,5 @@
 import axios from 'axios'
 
-export class MessagesManager{  
-  constructor(code, message, type='error') {
-    this.code = code || 'Error'
-    this.message = message || 'Ocorreu um erro relacionado com a Série Teporal';
-    this.type = type
-  }
-}
-
 export const TIME_SERIES_DATE_FORMAT = 'dd/MM/yyyy'
 
 export const sum = (acc, cur) => acc + cur;

@@ -38,6 +38,10 @@ export class ValidationTimeSerie{
         this.errors = []
     }
 
+    get_ts() {
+        return this.ts
+    }
+
     get_minimum_size() {
         return this.minimum_size
     }
@@ -66,88 +70,39 @@ export class ValidationTimeSerie{
     }
 
     valid_allNumbers() {
-        const isValid = this.ts.get_data().every(item => {                           
+        return this.ts.get_data().every(item => {                           
             return this.ts.get_required_keys_series().every(key => {
               return typeof item[key] == 'number'
             }) 
           })
-
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_IS_NUMBER',
-                'Algumas amostras não possuem números válidos.'
-            ))
-        }
-        return isValid
     }
 
     valid_required_keys(){
-        const isValid = this.ts.get_data().every(item => { 
+        return this.ts.get_data().every(item => { 
             return this.ts.get_required_keys_series().every(key => {
                 return Object.prototype.hasOwnProperty.call(item, key)
             }) 
         })
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_REQ_KEYS',
-                `O arquivo não possui um ou mais propriedades obrigatórias (${this.ts.get_required_keys_series().join(', ')}) em todas as amostras.`
-            ))
-        }
-        return isValid
     }
     
     valid_isValidDate() {
-        const isValid = this.ts.get_data().every(item => fns_isValid(item.date))
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_INVALID_DATE',
-                'Série Temporal possui uma ou mais datas inválidas.'
-            ))
-        }
-        return isValid
+        return this.ts.get_data().every(item => fns_isValid(item.date))
     }
 
     valid_has_key_date() {
-        const isValid = this.ts.get_data().every(item => 'date' in item)
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_MISSING_KEY_DATE',
-                'Série Temporal possui uma ou mais amostras sem informação de data.'
-            ))
-        }
-        return isValid
+        return this.ts.get_data().every(item => 'date' in item)
     }
+
     valid_min_size() {
-        const isValid = this.ts.size() >= this.minimum_size
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_MIN_SIZE',
-                `A série informada possui um tamanho de ${this.ts.size()} amostras, sendo que o tamanho mínimo aceitável é de ${this.ts.get_frequency()} amostras.`
-            ))
-        }
-        return isValid
+        return this.ts.size() >= this.minimum_size
     }
 
     valid_max_size() {
-        const isValid = this.ts.size() <= this.maximum_size
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_MAX_SIZE',
-                `A série informada possui um tamanho de ${this.ts.size()} amostras, sendo que o tamanho máximo aceitável é de ${this.ts.get_frequency()} amostras.`
-            ))
-        }
-        return isValid
+        return this.ts.size() <= this.maximum_size
     }
 
     valid_ideal_size(){
-        const isValid = this.ideal_size() == this.ts.size()
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_IDEAL_SIZE',
-                `A série deve ter um tamanho múltiplo de ${this.ts.get_frequency()} amostras. O tamanho atual é de ${this.ts.size()} amostras. O tamanho correto deveria ser de ${this.ideal_size()}`
-            ))
-        }
-        return isValid        
+        return this.ideal_size() == this.ts.size()     
     }
 
     valid_date_sequence() {
@@ -160,14 +115,8 @@ export class ValidationTimeSerie{
             index_out.push(i + 1)
           }
         }
-        const isValid = !index_out.length
-        if(!isValid && this.valid_isValidDate()) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_DATE_SEQ',
-                `A série deve ter uma sequência cronológica. As seguintes Datas não estão em sequência: ${index_out.map(index => fns_format(dt[index].date, TIME_SERIES_DATE_FORMAT)).join(', ')}`
-            ))
-        }
-        return isValid         
+        
+        return !index_out.length && this.valid_isValidDate()        
     }
 
     valid_DuplicatesDates() {
@@ -181,15 +130,7 @@ export class ValidationTimeSerie{
                 return true;
             }
         });
-        const repeated = [...new Set(filtered)]
-        const isValid = !repeated.length
-        if(!isValid) {            
-            this.errors.push(new TimeSeriesError(
-                'ERROR_DUPLICATED_VALUE',
-                `A série não deve ter valores repetidos. As seguintes Datas possuem mais de um valor: ${repeated.map(item => item.date).join(', ')}`
-            ))
-        }
-        return isValid    
+        return ![...new Set(filtered)].length
     }
 }
 

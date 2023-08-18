@@ -1,4 +1,5 @@
 import { str2date, groupBy, get_serie_by_key } from '@/assets/files/consts'
+import * as sys_msg from '@/assets/files/system_messages'
 import { TimeSeries, ValidationTimeSerie } from '@/components/classes/time_series'
 
 export default {
@@ -73,9 +74,6 @@ export default {
         load_user_data_history(state, payload) {
           state.user_data_history = payload
         },
-        load_user_data_history_raw(state, payload) {
-          state.user_data_history_raw = payload
-        },
         add_user_data_history(state, payload) {
           state.user_data_history.push(payload)
         },
@@ -107,43 +105,33 @@ export default {
           commit("delete_item_user_data_history_messages", payload)
         },
 
-        load_user_data_history({ commit }, payload) {
-          payload.map(item => {        
-            item.demand = Math.max(item.peak_demand, item.off_peak_demand)
-          })
-          commit("load_user_data_history", payload)
-        },
-
         clear_time_serie_errors({ commit }) {
           commit("clear_time_serie_errors")
         },
 
-        load_user_data_history_raw({ state, commit }, payload) {
+        load_user_data_history({ state, commit }, payload) {
+          if(!payload) {
+            state.user_data_history_messages.push(sys_msg.ERROR_FAIL_UPLOAD_FILE())
+            return false
+          }
           let ts = new TimeSeries(payload)
           let ts_validation = new ValidationTimeSerie(ts)
-          commit("clear_time_serie_errors")
-
-          try{
-            ts_validation.valid_isValidDate()
-            ts_validation.valid_min_size()
-            ts_validation.valid_max_size()
-            ts_validation.valid_ideal_size()
-            ts_validation.valid_date_sequence()
-            ts_validation.valid_DuplicatesDates()
-            ts_validation.valid_allNumbers()
-            ts_validation.valid_required_keys()
-
-            if(ts_validation.errors) {
-              ts_validation.errors.forEach((item) => {
-                state.time_serie_errors.push({code: item.name, message: item.message, type: 'error'})
-              })
-            }else {
-              state.time_serie_errors.push({code: "NOERR_INPUT_FILE", message: 'Arquivo carregado com sucesso', type: 'success'})
-              commit("load_user_data_history_raw", payload)      
-            }
-          } catch(err) {
-            state.time_serie_errors.push({code: "ERR_INPUT_FILE", message: 'Ocorreu um erro no carregamento do arquivo', type: 'error'})
-          }                   
+          
+          if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
+          else if(!ts_validation.valid_min_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MIN_SIZE(ts))
+          else if(!ts_validation.valid_max_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MAX_SIZEts(ts))
+          else if(!ts_validation.valid_date_sequence()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DATE_SEQ())
+          else if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())
+          else if(!ts_validation.valid_allNumbers()) state.user_data_history_messages.push(sys_msg.ERROR_TS_IS_NUMBER())
+          else if(!ts_validation.valid_required_keys()) state.user_data_history_messages.push(sys_msg.ERROR_REQ_KEYS(['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']))
+          else{
+            payload.forEach(item => {        
+              item.demand = Math.max(item.peak_demand, item.off_peak_demand)
+            })
+            state.user_data_history_messages.push(sys_msg.SUCCESS_UPLOAD_FILE())
+            let ts_with_demand = new TimeSeries(payload)
+            commit("load_user_data_history", ts_with_demand.toString()) 
+          }          
         },
 
         add_user_data_history({ commit }, payload) {
