@@ -6,11 +6,16 @@ export default {
     state: {
         user_data_history: [],     
         user_data_history_raw: [],
-        time_serie_errors: []
+        time_serie_errors: [],
+        user_data_history_messages: [],
       },
       getters: {
         get_user_data_history(state) {
           return state.user_data_history
+        },
+
+        get_user_data_history_messages(state) {
+          return state.user_data_history_messages
         },
 
         get_user_data_history_raw(state) {
@@ -86,8 +91,22 @@ export default {
         clear_time_serie_errors(state) {
           state.time_serie_errors = []
         },
+        user_data_history_messages(state, payload) {
+          state.user_data_history_messages.push(payload)
+        },
+        delete_item_user_data_history_messages(state, payload) {
+          state.user_data_history_messages.splice(payload)
+        },
       },
       actions: {
+        user_data_history_messages({ commit }, payload) {
+          commit("user_data_history_messages", payload)
+        },
+
+        delete_item_user_data_history_messages({ commit }, payload) {
+          commit("delete_item_user_data_history_messages", payload)
+        },
+
         load_user_data_history({ commit }, payload) {
           payload.map(item => {        
             item.demand = Math.max(item.peak_demand, item.off_peak_demand)

@@ -34,14 +34,20 @@
 </template>
 
 <script>
+import { MessagesManager } from '@/assets/files/consts';
 
 export default {
     data() {
-        return {            
+        return {          
             file: '',
-            dragging: false
+            dragging: false,
         }
-    },    
+    },   
+    
+    emits: {
+        messages: null,
+    },
+
     props: {
         store_dispatch_name: String
     },
@@ -56,8 +62,16 @@ export default {
             this.file = e.target.files[0];
             var reader = new FileReader();
             reader.readAsText(this.file); 
+            let msg_upload = {}
             reader.onload = (e) => {
-                this.$store.dispatch(this.store_dispatch_name, JSON.parse(e.target.result))
+                try{
+                    this.$store.dispatch(this.store_dispatch_name, JSON.parse(e.target.result))                    
+                    msg_upload = new MessagesManager("UPLOAD_SUCCESS", "Arquivo carregado com sucesso.", "success")
+                } catch(err) {
+                    msg_upload = new MessagesManager("UPLOAD_FAIL", "Não foi possível carregar o arquivo.", "error")               
+                } finally {                    
+                    this.$emit('messages', msg_upload)
+                }
             };                     
         },
         removeFile() {

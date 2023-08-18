@@ -54,39 +54,25 @@
     </v-row>
 
     <v-row class="flex-1-0 ma-0 pa-0">
-      <v-col cols="12">
-        <Transition           
-          v-for="error in get_time_serie_errors"
-          :key="error.code"
-          class="ma-1"
-          name="fade">
-          <v-alert             
-              density="compact"
-              :type="error.type"
-              title=""
-              :text="error.message"
-          ></v-alert>
-        </Transition>
-      </v-col>
-    </v-row>
-
-    <v-row class="flex-1-0 ma-0 pa-0">
-      <v-col cols="12">
-        <Transition name="fade">
-          <v-alert
-              v-if="msg_props.text"
-              density="compact"
-              :type="msg_props.type"
-              title=""
-              :text="msg_props.text"
-          ></v-alert>
-        </Transition>
+      <v-col 
+        cols="12"
+          v-for="(msg, index) in get_user_data_history_messages"
+          :key="msg.code"
+      >
+        <MessageViewer 
+          :msg="msg"
+          v-show="msg"
+          @msg_shown='message_shown(index)'
+        />
       </v-col>
     </v-row>
 
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
-        <FileUploader  store_dispatch_name="data_history/load_user_data_history_raw"/>
+        <FileUploader  
+          store_dispatch_name="data_history/load_user_data_history_raw"
+          @messages="fileUploaderMsg"  
+        />
       </v-col>
     </v-row>
 
@@ -128,6 +114,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex'
   import FileUploader from '@/components/FileUploader.vue'
+  import MessageViewer from '@/components/MessageViewer.vue'
   import macde_modelo from '@/assets/files/modelo_macde.json'
   import TableData from '@/components/TableData.vue'
   import { Line as MyLine} from 'vue-chartjs'
@@ -137,7 +124,7 @@
 
   export default {
     name: 'userHistoryPage',
-    components: {FileUploader, TableData, MyLine},
+    components: {FileUploader, TableData, MyLine, MessageViewer},
     data() {
       return {
         msg_props: {"text": "", "type": "success"},
@@ -150,6 +137,7 @@
           data_file: 'get_user_data_history',
           data_file_raw: 'get_user_data_history_raw',
           get_time_serie_errors: 'get_time_serie_errors',
+          get_user_data_history_messages: 'get_user_data_history_messages',
       }),
 
       chartOptionsDemand() {
@@ -170,7 +158,15 @@
       },
     },
     methods: {
-      ...mapActions('data_history', ['clear_time_serie_errors']),
+      ...mapActions('data_history', ['clear_time_serie_errors', 'user_data_history_messages', 'delete_item_user_data_history_messages']),
+      
+      message_shown(index) {
+        this.delete_item_user_data_history_messages(index)
+      },
+
+      fileUploaderMsg(msg) {
+        this.user_data_history_messages(msg)        
+      },
 
       set_msg(m, type_msg) {
         this.msg_props.text = m
@@ -229,21 +225,3 @@
     },
   }
 </script>
-
-<style>
-    .fade-enter-from{
-        opacity: 0;
-    }
-
-    .fade-enter-active{
-        transition: opacity 1s;
-    }
-
-    .fade-leave-to{
-        opacity: 0;
-    }
-
-    .fade-leave-active{
-        transition: opacity 1s;
-    }
-</style>
