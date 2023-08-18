@@ -44,12 +44,9 @@ export default {
     },   
     
     emits: {
-        messages: null,
+        newFileUploaded: null,
     },
 
-    props: {
-        store_dispatch_name: String
-    },
     computed: {     
         extension() {
             return (this.file) ? this.file.name.split('.').pop() : '';
@@ -63,9 +60,9 @@ export default {
             reader.readAsText(this.file); 
             reader.onload = (e) => {
                 try{
-                    this.$store.dispatch(this.store_dispatch_name, JSON.parse(e.target.result))                                        
+                    this.$emit("newFileUploaded", JSON.parse(e.target.result))                    
                 } catch(err) {
-                    this.$store.dispatch(this.store_dispatch_name, null)
+                    this.$emit("newFileUploaded", null)                    
                 } 
             };                     
         },

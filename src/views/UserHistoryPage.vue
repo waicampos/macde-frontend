@@ -70,8 +70,7 @@
     <v-row class="flex-1-0 ma-2 pa-2">
       <v-col cols="12">
         <FileUploader  
-          store_dispatch_name="data_history/load_user_data_history"
-          @messages="fileUploaderMsg"  
+          @newFileUploaded="fileUploaded"  
         />
       </v-col>
     </v-row>
@@ -160,12 +159,12 @@
     methods: {
       ...mapActions('data_history', ['clear_time_serie_errors', 'user_data_history_messages', 'delete_item_user_data_history_messages']),
       
-      message_shown(index) {
-        this.delete_item_user_data_history_messages(index)
+      fileUploaded(val) {
+        this.$store.dispatch('data_history/load_user_data_history', val)
       },
 
-      fileUploaderMsg(msg) {
-        this.user_data_history_messages(msg)        
+      message_shown(index) {
+        this.delete_item_user_data_history_messages(index)
       },
 
       set_msg(m, type_msg) {
