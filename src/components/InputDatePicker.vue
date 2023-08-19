@@ -61,7 +61,10 @@ export default {
     },
 
     valueStr() {
-      return fns_format(this.value, TIME_SERIES_DATE_FORMAT)
+      if(typeof this.value !== 'string') {
+        return fns_format(this.value, TIME_SERIES_DATE_FORMAT)
+      }
+      return this.value
     },
   },
 

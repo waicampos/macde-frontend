@@ -5,6 +5,10 @@
     :sort-by="[{ key: 'date', order: 'asc' }]"
     class="elevation-4"
   >
+    <template v-slot:[`item.date`]="{ item }">         
+      {{ date2string(item.columns.date) }}
+    </template>
+
     <template v-slot:top>
       <v-toolbar
         flat
@@ -130,8 +134,10 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import { format as fns_format } from 'date-fns'
   import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
   import InputDatePicker from '@/components/InputDatePicker.vue'
+  import { TIME_SERIES_DATE_FORMAT } from '@/assets/files/consts'
 
 
   export default {
@@ -180,6 +186,10 @@
     methods: {
       changedInputNumberValue(e, param, index) {
         this.editedItem[index].value = e;
+      },
+
+      date2string(dt) {
+        return fns_format(dt, TIME_SERIES_DATE_FORMAT)
       },
 
       editItem (item) {

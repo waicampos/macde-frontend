@@ -130,7 +130,8 @@ export default {
             })
             state.user_data_history_messages.push(sys_msg.SUCCESS_UPLOAD_FILE())
             let ts_with_demand = new TimeSeries(payload)
-            commit("load_user_data_history", ts_with_demand.toString()) 
+            ts_with_demand.sort()
+            commit("load_user_data_history", ts_with_demand.get_data()) 
           }          
         },
 
