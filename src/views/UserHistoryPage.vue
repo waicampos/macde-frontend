@@ -118,8 +118,9 @@
   import TableData from '@/components/TableData.vue'
   import { Line as MyLine} from 'vue-chartjs'
   import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
-  import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+  import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,  TimeScale } from 'chart.js'
+  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,  TimeScale)
+  import 'chartjs-adapter-date-fns';
 
   export default {
     name: 'userHistoryPage',

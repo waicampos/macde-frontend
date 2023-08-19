@@ -57,7 +57,15 @@ export const chartOptionsConfig = {
     maintainAspectRatio: false,
     scales: {
         x: {
-            beginAtZero: true,
+            type: 'time',            
+            time: {
+                unit: "day",
+                parser: "dd/MM/yyyy",
+                unitStepSize: 1,
+                displayFormats: {
+                    'day': 'dd/MM'
+                  }
+            },
             title: {
                 display: true,
                 text: 'Label X axis'
