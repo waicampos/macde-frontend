@@ -135,8 +135,6 @@
     computed: {
       ...mapGetters('data_history', {
           data_file: 'get_user_data_history',
-          data_file_raw: 'get_user_data_history_raw',
-          get_time_serie_errors: 'get_time_serie_errors',
           get_user_data_history_messages: 'get_user_data_history_messages',
       }),
 
@@ -158,7 +156,7 @@
       },
     },
     methods: {
-      ...mapActions('data_history', ['clear_time_serie_errors', 'user_data_history_messages', 'delete_item_user_data_history_messages']),
+      ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
       
       fileUploaded(val) {
         this.$store.dispatch('data_history/load_user_data_history', val)
@@ -168,23 +166,14 @@
         this.delete_item_user_data_history_messages(index)
       },
 
-      set_msg(m, type_msg) {
-        this.msg_props.text = m
-        this.msg_props.type = type_msg
-        setTimeout(() => {
-          this.msg_props.text = ""
-        }, 3000)
+      clear_user_historic() {
+        if(this.data_file.length) {
+          this.$store.dispatch('data_history/clear_user_data_history')
+        }
       },
-
-    clear_user_historic() {
-      if(this.data_file.length) {
-        this.$store.dispatch('data_history/clear_user_data_history')
-      }
-    },
 
       load_standard_user_historic() {
         this.$store.dispatch('data_history/load_user_data_history', macde_modelo)
-        this.set_msg("Dados carregados com sucesso.", "success")
       },
       
       chartDataDemand() {
@@ -208,14 +197,6 @@
     watch: {
       data_file: {
         handler() {
-          if(this.data_file.length){ 
-            this.set_msg("Dados carregados com sucesso.", "success")
-          }
-          else {
-            this.set_msg("Dados apagados com sucesso.", "info")
-            this.clear_time_serie_errors
-          }
-
           this.chartDataDemand()
           this.chartDataEnergy()
         },

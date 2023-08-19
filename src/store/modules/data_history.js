@@ -6,8 +6,6 @@ export default {
     namespaced: true,
     state: {
         user_data_history: [],     
-        user_data_history_raw: [],
-        time_serie_errors: [],
         user_data_history_messages: [],
       },
       getters: {
@@ -17,14 +15,6 @@ export default {
 
         get_user_data_history_messages(state) {
           return state.user_data_history_messages
-        },
-
-        get_user_data_history_raw(state) {
-          return state.user_data_history_raw
-        },
-
-        get_time_serie_errors(state) {
-          return state.time_serie_errors
         },
 
         get_user_data_history_by_serie: (state) => (key) => {
@@ -86,9 +76,6 @@ export default {
         clear_user_data_history(state) {
           state.user_data_history = []
         },
-        clear_time_serie_errors(state) {
-          state.time_serie_errors = []
-        },
         user_data_history_messages(state, payload) {
           state.user_data_history_messages.push(payload)
         },
@@ -103,10 +90,6 @@ export default {
 
         delete_item_user_data_history_messages({ commit }, payload) {
           commit("delete_item_user_data_history_messages", payload)
-        },
-
-        clear_time_serie_errors({ commit }) {
-          commit("clear_time_serie_errors")
         },
 
         load_user_data_history({ state, commit }, payload) {
@@ -146,7 +129,8 @@ export default {
         delete_item_user_data_history_by_id({ commit }, payload) {
           commit("delete_item_user_data_history_by_id", payload)
         },
-        clear_user_data_history({ commit }) {
+        clear_user_data_history({ state, commit }) {
+          state.user_data_history_messages.push(sys_msg.INFO_DELETED_DATA())
           commit("clear_user_data_history")
         },
       },

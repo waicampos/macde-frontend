@@ -1,3 +1,11 @@
+export const INFO_DELETED_DATA = () => {
+    return {
+        code: 'INFO_DELETED_DATA',
+        message: `Dados apagados com sucesso.`,
+        type: 'info'
+    }
+}
+
 export const SUCCESS_UPLOAD_FILE = () => {
     return {
         code: 'SUCCESS_UPLOAD_FILE',
