@@ -57,13 +57,6 @@ export function groupBy(array, key){
     }, {})
 }
 
-export function str2date(dt){
-    let curr = dt.split('/')
-    
-    //The Date function the month starts at 0
-    return new Date(curr[2], curr[1] - 1, curr[0])
-}
-
 export function get_serie_by_key(data, key){
     if(!key) {
       return data

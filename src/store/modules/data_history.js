@@ -1,6 +1,10 @@
-import { str2date, groupBy, get_serie_by_key } from '@/assets/files/consts'
+import { groupBy, get_serie_by_key } from '@/assets/files/consts'
 import * as sys_msg from '@/assets/files/system_messages'
 import { TimeSeries, ValidationTimeSerie } from '@/components/classes/time_series'
+import { 
+  min as fns_min,
+  getYear as fns_getYear
+} from 'date-fns'
 
 export default {
     namespaced: true,
@@ -33,9 +37,8 @@ export default {
         get_user_data_history_by_group: (state) => (key) => {
           let mod_data = [...state.user_data_history];
           mod_data.forEach((curr, i, arr) => {
-              let dt = str2date(curr.date)
-              arr[i]['month'] = dt.getMonth().toString()
-              arr[i]['year'] = dt.getFullYear().toString()         
+              arr[i]['month'] = curr.date.getMonth().toString()
+              arr[i]['year'] = curr.date.getYear().toString()         
           })
           let agrouped = groupBy(mod_data, 'year')
           let arr = []
@@ -51,12 +54,11 @@ export default {
         },    
 
         get_series_biggest_year(state) {
-          let dt_series = get_serie_by_key(state.user_data_history, 'date')
-          return dt_series
-                  .map(item => str2date(item).getFullYear())
-                  .reduce(function(a, b) {
-            return Math.max(a, b);
-          }, -Infinity);          
+          return  fns_getYear(
+                    fns_min(
+                      get_serie_by_key(state.user_data_history, 'date')
+                    )
+                  ).toString()               
         },
       },
 
