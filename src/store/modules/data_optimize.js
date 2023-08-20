@@ -73,11 +73,7 @@ export default {
               optimized.push(prov)
           }
 
-          let year = 1 + rootGetters['data_history/get_series_biggest_year']
-          optimized.map((item, index) => {
-            let month = index + 1
-            item.date = '1/' + month + '/' + year
-          })
+          optimized.forEach((item, index) => item.date = (index + 1).toString())
 
           commit("set_optimized_data", optimized)
         })

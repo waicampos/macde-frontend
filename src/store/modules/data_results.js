@@ -143,9 +143,9 @@ export default {
           },
 
           calculate_optimized_demand_cost({ commit, rootGetters }) {    
-            const demand_names = rootGetters['data_configurations/get_demand_measurements_names']            
-            let optimized = rootGetters['data_optimize/get_optimized_data']
-            optimized.forEach(item => delete item.date)
+            const demand_names = rootGetters['data_configurations/get_demand_measurements_names']
+            let optimized = rootGetters['data_optimize/get_optimized_data']           
+                        
             const arr_req = demand_cost_assembly_request(
               rootGetters['data_forecast/get_forecasted_data'], 
               optimized, 
@@ -154,7 +154,7 @@ export default {
             )
               
             Promise.all(arr_req).then(response => {   
-              const demand_costs = demand_cost_response_disassembly(optimized, response)
+              const demand_costs = demand_cost_response_disassembly(optimized, response)                                      
               commit("set_optimized_demand_cost", demand_costs)
             })
           },

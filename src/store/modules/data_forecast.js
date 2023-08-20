@@ -93,12 +93,7 @@ export default {
                  })
                 forecasted.push(prov)
             }
-
-          let year = 1 + rootGetters['data_history/get_series_biggest_year']
-          forecasted.map((item, index) => {
-            let month = index + 1
-            item.date = '1/' + month + '/' + year
-          })
+          forecasted.forEach((item, index) => item.date = (index + 1).toString())
           dispatch('set_forecasted_data', forecasted)
         })
       },

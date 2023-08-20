@@ -98,7 +98,7 @@
       <v-sheet rounded="lg" min-height="300">
         <Bar 
           id="bar-costs-results-chart-id"
-          :data="chartTimeSeriesData(get_measurements_names, get_optimized_cost)"
+          :data="chartBarTimeSeriesData(get_measurements_names, get_optimized_cost)"
           :options="options_bar"
         />
       </v-sheet>
@@ -110,8 +110,7 @@
       <v-sheet rounded="lg" min-height="300">
         <MyLine
             id="my-line-costs-results-chart-id"
-            :data="chartTimeSeriesData(get_demand_measurements_names, get_optimized_data)"
-            :options="this.chartTimeSeriesOptionsDemand"
+            :data="chartTimeSeriesData(get_demand_measurements_names, get_optimized_data)"            
         />
       </v-sheet>
     </VCol>
@@ -250,23 +249,14 @@
         calculate_total_cost(arr) {          
           return Object.values(this.calculate_total_cost_by_meas(arr)).reduce(sum, 0)
         },
-
-        add_date(arr) {
-          return JSON.parse(JSON.stringify(arr)).map((item, index) => {
-              item.date = this.data_bar.labels[index]
-              return item
-            })
-        },
         
-        chartTimeSeriesData(keys, data) {                    
-          const new_arr = this.add_date(data)
-          let dt_series = []
-          dt_series = createDataSetsTimeSeries( 
-              keys, 
-              'date',
-              new_arr
-          )   
-          return dt_series
+        chartBarTimeSeriesData(keys, data){
+          data.forEach((item, index) => item.date = (index + 1).toString())    
+          return createDataSetsTimeSeries(keys, 'date', data)
+        },
+
+        chartTimeSeriesData(keys, data) {
+          return createDataSetsTimeSeries(keys, 'date', data)              
         },        
       },
       computed: {

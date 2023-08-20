@@ -91,7 +91,7 @@ export function demand_cost_response_disassembly(contracted, response) {
     for(let i in [...Array(lentgh_res).keys()]){
       let prov = {}
       Object.keys(contracted[0]).forEach((key, index) => {
-        prov[key] = response[index].data[i]
+        if(key !== 'date') prov[key] = response[index].data[i]
       })
       demand_costs.push(prov)
     }

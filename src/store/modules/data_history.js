@@ -1,10 +1,6 @@
-import { groupBy, get_serie_by_key } from '@/assets/files/consts'
+import { groupBy } from '@/assets/files/consts'
 import * as sys_msg from '@/assets/files/system_messages'
 import { TimeSeries, ValidationTimeSerie } from '@/components/classes/time_series'
-import { 
-  min as fns_min,
-  getYear as fns_getYear
-} from 'date-fns'
 
 export default {
     namespaced: true,
@@ -52,14 +48,6 @@ export default {
           }
           return arr
         },    
-
-        get_series_biggest_year(state) {
-          return  fns_getYear(
-                    fns_min(
-                      get_serie_by_key(state.user_data_history, 'date')
-                    )
-                  ).toString()               
-        },
       },
 
       mutations: {
