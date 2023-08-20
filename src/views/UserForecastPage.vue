@@ -67,7 +67,9 @@
             v-if="chosen_forecast_model.type == 'custom'"
          >
             <v-col cols="12">
-                <FileUploader store_dispatch_name="data_forecast/set_forecasted_data"/>
+                <FileUploader 
+                    @newFileUploaded="fileUploaded"    
+                />
             </v-col>
         </v-row>
 
@@ -233,6 +235,10 @@ export default {
     },
     methods: {
         ...mapActions('data_forecast', ['set_forecasted_data', 'forecast']),
+
+        fileUploaded(val) {            
+            this.$store.dispatch('data_forecast/set_forecasted_data', val)
+        },
 
         download() {
             let dt = new Date()
