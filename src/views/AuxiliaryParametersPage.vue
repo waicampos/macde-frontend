@@ -254,66 +254,55 @@
 
         <!-- tarifas -->
         <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-cash"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
-                        Tarifas
-                    </v-card-title>
-                    <v-card-subtitle>Definição dos valores das tarifas de demanda e consumo.</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols=12>
+            <FormBox
+                @save="formBoxTariffSave"
+                @cancel="formBoxTariffCancel"
+            >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-cash"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
+                    Tarifas
+                </template>
+
+                <template v-slot:subtitle>
+                    Definição dos valores das tarifas de demanda e consumo.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
                             <p>Os valores de tarifa são aplicados sobre a demanda e a energia. Estes valores são a forma de remunerar a distribuidora pelo serviço de distribuição prestado
-                                e no caso dos consumidores cativos, pela produto entregue.</p>
-                        </v-col>
-                        <v-col 
-                            class="pa-0"
-                            cols=12 md=6 
-                            v-for="(item, index) in this.tariffs[get_tariff_modality.name]"
-                            :key="index"
+                            e no caso dos consumidores cativos, pela produto entregue.</p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
+
+                <template v-slot>
+                    <v-row>
+                        <v-col
+                        class="pa-0"
+                        cols=12 md=6
+                        v-for="(item, index) in this.local_tariffs"
+                        :key="index"
                         >
-                            <v-text-field class="px-3"
-                                v-model="item.value"
-                                :label="item.title" 
-                                :prefix="item.prefix"
-                                :suffix="item.suffix"
-                                :type="item.type"
-                            />
+                        <InputNumberFormatted  
+                        class="px-3"
+                            :initial="item.value"                                                        
+                            maxFractionDigits='12'
+                            lang="pt-BR"
+                            :label="item.title"
+                            :prefix="item.prefix"
+                            :suffix= "item.suffix"
+                            @changedValue="changedTariffInputNumberValue($event, item.value, index)"
+                        />                            
                         </v-col>
                     </v-row>
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-1"
-                        variant="flat"
-                    >
-                        Salvar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Cancelar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Resetar
-                    </v-btn>
-                </v-card-actions>
-             </v-card>
-             <v-divider class="border-opacity-25"></v-divider>
+                </template>                
+            </FormBox>
         </v-col>
 
         <!-- Encargos e tributos -->
@@ -389,19 +378,44 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { SIMULATION_TYPES } from '@/assets/files/consts'
+import FormBox from '@/components/FormBox.vue'
+import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
 
 export default {
+    components: {FormBox, InputNumberFormatted},
+
     data() {
         return {
             simulation_types: SIMULATION_TYPES,
+            local_tariffs: []
         }
+    },
+
+    methods: {
+        ...mapActions('data_parameters', ['set_tariffs']),
+
+        changedTariffInputNumberValue(e, param, index) {
+            this.local_tariffs[index].value = e
+        },
+
+        formBoxTariffSave() {
+            this.set_tariffs(this.local_tariffs)
+        },
+
+        formBoxTariffCancel() {
+            this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
+        },
     },
 
     computed: {
         ...mapGetters('data_configurations', {
             get_tariff_modality: 'get_tariff_modality',
+        }),
+
+        ...mapGetters('data_parameters', {
+            get_tariffs: 'get_tariffs',
         }),
 
         selected_simulation_type: {
@@ -444,14 +458,7 @@ export default {
                 this.$store.commit('data_parameters/set_growth_forecast', payload)
             }
         },
-        tariffs: {
-            get() {
-                return this.$store.state.data_parameters.tariffs
-            },
-            set(payload){
-                this.$store.commit('data_parameters/set_tariffs', payload)
-            }
-        },
+       
         taxes_and_charges: {
             get() {
                 return this.$store.state.data_parameters.taxes_and_charges
@@ -468,6 +475,10 @@ export default {
                 this.$store.commit('data_parameters/set_current_contracted_demand', payload)
             }
         },
+    },
+
+    mounted() {
+        this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
     }
 }
 </script>
