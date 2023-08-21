@@ -77,6 +77,15 @@ export default {
   created() {
     this.local_number = this.initial
   },
+  watch: {
+      initial: {
+        handler() {
+          this.local_number = this.initial
+        },
+        deep: true,
+        imediate: true,
+      }
+    },
 }
 </script>
 
