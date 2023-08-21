@@ -11,28 +11,36 @@
         </v-col>
         <!-- Tipo de simulação -->
          <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-laptop"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
-                        Tipo Simulação
-                    </v-card-title>
-                    <v-card-subtitle>Seleção do tipo de simulação que será realizada.</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row >
-                        <v-col cols=12>
+             <FormBox
+                :hide_actions = "true"
+             >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-laptop"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
+                    Tipo Simulação
+                </template>
+
+                <template v-slot:subtitle>
+                    Seleção do tipo de simulação que será realizada.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
                             <p>As simulações da aplicação MACDE são realizadas para as modalidades tarifárias Verde e Azul. Esta informação é importante pois difere no tipo 
                                 de cobrança ao qual o consumidor é submetido. Consumidores da Modalide Azul são cobrados pela demanda ponta e fora de ponta. Já os Consumidores
                                 da Modalidade Verde são cobrados com um único valor de demanda, indenpendente do horário de uso. Além disso, é possível realizar as simulações 
-                                considerando ou não os valores de energia.
-                            </p>
-                        </v-col>
+                                considerando ou não os valores de energia.</p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
+
+                <template v-slot>
+                    <v-row >                        
                         <v-col>
                             <v-select
                                 v-model="selected_simulation_type"
@@ -43,15 +51,11 @@
                                 variant="outlined"
                                 return-object
                             ></v-select>
-                        </v-col>
-                        
+                        </v-col>                        
                     </v-row>
-                </v-card-text>
-
-             </v-card>
-             <v-divider class="border-opacity-25"></v-divider>
+                </template>                     
+            </FormBox>
         </v-col>
-
         <!-- Aumento ou redução de demanda -->
          <v-col cols=10>
              <v-card class="elevation-0">

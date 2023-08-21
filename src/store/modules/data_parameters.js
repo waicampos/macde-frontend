@@ -41,8 +41,8 @@ export default {
       get_has_demand_variation(state) {
         return state.has_demand_variation
       },
-      get_has_selected_simulation_type(state) {
-        return state.has_selected_simulation_type
+      get_selected_simulation_type(state) {
+        return state.selected_simulation_type
       },
       get_has_photovoltaic_system(state) {
         return state.has_photovoltaic_system
@@ -95,8 +95,8 @@ export default {
       set_has_demand_variation({ commit }, payload) {
         commit("set_has_demand_variation", payload)
       },
-      set_has_selected_simulation_type({ commit }, payload) {
-        commit("set_has_selected_simulation_type", payload)
+      set_selected_simulation_type({ commit }, payload) {
+        commit("set_selected_simulation_type", payload)
       },
       set_has_photovoltaic_system({ commit }, payload) {
         commit("set_has_photovoltaic_system", payload)
