@@ -188,68 +188,56 @@
 
      <!-- Demanda contratada -->
         <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-file-sign"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
+            <FormBox
+                @save="formBoxContracDemandSave"
+                @cancel="formBoxContracDemandCancel"
+            >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-file-sign"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
                         Demanda Contratada
-                    </v-card-title>
-                    <v-card-subtitle>Valor atual da demanda contratada.</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols=12>
+                </template>
+
+                <template v-slot:subtitle>
+                    Valor atual da demanda contratada.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
                             <p>A demanda contratada é o valor de demanda de potência que a distribuidora deve obrigatoriamente disponibilizar ao consumidor. Uma demanda contratada abaixo
                                 da demanda utilizada ocasiona custos adicionais com o pagamento de penalidade. Já uma demanda contratada elevada em relação a demanda utilizada, representa 
-                                o pagamento por um produto não utilizado.
-                            </p>
-                        </v-col>
+                                o pagamento por um produto não utilizado.</p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
 
+                <template v-slot>
+                    <v-row>                        
                         <v-col 
                             class="pa-0"
                             cols=12 md=6
-                            v-for="(item, index) in this.current_contracted_demand"
+                            v-for="(item, index) in this.local_contrac_demand"
                             :key="index"
                         >
-                            <v-text-field class="px-3"
-                                v-model="item.value"
-                                :label="item.title" 
-                                :suffix="item.suffix"
-                                :type="item.type"
-                            />
+
+                            <InputNumberFormatted  
+                                class="px-3"
+                                :initial="item.value"                                                        
+                                maxFractionDigits='12'
+                                lang="pt-BR"
+                                :label="item.title"                                
+                                :suffix= "item.suffix"
+                                @changedValue="changedContracDemandInputNumberValue($event, item.value, index)"
+                            />                           
                         </v-col>
                     </v-row>
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-1"
-                        variant="flat"
-                    >
-                        Salvar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Cancelar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Resetar
-                    </v-btn>
-                </v-card-actions>
-             </v-card>
-             <v-divider class="border-opacity-25"></v-divider>
+                </template>                
+            </FormBox>
         </v-col>
 
         <!-- tarifas -->
@@ -389,12 +377,25 @@ export default {
     data() {
         return {
             simulation_types: SIMULATION_TYPES,
-            local_tariffs: []
+            local_tariffs: [],
+            local_contrac_demand: []
         }
     },
 
     methods: {
-        ...mapActions('data_parameters', ['set_tariffs']),
+        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand']),
+
+        changedContracDemandInputNumberValue(e, param, index) {
+            this.local_contrac_demand[index].value = e
+        },
+
+        formBoxContracDemandSave() {
+            this.set_current_contracted_demand(this.local_contrac_demand)
+        },
+        
+        formBoxContracDemandCancel() {
+            this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
+        },
 
         changedTariffInputNumberValue(e, param, index) {
             this.local_tariffs[index].value = e
@@ -416,6 +417,7 @@ export default {
 
         ...mapGetters('data_parameters', {
             get_tariffs: 'get_tariffs',
+            get_current_contracted_demand: 'get_current_contracted_demand',
         }),
 
         selected_simulation_type: {
@@ -467,18 +469,11 @@ export default {
                 this.$store.commit('data_parameters/taxes_and_charges', payload)
             }
         },
-        current_contracted_demand: {
-            get() {
-                return this.$store.state.data_parameters.current_contracted_demand
-            },
-            set(payload){
-                this.$store.commit('data_parameters/set_current_contracted_demand', payload)
-            }
-        },
     },
 
     mounted() {
         this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
+        this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
     }
 }
 </script>
