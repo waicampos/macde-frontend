@@ -88,8 +88,8 @@ export default {
         state.growth_forecast = payload
       },
       set_tariffs(state, payload) {
-        state.tariffs = payload
-      },
+        state.tariffs[payload.modality.name] = payload
+      },      
     },
     actions: {
       set_has_demand_variation({ commit }, payload) {
@@ -110,9 +110,10 @@ export default {
       set_growth_forecast({ commit }, payload) {
         commit("set_growth_forecast", payload)
       },
-      set_tariffs({ commit }, payload) {
+      set_tariffs({ commit, rootGetters }, payload) {
+        payload.modality = rootGetters['data_configurations/get_tariff_modality']
         commit("set_tariffs", payload)
-      },
+      }
     },
   }
   
