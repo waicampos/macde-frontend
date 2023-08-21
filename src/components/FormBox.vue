@@ -21,7 +21,7 @@
                     
             </v-card-text>
 
-            <v-card-actions>
+            <v-card-actions v-if="!hide_actions">
                 <v-btn 
                     prepend-icon="mdi-content-save"
                     class="text-none"
@@ -48,6 +48,10 @@
 <script>
     export default {
         props: {
+            hide_actions: {
+                type: Boolean,
+                default: false
+            },
             title: {
                 type: String,
                 default: '',
