@@ -107,27 +107,37 @@
 
         <!-- Possui Sistema Fotovoltaico -->
         <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-solar-panel"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
-                        Possui Sistema Fotovoltaico
-                    </v-card-title>
-                    <v-card-subtitle>Opção para unidades consumidores que possui sistema fotovoltaicos.</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols=12>
-                            <p>A inserção de sistema solar fotovoltaico interfere no valor da demanda a ser contratado. Caso o consumidor instalou sistema fotovoltaico
+            <FormBox
+                :hide_actions = "true"
+             >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-solar-panel"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
+                    Possui Sistema Fotovoltaico
+                </template>
+
+                <template v-slot:subtitle>
+                    Opção para unidades consumidoras que possuem sistema fotovoltaico.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
+                            <p>
+                                A inserção de sistema solar fotovoltaico interfere no valor da demanda a ser contratado. Caso o consumidor instalou sistema fotovoltaico
                                 durante o período de meses utilizados como histórico de entrada dos dados, é necessário informar marcar a opção para que o modelo de previsão 
                                 considere a influência do sistema na demanda a ser contratada.
-                            </p>
-                        </v-col>
+                            </p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
+
+                <template v-slot>
+                    <v-row>                        
                         <v-col cols=12 md=6>
                             <v-text-field                                
                                 :disabled= "!has_photovoltaic_system"
@@ -144,12 +154,11 @@
                                 color="primary"                        
                                 hide-details
                             ></v-switch>                            
-                        </v-col>
-                        
+                        </v-col>                        
                     </v-row>
-                </v-card-text>
-             </v-card>
-             <v-divider class="border-opacity-25"></v-divider>
+                </template>                     
+            </FormBox>
+            <v-divider class="border-opacity-25"></v-divider>
         </v-col>
 
         <!-- Previsão de crescimento -->
