@@ -55,29 +55,41 @@
                     </v-row>
                 </template>                     
             </FormBox>
+            <v-divider class="border-opacity-25"></v-divider>
         </v-col>
+
         <!-- Aumento ou redução de demanda -->
          <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-square-wave"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
-                        Aumento ou redução de demanda (1x)
-                    </v-card-title>
-                    <v-card-subtitle>Opção que considera dois valores de demanda ótima..</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row >
-                        <v-col cols=12>
-                            <p> Algumas unidades consumidores possuem perfis de carga diferente dependendo do período do ano. Uma possibilidade é considerar essa variação de demanda e contratar dois 
+            <FormBox
+                :hide_actions = "true"
+             >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-square-wave"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
+                    Aumento ou redução de demanda (1x)
+                </template>
+
+                <template v-slot:subtitle>
+                    Opção que considera dois valores de demanda ótima.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
+                            <p>
+                                Algumas unidades consumidores possuem perfis de carga diferente dependendo do período do ano. Uma possibilidade é considerar essa variação de demanda e contratar dois 
                                 valores de demanda, dependendo do período do ano. É importante destacar que o consumidor deve atender os prazos solicitados pela distribuidora de energia.
-                            </p>
-                        </v-col>
+                            </p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
+
+                <template v-slot>
+                    <v-row >                       
                         <v-col cols=12>
                             <v-switch
                                 v-model="has_demand_variation"
@@ -88,9 +100,8 @@
                             ></v-switch>                   
                         </v-col>
                     </v-row>
-                </v-card-text>
-
-             </v-card>
+                </template>                     
+            </FormBox>
              <v-divider class="border-opacity-25"></v-divider>
         </v-col>
 
