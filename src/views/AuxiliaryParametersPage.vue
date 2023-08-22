@@ -1,7 +1,7 @@
 <template>
 <div>
     <v-row>
-        <v-col cols=12>
+        <v-col cols=10>
              <v-card class="elevation-0"
                 title="Parâmetros Auxiliares"
                 subtitle="Configuração dos Parâmetros utilizados na aplicação."
