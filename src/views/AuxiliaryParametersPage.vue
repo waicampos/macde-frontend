@@ -163,30 +163,42 @@
 
         <!-- Previsão de crescimento -->
         <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-finance"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
-                        Previsão de crescimento
-                    </v-card-title>
-                    <v-card-subtitle>Valor do crescimento previsto para o ano seguitne.</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols=12 class="mb-3">
-                            <p>O modelo de previsão permite considerar a previsão de crescimento da unidade consumidora para o próximo ano. Caso o consumidor 
+
+            <FormBox
+                @save="formBoxGrowthForecastSave"
+                @cancel="formBoxGrowthForecastCancel"
+             >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-finance"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
+                    Previsão de crescimento
+                </template>
+
+                <template v-slot:subtitle>
+                    Valor do crescimento previsto para o ano seguinte.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
+                            <p>
+                                O modelo de previsão permite considerar a previsão de crescimento da unidade consumidora para o próximo ano. Caso o consumidor 
                                 tenha uma previsão de crescimento é importante informar o valor. O valor padrão é de R$ 5%.
-                            </p>
-                        </v-col>
+                            </p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
+
+                <template v-slot>
+                    <v-row>                    
                         <v-row>
                             <v-col cols=6 md=4>
                                 <v-text-field
-                                    v-model="growth_forecast"
+                                    v-model="local_growth_forecast"
                                     suffix="%"
                                     type="number"                                    
                                     density="compact"
@@ -194,20 +206,11 @@
                                     variant="outlined"
                                 ></v-text-field>   
                             </v-col>
-                            <v-col cols=6 md=4>
-                                <v-btn
-                                    class="text-none"
-                                    color="grey-lighten-1"
-                                    variant="flat"
-                                >
-                                    Salvar
-                                </v-btn>                 
-                            </v-col>     
                         </v-row>
                     </v-row>
-                </v-card-text>
-             </v-card>
-             <v-divider class="border-opacity-25 mt-4"></v-divider>
+                </template>                     
+            </FormBox>
+            <v-divider class="border-opacity-25 mt-4"></v-divider>
         </v-col>
 
      <!-- Demanda contratada -->
@@ -402,12 +405,25 @@ export default {
         return {
             simulation_types: SIMULATION_TYPES,
             local_tariffs: [],
-            local_contrac_demand: []
+            local_contrac_demand: [],
+            local_growth_forecast: '',
         }
     },
 
     methods: {
-        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand']),
+        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand', 'set_growth_forecast']),
+
+        changedGrowthForecastInputNumberValue(e) {
+            this.local_growth_forecast = e
+        },
+
+        formBoxGrowthForecastSave() {
+            this.set_growth_forecast(Number(this.local_growth_forecast))
+        },
+
+        formBoxGrowthForecastCancel() {
+            this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
+        },
 
         changedContracDemandInputNumberValue(e, param, index) {
             this.local_contrac_demand[index].value = e
@@ -442,6 +458,7 @@ export default {
         ...mapGetters('data_parameters', {
             get_tariffs: 'get_tariffs',
             get_current_contracted_demand: 'get_current_contracted_demand',
+            get_growth_forecast: 'get_growth_forecast',
         }),
 
         selected_simulation_type: {
@@ -476,14 +493,6 @@ export default {
                 this.$store.commit('data_parameters/set_date_installation_photovoltaic_system', payload)
             }
         },
-        growth_forecast: {
-            get() {
-                return this.$store.state.data_parameters.growth_forecast
-            },
-            set(payload){
-                this.$store.commit('data_parameters/set_growth_forecast', payload)
-            }
-        },
        
         taxes_and_charges: {
             get() {
@@ -498,6 +507,7 @@ export default {
     mounted() {
         this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
         this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
+        this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
     }
 }
 </script>
