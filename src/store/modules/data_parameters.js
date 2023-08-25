@@ -6,7 +6,7 @@ export default {
         has_demand_variation: false,
         selected_simulation_type: {name: SIMULATION_TYPES[0].name, text: SIMULATION_TYPES[0].text},
         has_photovoltaic_system: false,
-        date_installation_photovoltaic_system: "2023-02-01",
+        date_installation_photovoltaic_system: "",
         growth_forecast: 5,
         tariffs: {
           blue: 

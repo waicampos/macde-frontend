@@ -139,12 +139,11 @@
                 <template v-slot>
                     <v-row>                        
                         <v-col cols=12 md=6>
-                            <v-text-field                                
-                                :disabled= "!has_photovoltaic_system"
+                            <InputDatePicker      
+                                :disabled="!has_photovoltaic_system"
                                 v-model="date_installation_photovoltaic_system"
-                                label="Data de instalação"                                 
-                                type="date"
-                            />                             
+                                label="Data de instalação"
+                            />                                                        
                         </v-col>
                         <v-col cols=12 md=6>
                             <v-switch
@@ -388,9 +387,10 @@ import { mapGetters, mapActions } from 'vuex';
 import { SIMULATION_TYPES } from '@/assets/files/consts'
 import FormBox from '@/components/FormBox.vue'
 import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
+import InputDatePicker from '@/components/InputDatePicker.vue'
 
 export default {
-    components: {FormBox, InputNumberFormatted},
+    components: {FormBox, InputNumberFormatted, InputDatePicker},
 
     data() {
         return {
