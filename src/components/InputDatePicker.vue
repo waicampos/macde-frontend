@@ -10,6 +10,7 @@
     >
       <template v-slot:activator="{ props }">
         <v-text-field
+          :disabled="disabled"
           v-bind="props"
           :modelValue="valueStr"    
           readonly              
@@ -69,6 +70,10 @@ export default {
   },
 
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     modelValue: {      
       default: new Date()
     },
