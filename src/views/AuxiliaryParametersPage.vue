@@ -433,7 +433,7 @@ export default {
         },
 
         formBoxContracDemandSave() {
-            this.set_current_contracted_demand(this.local_contrac_demand)
+            this.set_current_contracted_demand(JSON.parse(JSON.stringify(this.local_contrac_demand)))
         },
         
         formBoxContracDemandCancel() {
@@ -445,7 +445,7 @@ export default {
         },
 
         formBoxTariffSave() {
-            this.set_tariffs(this.local_tariffs)
+            this.set_tariffs(JSON.parse(JSON.stringify(this.local_tariffs)))
         },
 
         formBoxTariffCancel() {
