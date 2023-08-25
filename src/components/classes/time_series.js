@@ -71,8 +71,9 @@ export class ValidationTimeSerie{
 
     valid_allNumbers() {
         return this.ts.get_data().every(item => {                           
-            return this.ts.get_required_keys_series().every(key => {
-              return typeof item[key] == 'number'
+            return this.ts.get_required_keys_series().every(key => {                
+                let num = Number(item[key])
+                return (typeof num == 'number') && (!Number.isNaN(num))
             }) 
           })
     }
