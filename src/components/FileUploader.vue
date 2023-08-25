@@ -12,37 +12,51 @@
                     <span class="fa fa-cloud-upload dropZone-title"></span>
                     <p class="dropZone-title">Arraste e solte ou clique para enviar um arquivo.</p>
                     <div class="dropZone-upload-limit-info">               
-                    <div> Os arquivos devem ter o formato JSON</div>
+                    <div> Os arquivos devem ter o formato .csv (max. {{ max_size / 1000 }} kb)</div>
                     </div>
                 </div>
-                <input type="file" @change="onChange" accept=".csv, application/JSON">
+                <input type="file" @change="onChange" accept=".csv">
             </div>
         </div>
         <div v-else class="dropZone-uploaded">
             <div class="dropZone-uploaded-info">
-            <span class="dropZone-title">Uploaded</span>
-            <button type="button" class="btn btn-primary removeFile" @click="removeFile">Clique para Enviar um Novo Arquivo</button>
+                <span v-if="!max_exceded" class="dropZone-title text-caption text-green">
+                    Enviado Arquivo 
+                    <span class="font-weight-bold">
+                        {{ file.name }} 
+                        <span class="text-caption">
+                            ({{ file.size }} bytes)
+                        </span>
+                    </span>
+                </span>
+                <span v-else class="dropZone-title text-caption text-red">
+                    <p>ARQUIVO NÃO ENVIADO.</p> 
+                    <p>O arquivo {{ file.name }} excede o limite de {{ max_size/1000 }} kb.</p>
+                </span>
+                <button type="button" class="btn btn-primary removeFile" @click="removeFile">Clique para Enviar um Novo Arquivo</button>
             </div>
-        </div>
-        
-        <div class="uploadedFile-info">
-            <div>Nome do Arquivo: {{ file.name }}</div>
-            <div>Tamanho: {{ file.size }} (bytes)</div>
-            <div>Extension: {{ extension }}</div>
-        </div>    
+        </div>            
     </div>
 </template>
 
 <script>
+import { csv2Json } from '@/assets/files/consts'
 
 export default {
     data() {
         return {          
             file: '',
             dragging: false,
+            max_exceded: false,
         }
     },   
     
+    props: {
+        max_size: {
+            default: 15000
+        }
+    },
+
     emits: {
         newFileUploaded: null,
     },
@@ -57,12 +71,17 @@ export default {
         onChange(e) {
             this.file = e.target.files[0];
             var reader = new FileReader();
-            reader.readAsText(this.file); 
+            reader.readAsText(this.file);                         
             reader.onload = (e) => {
-                try{
-                    this.$emit("newFileUploaded", JSON.parse(e.target.result))                    
+                try{                      
+                    if(this.file.size > this.max_size) {
+                        this.max_exceded = true
+                    } else {
+                        this.max_exceded = false
+                        this.$emit("newFileUploaded", csv2Json(e.target.result))
+                    }                
                 } catch(err) {
-                    this.$emit("newFileUploaded", null)                    
+                    this.$emit("newFileUploaded", null)
                 } 
             };                     
         },
