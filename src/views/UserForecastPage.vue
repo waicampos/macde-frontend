@@ -237,13 +237,13 @@ export default {
         ...mapActions('data_forecast', ['set_forecasted_data', 'forecast']),
 
         fileUploaded(val) {            
-            this.$store.dispatch('data_forecast/set_forecasted_data', val)
+            this.set_forecasted_data(val)
         },
 
         download() {
             let dt = new Date()
             let filename = `${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_macde_forecast.json`
-            fileDownload(this.forecasted_data, filename);
+            fileDownload(JSON.stringify(this.forecasted_data), filename);
         },
 
         chartTimeSeriesData(keys) {
