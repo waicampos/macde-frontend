@@ -322,69 +322,60 @@
 
         <!-- Encargos e tributos -->
         <v-col cols=10>
-             <v-card class="elevation-0">
-                <v-card-item>
-                    <v-card-title>
-                        <v-icon
-                            icon="mdi-calculator"
-                            color="green-darken-1"
-                            size="large"
-                            class="me-2"
-                        ></v-icon>
-                        Tributação
-                    </v-card-title>
-                    <v-card-subtitle>Valores dos tributos incidentes na tarifa final.</v-card-subtitle>
-                </v-card-item>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols=12>
-                            <p>Além das tarifas de Energia e de Uso do Sistema de Distribuição incidem sobre a tarifa final o pagamento compulsório de tributos devidos ao poder público. Os tributos
+            <FormBox
+                @save="formBoxTaxesChargesSave"
+                @cancel="formBoxTaxesChargesCancel"
+            >
+                <template v-slot:title>
+                    <v-icon
+                        icon="mdi-calculator"
+                        color="green-darken-1"
+                        size="large"
+                        class="me-2"
+                    ></v-icon>
+                    Tributação
+                </template>
+
+                <template v-slot:subtitle>
+                    Valores dos tributos incidentes na tarifa final.
+                </template>
+                
+                <template v-slot:message>
+                   <v-row cols=12>
+                        <v-col>
+                            <p>
+                                Além das tarifas de Energia e de Uso do Sistema de Distribuição incidem sobre a tarifa final o pagamento compulsório de tributos devidos ao poder público. Os tributos
                                 federais cobrados pela união são o Programa de Integração Social (PIS) e a Contribuição para o financiamento da Seguridade Social(COFINS) que são utilizados para manter programas voltados para
                                 o trabalhador e para atender programas sociais. O imposto estadual que incide sobre a tarifa é o Imposto sobre Circulação de Mercadorias e Serviços (ICMS) previsto na constituição
                                 federal e que possui alíquotas variáveis. O Custeio do Serviço de Iluminação Pública (CIP) não incide sobre a tarifa, este tributo municipal é arrecado pela concessionária e repassado
                                 para o município 
-                                </p>
-                        </v-col>
+                            </p>                        
+                        </v-col>                        
+                   </v-row>                   
+                </template>
+
+                <template v-slot>
+                    <v-row>                       
                         <v-col 
                             class="pa-0"
                             cols=12 md=6 
-                            v-for="(item, index) in this.taxes_and_charges"
+                            v-for="(item, index) in this.local_taxes_and_charges"
                             :key="index"
                         >
-                            <v-text-field class="px-3"
-                                v-model="item.value"
-                                :label="item.name" 
-                                :prefix="item.prefix"
-                                :suffix="item.suffix"
-                                :type="item.type"
-                            />
+                        <InputNumberFormatted  
+                            class="px-3"
+                            :initial="item.value"                                                        
+                            maxFractionDigits='12'
+                            lang="pt-BR"
+                            :label="item.name"
+                            :prefix="item.prefix"
+                            :suffix= "item.suffix"
+                            @changedValue="changedTaxesChargesInputNumberValue($event, item.value, index)"
+                        />                                    
                         </v-col>
                     </v-row>
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-1"
-                        variant="flat"
-                    >
-                        Salvar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Cancelar
-                    </v-btn>
-                    <v-btn
-                        class="text-none"
-                        color="grey-lighten-3"
-                        variant="flat"
-                    >
-                        Resetar
-                    </v-btn>
-                </v-card-actions>
-             </v-card>
+                </template>                
+            </FormBox>
              <v-divider class="border-opacity-25"></v-divider>
         </v-col>
 
@@ -407,11 +398,23 @@ export default {
             local_tariffs: [],
             local_contrac_demand: [],
             local_growth_forecast: '',
+            local_taxes_and_charges: [],
         }
     },
 
     methods: {
-        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand', 'set_growth_forecast']),
+        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand', 'set_growth_forecast', 'set_taxes_and_charges']),
+
+        changedTaxesChargesInputNumberValue(e, param, index) {
+            this.local_taxes_and_charges[index].value = e
+        },
+        formBoxTaxesChargesSave() {            
+            this.set_taxes_and_charges(JSON.parse(JSON.stringify(this.local_taxes_and_charges)))
+        },
+
+        formBoxTaxesChargesCancel() {
+            this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges))
+        },
 
         changedGrowthForecastInputNumberValue(e) {
             this.local_growth_forecast = e
@@ -459,6 +462,7 @@ export default {
             get_tariffs: 'get_tariffs',
             get_current_contracted_demand: 'get_current_contracted_demand',
             get_growth_forecast: 'get_growth_forecast',
+            get_taxes_and_charges: 'get_taxes_and_charges',
         }),
 
         selected_simulation_type: {
@@ -493,21 +497,13 @@ export default {
                 this.$store.commit('data_parameters/set_date_installation_photovoltaic_system', payload)
             }
         },
-       
-        taxes_and_charges: {
-            get() {
-                return this.$store.state.data_parameters.taxes_and_charges
-            },
-            set(payload){
-                this.$store.commit('data_parameters/taxes_and_charges', payload)
-            }
-        },
     },
 
     mounted() {
         this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
         this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
         this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
+        this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges))
     }
 }
 </script>

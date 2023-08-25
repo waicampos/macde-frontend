@@ -67,6 +67,10 @@ export default {
           return state.tariffs[tariff_modality.name].filter(item => item.name == key)[0]
         }
       },
+
+      get_taxes_and_charges(state) {
+        return state.taxes_and_charges
+      },
     },
     mutations: {  
       set_has_demand_variation(state, payload) {
@@ -89,7 +93,10 @@ export default {
       },
       set_tariffs(state, payload) {
         state.tariffs[payload.modality.name] = payload
-      },      
+      },     
+      set_taxes_and_charges(state, payload) {
+        state.taxes_and_charges = payload
+      },   
     },
     actions: {
       set_has_demand_variation({ commit }, payload) {
@@ -113,7 +120,10 @@ export default {
       set_tariffs({ commit, rootGetters }, payload) {
         payload.modality = rootGetters['data_configurations/get_tariff_modality']
         commit("set_tariffs", payload)
-      }
+      },
+      set_taxes_and_charges({ commit }, payload) {
+        commit("set_taxes_and_charges", payload)
+      },
     },
   }
   
