@@ -92,7 +92,7 @@ export default {
           
           if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
           else if(!ts_validation.valid_min_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MIN_SIZE(ts))
-          else if(!ts_validation.valid_max_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MAX_SIZEts(ts))
+          else if(!ts_validation.valid_max_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MAX_SIZE(ts))
           else if(!ts_validation.valid_date_sequence()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DATE_SEQ())
           else if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())
           else if(!ts_validation.valid_allNumbers()) state.user_data_history_messages.push(sys_msg.ERROR_TS_IS_NUMBER())

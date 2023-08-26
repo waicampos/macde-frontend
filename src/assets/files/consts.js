@@ -109,7 +109,7 @@ export const csv2Json = (csv_file, sep=';') => {
   const [firstLine, ...lines] = csv_file.split('\n');
   
   const keys = firstLine.split(sep);
-  return lines.map(line => ((values) =>
+  return lines.filter(line => line).map(line => ((values) => 
     keys.reduce(
       (curr, next, index) => ({
         ...curr,
