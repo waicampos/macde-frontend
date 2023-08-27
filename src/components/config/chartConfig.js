@@ -49,8 +49,7 @@ export const chartOptionsConfig = {
     plugins: {
         title : {
             display: true,
-            text: 'Título do Gráfico',
-            //fontSize: 20
+            text: 'Título do Gráfico'
         },
     },
     responsive: true,
@@ -59,11 +58,12 @@ export const chartOptionsConfig = {
         x: {
             type: 'time',            
             time: {
-                unit: "day",
+                unit: "month",
                 parser: "dd/MM/yyyy",
+                tooltipFormat: "MM/yyyy",
                 unitStepSize: 1,
                 displayFormats: {
-                    'day': 'dd/MM'
+                    'month': 'MM/yy'
                   }
             },
             title: {

@@ -81,21 +81,21 @@
     >
       <v-col cols="12" lg="6">
         <v-sheet rounded="lg" min-height="300">
-          <MyLine
-            id="my-line-historic-chart-demand-id"
-            :data="chartDemand"
-            :options="this.chartOptionsDemand"
-          />
+           <Bar 
+              id="bar-data-history-chart-demand-id"
+              :data="chartDemand"
+              :options="chartOptionsDemand"
+            />
         </v-sheet>
       </v-col>
     
         <v-col cols="12" lg="6">
           <v-sheet rounded="lg" min-height="300">
-            <MyLine
-              id="my-line-historic-chart-energy-id"
+            <Bar 
+              id="bar-data-history-chart-energy-id"
               :data="chartEnergy"
               :options="chartOptionsEnergy"
-            />
+            />                 
           </v-sheet>
       </v-col>
     </v-row>    
@@ -116,16 +116,16 @@
   import MessageViewer from '@/components/MessageViewer.vue'
   import macde_modelo from '@/assets/files/modelo_macde.json'
   import TableData from '@/components/TableData.vue'
-  import { Line as MyLine} from 'vue-chartjs'
+  import { Bar} from 'vue-chartjs'
   import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
   import { replace_comma2dot_dot2comma } from '@/assets/files/consts'
-  import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,  TimeScale } from 'chart.js'
-  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,  TimeScale)
+  import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend,  TimeScale } from 'chart.js'
+  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
 
   export default {
     name: 'userHistoryPage',
-    components: {FileUploader, TableData, MyLine, MessageViewer},
+    components: {FileUploader, TableData, MessageViewer, Bar},
     data() {
       return {
         msg_props: {"text": "", "type": "success"},
