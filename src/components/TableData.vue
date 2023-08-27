@@ -3,6 +3,7 @@
     :headers="headers"
     :items="data_file"
     :sort-by="[{ key: 'date', order: 'asc' }]"
+    items-per-page=12
     class="elevation-4"
   >
     <template v-slot:[`item.date`]="{ item }">         
