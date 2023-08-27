@@ -3,7 +3,9 @@
     :headers="headers"
     :items="data_file"
     :sort-by="[{ key: 'date', order: 'asc' }]"
+    :items-per-page-options="items_per_page"
     items-per-page=12
+    items-per-page-text="Itens por Página:"
     class="elevation-4"
   >
     <template v-slot:[`item.date`]="{ item }">         
@@ -146,6 +148,14 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      items_per_page:
+      [
+        {value: 12, title: '12'},
+        {value: 24, title: '24'},
+        {value: 36, title: '36'},
+        {value: 48, title: '48'},
+        {value: -1, title: 'Todos'}
+      ],
       headers: [
         {
           title: 'Data',
