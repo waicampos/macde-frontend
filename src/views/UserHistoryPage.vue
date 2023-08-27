@@ -222,7 +222,7 @@
       },
 
       download_standard_user_historic() {
-        fileDownload(macde_model.replace(/\./g, ","),'teste_csv.csv')
+        fileDownload(macde_model.replace(/\./g, ","),'modelo_macde.csv')
       },
       
       chartDataDemand() {
