@@ -4,13 +4,6 @@ export const TIME_SERIES_DATE_FORMAT = 'dd/MM/yyyy'
 
 export const sum = (acc, cur) => acc + cur;
 
-export const replace_comma2dot_dot2comma = function(num) {
-  num = num.toString().replace(/,+|\./g, function (match) {
-      return match === ',' ? '.' : ','
-  });
-  return num;
-}
-
 export const MEAS_INFO = {
     "demand":{key:"demand", "title": "Demanda", "prefix":"R$", "suffix":"por kW", "type":"number"},
     "peak_demand": {key: "peak_demand", title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},

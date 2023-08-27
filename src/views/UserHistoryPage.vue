@@ -118,7 +118,6 @@
   import TableData from '@/components/TableData.vue'
   import { Bar} from 'vue-chartjs'
   import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
-  import { replace_comma2dot_dot2comma } from '@/assets/files/consts'
   import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend,  TimeScale } from 'chart.js'
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
@@ -159,10 +158,13 @@
     methods: {
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
       
-      fileUploaded(val) {           
+      fileUploaded(val) {
         val.forEach(item => {          
-          Object.keys(item).forEach((key) => {            
-            item[key] = replace_comma2dot_dot2comma(item[key])
+          Object.keys(item).forEach((key) => {       
+            let num = Number(item[key].replace(/\./g, "").replace(/,/g, "."))
+            if(!Number.isNaN(num)){
+              item[key] = num
+            }
           })
         })        
         this.$store.dispatch('data_history/load_user_data_history', val)
