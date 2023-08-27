@@ -30,25 +30,50 @@
       </v-col>
     </v-row>
 
-    <v-row class="flex-1-0 ma-0 pa-0">
-      <v-col cols="6 text-center">
+    <v-row class="flex-1-0 text-center ma-0 pa-0">
+      <v-col cols="4">
         <v-btn 
           @click="load_standard_user_historic" 
           color="warning"
           elevation="4" 
           size="small"
         >
-          Carregar Exemplo
+        <span class="hidden-sm-and-down">Carregar Exemplo</span>
+            <v-icon 
+                size="x-large"
+                icon="mdi-file-cabinet"
+                end>
+          </v-icon>               
         </v-btn>
       </v-col>
-      <v-col cols="6 text-center">
+      <v-col cols="4">
+        <v-btn
+          color="primary"
+          @click="download_standard_user_historic"
+          elevation="4" 
+          size="small"
+        >          
+           <span class="hidden-sm-and-down">Baixar Exemplo</span>
+            <v-icon 
+                size="x-large"
+                icon="mdi-download-circle-outline"
+                end>
+          </v-icon>           
+        </v-btn>
+      </v-col>
+      <v-col cols="4">
         <v-btn 
           @click="clear_user_historic" 
           color="error"
           elevation="4" 
           size="small"
         >
-          Limpar dados
+        <span class="hidden-sm-and-down">Limpar dados</span>
+            <v-icon 
+                size="x-large"
+                icon="mdi-broom"
+                end>
+          </v-icon>              
         </v-btn>
       </v-col>
     </v-row>
@@ -114,13 +139,15 @@
   import { mapGetters, mapActions } from 'vuex'
   import FileUploader from '@/components/FileUploader.vue'
   import MessageViewer from '@/components/MessageViewer.vue'
-  import macde_modelo from '@/assets/files/modelo_macde.json'
+  import {macde_model} from '@/assets/files/modelo_macde'
   import TableData from '@/components/TableData.vue'
   import { Bar} from 'vue-chartjs'
   import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
   import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend,  TimeScale } from 'chart.js'
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
+  import fileDownload from 'js-file-download'
+  import { csv2Json } from '@/assets/files/consts'
 
   export default {
     name: 'userHistoryPage',
@@ -157,7 +184,7 @@
     },
     methods: {
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
-      
+
       fileUploaded(val) {
         val.forEach(item => {          
           Object.keys(item).forEach((key) => {       
@@ -181,7 +208,21 @@
       },
 
       load_standard_user_historic() {
-        this.$store.dispatch('data_history/load_user_data_history', macde_modelo)
+        let dt = JSON.parse(JSON.stringify(csv2Json(macde_model)))
+        dt.forEach(item => {          
+          Object.keys(item).forEach((key) => {       
+            let num = Number(item[key])
+            if(!Number.isNaN(num)){
+              item[key] = num
+            }
+          })
+        })   
+        
+        this.$store.dispatch('data_history/load_user_data_history', dt)
+      },
+
+      download_standard_user_historic() {
+        fileDownload(macde_model.replace(/\./g, ","),'teste_csv.csv')
       },
       
       chartDataDemand() {
