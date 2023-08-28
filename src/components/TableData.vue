@@ -12,6 +12,12 @@
       {{ date2string(item.columns.date) }}
     </template>
 
+    <template
+      v-for="name in get_measurements_names" v-slot:[`item.${name}`]="{ item }" :key="name"
+    >        
+      {{new Intl.NumberFormat("pt-BR").format(item.columns[name])}}
+    </template>	  
+
     <template v-slot:top>
       <v-toolbar
         flat
@@ -189,6 +195,11 @@
       ...mapGetters('data_history', {
         data_file: 'get_user_data_history'
       }),
+
+       ...mapGetters('data_configurations', {
+          get_measurements_names: 'get_measurements_names',
+      }),
+      
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Item' : 'Editar Item'
       },
