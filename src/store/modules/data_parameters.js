@@ -4,7 +4,7 @@ export default {
     namespaced: true,
     state: {
         has_demand_variation: false,
-        selected_simulation_type: {name: SIMULATION_TYPES[0].name, text: SIMULATION_TYPES[0].text},
+        selected_simulation_type: {name: SIMULATION_TYPES[0].name, text: SIMULATION_TYPES[0].text,  meas: SIMULATION_TYPES[0].meas},
         has_photovoltaic_system: false,
         date_installation_photovoltaic_system: "",
         growth_forecast: 5,

@@ -114,7 +114,7 @@
         </v-sheet>
       </v-col>
     
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="6" v-if="active_meas('energy').length">
           <v-sheet rounded="lg" min-height="300">
             <Bar 
               id="bar-data-history-chart-energy-id"
@@ -165,6 +165,10 @@
           get_user_data_history_messages: 'get_user_data_history_messages',
       }),
 
+      ...mapGetters('data_parameters', {
+          get_selected_simulation_type: 'get_selected_simulation_type',
+      }),
+
       chartOptionsDemand() {
         let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
         opt.plugins.title.text = "Gráfico de Demanda"
@@ -197,6 +201,10 @@
         this.$store.dispatch('data_history/load_user_data_history', val)
       },
 
+      active_meas(type_meas) {
+        return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
+      },
+
       message_shown(index) {
         this.delete_item_user_data_history_messages(index)
       },
@@ -227,14 +235,14 @@
       
       chartDataDemand() {
         this.chartDemand = createDataSetsTimeSeries( 
-          ['off_peak_demand', 'peak_demand'], 
+          this.active_meas('demand'), 
           'date',
           [...this.data_file])
       },
 
       chartDataEnergy() {
         this.chartEnergy = createDataSetsTimeSeries( 
-          ['off_peak_energy', 'peak_energy'], 
+          this.active_meas('energy'), 
           'date',
           [...this.data_file])
       },

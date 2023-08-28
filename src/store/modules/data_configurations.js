@@ -43,25 +43,9 @@ export default {
           return state.utility
         },
 
-      get_tariff_modality(state) {
-        return state.consumer_unit.tariff_modality
-      },
-
-      get_demand_measurements_names(state) {
-        return state.consumer_unit.tariff_modality.name == 'green' ? ['demand'] : ['peak_demand', 'off_peak_demand']
-      },
-      
-      get_energy_measurements_names() {
-          return ['peak_energy', 'off_peak_energy']
-      },
-      
-      get_all_measurements_names() {
-          return ['demand', 'peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
-      },
-      
-      get_measurements_names(state, getters) {
-        return getters.get_demand_measurements_names.concat(getters.get_energy_measurements_names)
-      },
+        get_tariff_modality(state) {
+          return state.consumer_unit.tariff_modality
+        },
       },
       mutations: {  
         set_consumer_unit(state, payload) {

@@ -137,10 +137,10 @@ export class ValidationTimeSerie{
 
 export class TimeSeries {
     constructor(data, 
+        required_keys_series,
         start = new Date(), 
         frequency = ts_frequency.monthly, 
-        date_format = TIME_SERIES_DATE_FORMAT,
-        required_keys_series = ['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
+        date_format = TIME_SERIES_DATE_FORMAT
     ) {
         this.date_format = date_format;
         this.data = data.map(item => Object.assign({}, item));
@@ -173,6 +173,10 @@ export class TimeSeries {
 
     sort() {
         this.data.sort((a, b) => compareAsc(a.date, b.date))
+    }
+
+    set_required_keys_series(req) {
+        this.required_keys_series = req
     }
 
     get_required_keys_series() {

@@ -13,10 +13,10 @@ export const MEAS_INFO = {
 }
 
 export const SIMULATION_TYPES = [
-    {name: 'green_demand', text: 'Demanda Verde'},
-    {name: 'green_demand_plus_energy', text: 'Demanda + Energia Verde'},
-    {name: 'blue_demand', text: 'Demanda Azul'},
-    {name: 'blue_demand_plus_energy', text: 'Demanda + Energia Azul'}
+  {name: 'green_demand', text: 'Demanda Verde', meas: ['demand']},
+  {name: 'green_demand_plus_energy', text: 'Demanda + Energia Verde', meas: ['demand', 'peak_energy', 'off_peak_energy']},
+  {name: 'blue_demand', text: 'Demanda Azul', meas: ['peak_demand', 'off_peak_demand']},
+  {name: 'blue_demand_plus_energy', text: 'Demanda + Energia Azul', meas: ['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']}
 ]
 
 export const TARIFF_MODALITY_TYPES = [

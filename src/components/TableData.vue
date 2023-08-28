@@ -140,7 +140,7 @@
   import { format as fns_format } from 'date-fns'
   import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
   import InputDatePicker from '@/components/InputDatePicker.vue'
-  import { TIME_SERIES_DATE_FORMAT } from '@/assets/files/consts'
+  import { TIME_SERIES_DATE_FORMAT, MEAS_INFO } from '@/assets/files/consts'
 
 
   export default {
@@ -156,45 +156,60 @@
         {value: 48, title: '48'},
         {value: -1, title: 'Todos'}
       ],
-      headers: [
-        {
-          title: 'Data',
-          align: 'start',
-          sortable: true,
-          key: 'date',
-        },
-        { title: 'Demanda de Ponta', key: 'peak_demand' },
-        { title: 'Demanda Fora de Ponta', key: 'off_peak_demand' },
-        { title: 'Energia de Ponta', key: 'peak_energy' },
-        { title: 'Energia Fora de Ponta', key: 'off_peak_energy' },
-        { title: 'Opções', key: 'actions', sortable: false },
-      ],
       editedIndex: -1,
-      editedItem: [
-        {name: 'date', value: '', label: 'Data', suffix: ""},
-        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta', suffix: "kW"},
-        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta', suffix: "kW"},
-        {name: 'peak_energy', value: 0, label: 'Energia de Ponta', suffix: "kWh"},
-        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta', suffix: "kWh"}        
-      ],
-      defaultItem: [
-        {name: 'date', value: '', label: 'Data', suffix: ""},
-        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta', suffix: "kW"},
-        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta', suffix: "kW"},
-        {name: 'peak_energy', value: 0, label: 'Energia de Ponta', suffix: "kWh"},
-        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta', suffix: "kWh"}        
-      ],
+      editedItem: [],
+      defaultItem: [],      
     }),
     computed: {
       ...mapGetters('data_history', {
         data_file: 'get_user_data_history'
       }),
+
+      ...mapGetters('data_parameters', {
+          get_selected_simulation_type: 'get_selected_simulation_type',
+      }),
+
+      headers() {
+        let opt = [{title: 'Data', align: 'start', sortable: true, key: 'date'}]
+        this.get_selected_simulation_type.meas.forEach(key => opt.push(MEAS_INFO[key]))
+        opt.push({title: 'Opções', key: 'actions', sortable: false })
+
+        return opt
+      },
+
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Item' : 'Editar Item'
       },
     },
 
     methods: {
+      mountEditedItem() {
+        const base = [
+        {name: 'demand', value: 0, label: 'Demanda', suffix: "kW"},
+        {name: 'peak_demand', value: 0, label: 'Demanda de Ponta', suffix: "kW"},
+        {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta', suffix: "kW"},
+        {name: 'peak_energy', value: 0, label: 'Energia de Ponta', suffix: "kWh"},
+        {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta', suffix: "kWh"}        
+      ]
+        let opt = [{name: 'date', value: '', label: 'Data', suffix: ""}]
+        this.get_selected_simulation_type.meas.forEach(key => opt.push(base.filter(item => item.name === key)[0]))
+        this.editedItem = opt
+      },
+
+      mountDefaultItem() {
+        const base = [
+          {name: 'date', value: '', label: 'Data', suffix: ""},
+          {name: 'demand', value: 0, label: 'Demanda', suffix: "kW"},
+          {name: 'peak_demand', value: 0, label: 'Demanda de Ponta', suffix: "kW"},
+          {name: 'off_peak_demand', value: 0, label: 'Demanda de Fora Ponta', suffix: "kW"},
+          {name: 'peak_energy', value: 0, label: 'Energia de Ponta', suffix: "kWh"},
+          {name: 'off_peak_energy', value: 0, label: 'Energia Fora de Ponta', suffix: "kWh"}        
+        ]
+        let opt = [{name: 'date', value: '', label: 'Data', suffix: ""}]
+        this.get_selected_simulation_type.meas.forEach(key => opt.push(base.filter(item => item.name === key)[0]))
+        this.defaultItem = opt
+      },
+
       changedInputNumberValue(e, param, index) {
         this.editedItem[index].value = e;
       },
@@ -246,7 +261,6 @@
           let name = this.editedItem[i].name
           obj[name] = this.editedItem[i].value     
         }
-
         if (this.editedIndex > -1) {
           let payload = {'index': this.editedIndex, 'value': obj}
           this.$store.dispatch('data_history/set_item_user_data_history', payload)
@@ -255,6 +269,11 @@
         }
         this.close()
       },
+    },
+
+    mounted() {
+      this.mountEditedItem()
+      this.mountDefaultItem()
     },
 
     watch: {

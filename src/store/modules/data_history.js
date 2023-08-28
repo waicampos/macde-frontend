@@ -82,12 +82,13 @@ export default {
           commit("delete_item_user_data_history_messages", payload)
         },
 
-        load_user_data_history({ state, commit }, payload) {
+        load_user_data_history({ state, commit, rootGetters }, payload) {
           if(!payload) {
             state.user_data_history_messages.push(sys_msg.ERROR_FAIL_UPLOAD_FILE())
             return false
           }
-          let ts = new TimeSeries(payload)
+          let simulation_type = rootGetters['data_parameters/get_selected_simulation_type'].meas
+          let ts = new TimeSeries(payload, simulation_type)
           let ts_validation = new ValidationTimeSerie(ts)
           
           if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
@@ -96,10 +97,7 @@ export default {
           else if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())
           else if(!ts_validation.valid_allNumbers()) state.user_data_history_messages.push(sys_msg.ERROR_TS_IS_NUMBER())
           else if(!ts_validation.valid_required_keys()) state.user_data_history_messages.push(sys_msg.ERROR_REQ_KEYS(['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']))
-          else{
-            payload.forEach(item => {        
-              item.demand = Math.max(item.peak_demand, item.off_peak_demand)
-            })
+          else{           
             state.user_data_history_messages.push(sys_msg.SUCCESS_UPLOAD_FILE())
             let ts_with_demand = new TimeSeries(payload)
             ts_with_demand.sort()
@@ -108,11 +106,9 @@ export default {
         },
 
         add_user_data_history({ commit }, payload) {
-          payload.demand = Math.max(payload.peak_demand, payload.off_peak_demand)
           commit("add_user_data_history", payload)
         },
         set_item_user_data_history({ commit }, payload) {
-          payload.value.demand = Math.max(payload.value.peak_demand, payload.value.off_peak_demand)
           commit("set_item_user_data_history", payload)
         },
         delete_item_user_data_history_by_id({ commit }, payload) {
