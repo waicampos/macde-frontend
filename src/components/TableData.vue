@@ -12,6 +12,12 @@
       {{ date2string(item.columns.date) }}
     </template>
 
+    <template
+      v-for="name in this.get_selected_simulation_type.meas" v-slot:[`item.${name}`]="{ item }" :key="name"
+    >        
+      {{new Intl.NumberFormat("pt-BR").format(item.columns[name])}}
+    </template>	  
+
     <template v-slot:top>
       <v-toolbar
         flat
