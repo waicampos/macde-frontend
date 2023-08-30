@@ -104,7 +104,7 @@
       v-if="data_file.length"
       class="flex-1-0 ma-2 pa-2"
     >
-      <v-col cols="12" lg="6">
+      <v-col cols="12" :lg="active_meas('energy').length ? 6 : 12">
         <v-sheet rounded="lg" min-height="300">
            <Bar 
               id="bar-data-history-chart-demand-id"
