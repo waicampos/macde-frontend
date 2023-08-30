@@ -1,6 +1,7 @@
 [
   {
     "date": "01/01/2019",
+    "demand": 408.24,
     "peak_demand": 159.6,
     "off_peak_demand": 408.24,
     "peak_energy": 5716,
@@ -8,6 +9,7 @@
   },
   {
     "date": "01/02/2019",
+    "demand": 686,
     "peak_demand": 547.68,
     "off_peak_demand": 686,
     "peak_energy": 13752,
@@ -15,6 +17,7 @@
   },
   {
     "date": "01/03/2019",
+    "demand": 771.96,
     "peak_demand": 633.78,
     "off_peak_demand": 771.96,
     "peak_energy": 23328.5,
@@ -22,6 +25,7 @@
   },
   {
     "date": "01/04/2019",
+    "demand": 789.04,
     "peak_demand": 449.68,
     "off_peak_demand": 789.04,
     "peak_energy": 8368,
@@ -29,6 +33,7 @@
   },
   {
     "date": "01/05/2019",
+    "demand": 660.24,
     "peak_demand": 374.64,
     "off_peak_demand": 660.24,
     "peak_energy": 7234,
@@ -36,6 +41,7 @@
   },
   {
     "date": "01/06/2019",
+    "demand": 435.12,
     "peak_demand": 204.96,
     "off_peak_demand": 435.12,
     "peak_energy": 6757,
@@ -43,6 +49,7 @@
   },
   {
     "date": "01/07/2019",
+    "demand": 298.48,
     "peak_demand": 298.48,
     "off_peak_demand": 294,
     "peak_energy": 10856,
@@ -50,6 +57,7 @@
   },
   {
     "date": "01/08/2019",
+    "demand": 273.28,
     "peak_demand": 273.28,
     "off_peak_demand": 250.88,
     "peak_energy": 10666,
@@ -57,6 +65,7 @@
   },
   {
     "date": "01/09/2019",
+    "demand": 519.68,
     "peak_demand": 249.76,
     "off_peak_demand": 519.68,
     "peak_energy": 7329,
@@ -64,6 +73,7 @@
   },
   {
     "date": "01/10/2019",
+    "demand": 549.36,
     "peak_demand": 371.28,
     "off_peak_demand": 549.36,
     "peak_energy": 11822,
@@ -71,6 +81,7 @@
   },
   {
     "date": "01/11/2019",
+    "demand": 630.56,
     "peak_demand": 487.76,
     "off_peak_demand": 630.56,
     "peak_energy": 15554,
@@ -78,6 +89,7 @@
   },
   {
     "date": "01/12/2019",
+    "demand": 678.72,
     "peak_demand": 478.24,
     "off_peak_demand": 678.72,
     "peak_energy": 14806,
@@ -85,6 +97,7 @@
   },
   {
     "date": "01/01/2020",
+    "demand": 350,
     "peak_demand": 90.16,
     "off_peak_demand": 350,
     "peak_energy": 4137,
@@ -92,6 +105,7 @@
   },
   {
     "date": "01/02/2020",
+    "demand": 828.8,
     "peak_demand": 712.88,
     "off_peak_demand": 828.8,
     "peak_energy": 15887,
@@ -99,6 +113,7 @@
   },
   {
     "date": "01/03/2020",
+    "demand": 824.32,
     "peak_demand": 706.72,
     "off_peak_demand": 824.32,
     "peak_energy": 25793,
@@ -106,6 +121,7 @@
   },
   {
     "date": "01/04/2020",
+    "demand": 654.64,
     "peak_demand": 556.08,
     "off_peak_demand": 654.64,
     "peak_energy": 18718,
@@ -113,6 +129,7 @@
   },
   {
     "date": "01/05/2020",
+    "demand": 465.36,
     "peak_demand": 393.12,
     "off_peak_demand": 465.36,
     "peak_energy": 17033,
@@ -120,6 +137,7 @@
   },
   {
     "date": "01/06/2020",
+    "demand": 437.92,
     "peak_demand": 351.12,
     "off_peak_demand": 437.92,
     "peak_energy": 15544,
@@ -127,6 +145,7 @@
   },
   {
     "date": "01/07/2020",
+    "demand": 167.16,
     "peak_demand": 160.44,
     "off_peak_demand": 167.16,
     "peak_energy": 10856,
@@ -134,6 +153,7 @@
   },
   {
     "date": "01/08/2020",
+    "demand": 322.564,
     "peak_demand": 316.68,
     "off_peak_demand": 322.564,
     "peak_energy": 16454,
@@ -141,6 +161,7 @@
   },
   {
     "date": "01/09/2020",
+    "demand": 486.36,
     "peak_demand": 442.68,
     "off_peak_demand": 486.36,
     "peak_energy": 16752,
@@ -148,6 +169,7 @@
   },
   {
     "date": "01/10/2020",
+    "demand": 504,
     "peak_demand": 427.56,
     "off_peak_demand": 504,
     "peak_energy": 17071,
@@ -155,6 +177,7 @@
   },
   {
     "date": "01/11/2020",
+    "demand": 708.12,
     "peak_demand": 479.64,
     "off_peak_demand": 708.12,
     "peak_energy": 16757,
@@ -162,6 +185,7 @@
   },
   {
     "date": "01/12/2020",
+    "demand": 608.16,
     "peak_demand":432.6,
     "off_peak_demand": 608.16,
     "peak_energy": 15106,
@@ -169,6 +193,7 @@
   },
   {
     "date": "01/01/2021",
+    "demand": 254.52,
     "peak_demand": 100.8,
     "off_peak_demand": 254.52,
     "peak_energy": 4989,
@@ -176,6 +201,7 @@
   },
   {
     "date": "01/02/2021",
+    "demand": 624.12,
     "peak_demand": 537.6,
     "off_peak_demand": 624.12,
     "peak_energy": 8206,
@@ -183,6 +209,7 @@
   },
   {
     "date": "01/03/2021",
+    "demand": 784.44,
     "peak_demand": 620.76,
     "off_peak_demand": 784.44,
     "peak_energy": 26654,
@@ -190,6 +217,7 @@
   },
   {
     "date": "01/04/2021",
+    "demand": 719.88,
     "peak_demand": 624.96,
     "off_peak_demand": 719.88,
     "peak_energy": 25065,
@@ -197,6 +225,7 @@
   },
   {
     "date": "01/05/2021",
+    "demand": 624.68,
     "peak_demand": 383.88,
     "off_peak_demand": 624.68,
     "peak_energy": 17033,
@@ -204,6 +233,7 @@
   },
   {
     "date": "01/06/2021",
+    "demand": 254.52,
     "peak_demand": 100.8,
     "off_peak_demand": 254.52,
     "peak_energy": 4989,
@@ -211,6 +241,7 @@
   },
   {
     "date": "01/07/2021",
+    "demand": 624.12,
     "peak_demand": 537.6,
     "off_peak_demand": 624.12,
     "peak_energy": 8206,
@@ -218,6 +249,7 @@
   },
   {
     "date": "01/08/2021",
+    "demand": 784.44,
     "peak_demand": 620.76,
     "off_peak_demand": 784.44,
     "peak_energy": 26654,
@@ -225,6 +257,7 @@
   },
   {
     "date": "01/09/2021",
+    "demand": 719.88,
     "peak_demand": 624.96,
     "off_peak_demand": 719.88,
     "peak_energy": 25065,
@@ -232,6 +265,7 @@
   },
   {
     "date": "01/10/2021",
+    "demand": 624.68,
     "peak_demand": 383.88,
     "off_peak_demand": 624.68,
     "peak_energy": 17033,
@@ -239,6 +273,7 @@
   },
   {
     "date": "01/11/2021",
+    "demand": 254.52,
     "peak_demand": 100.8,
     "off_peak_demand": 254.52,
     "peak_energy": 4989,
@@ -246,6 +281,7 @@
   },
   {
     "date": "01/12/2021",
+    "demand": 624.12,
     "peak_demand": 537.6,
     "off_peak_demand": 624.12,
     "peak_energy": 8206,

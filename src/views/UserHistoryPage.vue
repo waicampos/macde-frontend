@@ -139,7 +139,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import FileUploader from '@/components/FileUploader.vue'
   import MessageViewer from '@/components/MessageViewer.vue'
-  import {macde_model} from '@/assets/files/modelo_macde'
+  import macde_model from '@/assets/files/macde_model.json'
   import TableData from '@/components/TableData.vue'
   import { Bar} from 'vue-chartjs'
   import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
@@ -216,17 +216,7 @@
       },
 
       load_standard_user_historic() {
-        let dt = JSON.parse(JSON.stringify(csv2Json(macde_model)))
-        dt.forEach(item => {          
-          Object.keys(item).forEach((key) => {       
-            let num = Number(item[key])
-            if(!Number.isNaN(num)){
-              item[key] = num
-            }
-          })
-        })   
-        
-        this.$store.dispatch('data_history/load_user_data_history', dt)
+        this.$store.dispatch('data_history/load_user_data_history', macde_model)
       },
 
       download_standard_user_historic() {
