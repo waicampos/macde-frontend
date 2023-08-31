@@ -69,6 +69,16 @@ export class ValidationTimeSerie{
         return size * this.ts.get_frequency()
     }
 
+    valid_there_is_least_one_month() {        
+        let months = this.ts.get_data().map(item => {
+            const { date } = item
+            return date.getMonth()
+        })
+        const unique = Array.from(new Set(months))
+        const diff = Array.from(Array(12).keys()).filter(a => !unique.includes( a ))
+        return diff.length == 0
+    }
+
     valid_allNumbers() {
         return this.ts.get_data().every(item => {                           
             return this.ts.get_required_keys_series().every(key => {                

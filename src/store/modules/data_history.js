@@ -92,6 +92,7 @@ export default {
           let ts_validation = new ValidationTimeSerie(ts)
           
           if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
+          else if(!ts_validation.valid_there_is_least_one_month()) state.user_data_history_messages.push(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
           else if(!ts_validation.valid_min_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MIN_SIZE(ts))
           else if(!ts_validation.valid_max_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MAX_SIZE(ts))
           else if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())

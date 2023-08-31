@@ -46,6 +46,14 @@ export const ERROR_TS_INVALID_DATE = () => {
     }
 }
 
+export const ERROR_AT_LEAST_ONE_MONTH = () => {
+    return {
+        code: 'ERROR_AT_LEAST_ONE_MONTH',
+        message: 'A Série deve ter pelo menos uma amostra para cada mês.',
+        type: 'error'
+    }
+}
+
 export const ERROR_TS_MISSING_KEY_DATE = () => {
     return {
         code: 'ERROR_TS_MISSING_KEY_DATE',
