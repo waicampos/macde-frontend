@@ -220,7 +220,11 @@
       },
 
       download_standard_user_historic() {
-        fileDownload(macde_model.replace(/\./g, ","),'modelo_macde.csv')
+        let dt = JSON.parse(JSON.stringify(macde_model))
+        dt.forEach(item => {
+          Object.keys(item).forEach(key => item[key] = item[key].toString().replace(/\./g, ","))
+        })
+        fileDownload(this.$papa.unparse(dt, {delimiter: ";",}), 'modelo_macde.csv')
       },
       
       chartDataDemand() {

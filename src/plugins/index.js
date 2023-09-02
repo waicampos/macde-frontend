@@ -9,6 +9,7 @@ import { loadFonts } from './webfontloader'
 import vuetify from './vuetify'
 import router from '../router'
 import store from '../store'
+import VuePapaParse from 'vue-papa-parse'
 
 
 export function registerPlugins (app) {
@@ -17,4 +18,5 @@ export function registerPlugins (app) {
     .use(vuetify)
     .use(router)
     .use(store)
+    .use(VuePapaParse)
 }
