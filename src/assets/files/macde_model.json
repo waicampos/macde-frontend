@@ -1,290 +1,254 @@
 [
   {
-    "date": "01/01/2019",
-    "demand": 408.24,
-    "peak_demand": 159.6,
-    "off_peak_demand": 408.24,
-    "peak_energy": 5716,
-    "off_peak_energy": 62126
+    "data": "01/01/2019",
+    "Demanda ou Demanda Fora de Ponta": 408.24,
+    "Demanda de Ponta": 159.6,
+    "Energia Fora de Ponta": 62126,
+    "Energia de Ponta": 5716
   },
   {
-    "date": "01/02/2019",
-    "demand": 686,
-    "peak_demand": 547.68,
-    "off_peak_demand": 686,
-    "peak_energy": 13752,
-    "off_peak_energy": 118769
+    "data": "01/02/2019",
+    "Demanda ou Demanda Fora de Ponta": 686,
+    "Demanda de Ponta": 547.68,
+    "Energia Fora de Ponta": 118769,
+    "Energia de Ponta": 13752
   },
   {
-    "date": "01/03/2019",
-    "demand": 771.96,
-    "peak_demand": 633.78,
-    "off_peak_demand": 771.96,
-    "peak_energy": 23328.5,
-    "off_peak_energy": 137737
+    "data": "01/03/2019",
+    "Demanda ou Demanda Fora de Ponta": 771.96,
+    "Demanda de Ponta": 633.78,
+    "Energia Fora de Ponta": 137737,
+    "Energia de Ponta": 23328.5
   },
   {
-    "date": "01/04/2019",
-    "demand": 789.04,
-    "peak_demand": 449.68,
-    "off_peak_demand": 789.04,
-    "peak_energy": 8368,
-    "off_peak_energy": 162826
+    "data": "01/04/2019",
+    "Demanda ou Demanda Fora de Ponta": 789.04,
+    "Demanda de Ponta": 449.68,
+    "Energia Fora de Ponta": 162826,
+    "Energia de Ponta": 8368
   },
   {
-    "date": "01/05/2019",
-    "demand": 660.24,
-    "peak_demand": 374.64,
-    "off_peak_demand": 660.24,
-    "peak_energy": 7234,
-    "off_peak_energy": 103846
+    "data": "01/05/2019",
+    "Demanda ou Demanda Fora de Ponta": 660.24,
+    "Demanda de Ponta": 374.64,
+    "Energia Fora de Ponta": 103846,
+    "Energia de Ponta": 7234
   },
   {
-    "date": "01/06/2019",
-    "demand": 435.12,
-    "peak_demand": 204.96,
-    "off_peak_demand": 435.12,
-    "peak_energy": 6757,
-    "off_peak_energy": 95741
+    "data": "01/06/2019",
+    "Demanda ou Demanda Fora de Ponta": 435.12,
+    "Demanda de Ponta": 204.96,
+    "Energia Fora de Ponta": 95741,
+    "Energia de Ponta": 6757
   },
   {
-    "date": "01/07/2019",
-    "demand": 298.48,
-    "peak_demand": 298.48,
-    "off_peak_demand": 294,
-    "peak_energy": 10856,
-    "off_peak_energy": 69956
+    "data": "01/07/2019",
+    "Demanda ou Demanda Fora de Ponta": 294,
+    "Demanda de Ponta": 298.48,
+    "Energia Fora de Ponta": 69956,
+    "Energia de Ponta": 10856
   },
   {
-    "date": "01/08/2019",
-    "demand": 273.28,
-    "peak_demand": 273.28,
-    "off_peak_demand": 250.88,
-    "peak_energy": 10666,
-    "off_peak_energy": 68231
+    "data": "01/08/2019",
+    "Demanda ou Demanda Fora de Ponta": 250.88,
+    "Demanda de Ponta": 273.28,
+    "Energia Fora de Ponta": 68231,
+    "Energia de Ponta": 10666
   },
   {
-    "date": "01/09/2019",
-    "demand": 519.68,
-    "peak_demand": 249.76,
-    "off_peak_demand": 519.68,
-    "peak_energy": 7329,
-    "off_peak_energy": 106068
+    "data": "01/09/2019",
+    "Demanda ou Demanda Fora de Ponta": 519.68,
+    "Demanda de Ponta": 249.76,
+    "Energia Fora de Ponta": 106068,
+    "Energia de Ponta": 7329
   },
   {
-    "date": "01/10/2019",
-    "demand": 549.36,
-    "peak_demand": 371.28,
-    "off_peak_demand": 549.36,
-    "peak_energy": 11822,
-    "off_peak_energy": 79690
+    "data": "01/10/2019",
+    "Demanda ou Demanda Fora de Ponta": 549.36,
+    "Demanda de Ponta": 371.28,
+    "Energia Fora de Ponta": 79690,
+    "Energia de Ponta": 11822
   },
   {
-    "date": "01/11/2019",
-    "demand": 630.56,
-    "peak_demand": 487.76,
-    "off_peak_demand": 630.56,
-    "peak_energy": 15554,
-    "off_peak_energy": 111618
+    "data": "01/11/2019",
+    "Demanda ou Demanda Fora de Ponta": 630.56,
+    "Demanda de Ponta": 487.76,
+    "Energia Fora de Ponta": 111618,
+    "Energia de Ponta": 15554
   },
   {
-    "date": "01/12/2019",
-    "demand": 678.72,
-    "peak_demand": 478.24,
-    "off_peak_demand": 678.72,
-    "peak_energy": 14806,
-    "off_peak_energy": 110379
+    "data": "01/12/2019",
+    "Demanda ou Demanda Fora de Ponta": 678.72,
+    "Demanda de Ponta": 478.24,
+    "Energia Fora de Ponta": 110379,
+    "Energia de Ponta": 14806
   },
   {
-    "date": "01/01/2020",
-    "demand": 350,
-    "peak_demand": 90.16,
-    "off_peak_demand": 350,
-    "peak_energy": 4137,
-    "off_peak_energy": 62126
+    "data": "01/01/2020",
+    "Demanda ou Demanda Fora de Ponta": 350,
+    "Demanda de Ponta": 90.16,
+    "Energia Fora de Ponta": 62126,
+    "Energia de Ponta": 4137
   },
   {
-    "date": "01/02/2020",
-    "demand": 828.8,
-    "peak_demand": 712.88,
-    "off_peak_demand": 828.8,
-    "peak_energy": 15887,
-    "off_peak_energy": 122570
+    "data": "01/02/2020",
+    "Demanda ou Demanda Fora de Ponta": 828.8,
+    "Demanda de Ponta": 712.88,
+    "Energia Fora de Ponta": 122570,
+    "Energia de Ponta": 15887
   },
   {
-    "date": "01/03/2020",
-    "demand": 824.32,
-    "peak_demand": 706.72,
-    "off_peak_demand": 824.32,
-    "peak_energy": 25793,
-    "off_peak_energy": 147884
+    "data": "01/03/2020",
+    "Demanda ou Demanda Fora de Ponta": 824.32,
+    "Demanda de Ponta": 706.72,
+    "Energia Fora de Ponta": 147884,
+    "Energia de Ponta": 25793
   },
   {
-    "date": "01/04/2020",
-    "demand": 654.64,
-    "peak_demand": 556.08,
-    "off_peak_demand": 654.64,
-    "peak_energy": 18718,
-    "off_peak_energy": 110151
+    "data": "01/04/2020",
+    "Demanda ou Demanda Fora de Ponta": 654.64,
+    "Demanda de Ponta": 556.08,
+    "Energia Fora de Ponta": 110151,
+    "Energia de Ponta": 18718
   },
   {
-    "date": "01/05/2020",
-    "demand": 465.36,
-    "peak_demand": 393.12,
-    "off_peak_demand": 465.36,
-    "peak_energy": 17033,
-    "off_peak_energy": 97990
+    "data": "01/05/2020",
+    "Demanda ou Demanda Fora de Ponta": 465.36,
+    "Demanda de Ponta": 393.12,
+    "Energia Fora de Ponta": 97990,
+    "Energia de Ponta": 17033
   },
   {
-    "date": "01/06/2020",
-    "demand": 437.92,
-    "peak_demand": 351.12,
-    "off_peak_demand": 437.92,
-    "peak_energy": 15544,
-    "off_peak_energy": 92115
+    "data": "01/06/2020",
+    "Demanda ou Demanda Fora de Ponta": 437.92,
+    "Demanda de Ponta": 351.12,
+    "Energia Fora de Ponta": 92115,
+    "Energia de Ponta": 15544
   },
   {
-    "date": "01/07/2020",
-    "demand": 167.16,
-    "peak_demand": 160.44,
-    "off_peak_demand": 167.16,
-    "peak_energy": 10856,
-    "off_peak_energy": 67005
+    "data": "01/07/2020",
+    "Demanda ou Demanda Fora de Ponta": 167.16,
+    "Demanda de Ponta": 160.44,
+    "Energia Fora de Ponta": 67005,
+    "Energia de Ponta": 10856
   },
   {
-    "date": "01/08/2020",
-    "demand": 322.564,
-    "peak_demand": 316.68,
-    "off_peak_demand": 322.564,
-    "peak_energy": 16454,
-    "off_peak_energy": 84628
+    "data": "01/08/2020",
+    "Demanda ou Demanda Fora de Ponta": 322.564,
+    "Demanda de Ponta": 316.68,
+    "Energia Fora de Ponta": 84628,
+    "Energia de Ponta": 16454
   },
   {
-    "date": "01/09/2020",
-    "demand": 486.36,
-    "peak_demand": 442.68,
-    "off_peak_demand": 486.36,
-    "peak_energy": 16752,
-    "off_peak_energy": 89866
+    "data": "01/09/2020",
+    "Demanda ou Demanda Fora de Ponta": 486.36,
+    "Demanda de Ponta": 442.68,
+    "Energia Fora de Ponta": 89866,
+    "Energia de Ponta": 16752
   },
   {
-    "date": "01/10/2020",
-    "demand": 504,
-    "peak_demand": 427.56,
-    "off_peak_demand": 504,
-    "peak_energy": 17071,
-    "off_peak_energy": 92606
+    "data": "01/10/2020",
+    "Demanda ou Demanda Fora de Ponta": 504,
+    "Demanda de Ponta": 427.56,
+    "Energia Fora de Ponta": 92606,
+    "Energia de Ponta": 17071
   },
   {
-    "date": "01/11/2020",
-    "demand": 708.12,
-    "peak_demand": 479.64,
-    "off_peak_demand": 708.12,
-    "peak_energy": 16757,
-    "off_peak_energy": 106497
+    "data": "01/11/2020",
+    "Demanda ou Demanda Fora de Ponta": 708.12,
+    "Demanda de Ponta": 479.64,
+    "Energia Fora de Ponta": 106497,
+    "Energia de Ponta": 16757
   },
   {
-    "date": "01/12/2020",
-    "demand": 608.16,
-    "peak_demand":432.6,
-    "off_peak_demand": 608.16,
-    "peak_energy": 15106,
-    "off_peak_energy": 108539
+    "data": "01/12/2020",
+    "Demanda ou Demanda Fora de Ponta": 608.16,
+    "Demanda de Ponta":432.6,
+    "Energia Fora de Ponta": 108539,
+    "Energia de Ponta": 15106
   },
   {
-    "date": "01/01/2021",
-    "demand": 254.52,
-    "peak_demand": 100.8,
-    "off_peak_demand": 254.52,
-    "peak_energy": 4989,
-    "off_peak_energy": 59163
+    "data": "01/01/2021",
+    "Demanda ou Demanda Fora de Ponta": 254.52,
+    "Demanda de Ponta": 100.8,
+    "Energia Fora de Ponta": 59163,
+    "Energia de Ponta": 4989
   },
   {
-    "date": "01/02/2021",
-    "demand": 624.12,
-    "peak_demand": 537.6,
-    "off_peak_demand": 624.12,
-    "peak_energy": 8206,
-    "off_peak_energy": 118769
+    "data": "01/02/2021",
+    "Demanda ou Demanda Fora de Ponta": 624.12,
+    "Demanda de Ponta": 537.6,
+    "Energia Fora de Ponta": 118769,
+    "Energia de Ponta": 8206
   },
   {
-    "date": "01/03/2021",
-    "demand": 784.44,
-    "peak_demand": 620.76,
-    "off_peak_demand": 784.44,
-    "peak_energy": 26654,
-    "off_peak_energy": 137737
+    "data": "01/03/2021",
+    "Demanda ou Demanda Fora de Ponta": 784.44,
+    "Demanda de Ponta": 620.76,
+    "Energia Fora de Ponta": 137737,
+    "Energia de Ponta": 26654
   },
   {
-    "date": "01/04/2021",
-    "demand": 719.88,
-    "peak_demand": 624.96,
-    "off_peak_demand": 719.88,
-    "peak_energy": 25065,
-    "off_peak_energy": 133994
+    "data": "01/04/2021",
+    "Demanda ou Demanda Fora de Ponta": 719.88,
+    "Demanda de Ponta": 624.96,
+    "Energia Fora de Ponta": 133994,
+    "Energia de Ponta": 25065
   },
   {
-    "date": "01/05/2021",
-    "demand": 624.68,
-    "peak_demand": 383.88,
-    "off_peak_demand": 624.68,
-    "peak_energy": 17033,
-    "off_peak_energy": 102337
+    "data": "01/05/2021",
+    "Demanda ou Demanda Fora de Ponta": 624.68,
+    "Demanda de Ponta": 383.88,
+    "Energia Fora de Ponta": 102337,
+    "Energia de Ponta": 17033
   },
   {
-    "date": "01/06/2021",
-    "demand": 254.52,
-    "peak_demand": 100.8,
-    "off_peak_demand": 254.52,
-    "peak_energy": 4989,
-    "off_peak_energy": 59163
+    "data": "01/06/2021",
+    "Demanda ou Demanda Fora de Ponta": 254.52,
+    "Demanda de Ponta": 100.8,
+    "Energia Fora de Ponta": 59163,
+    "Energia de Ponta": 4989
   },
   {
-    "date": "01/07/2021",
-    "demand": 624.12,
-    "peak_demand": 537.6,
-    "off_peak_demand": 624.12,
-    "peak_energy": 8206,
-    "off_peak_energy": 118769
+    "data": "01/07/2021",
+    "Demanda ou Demanda Fora de Ponta": 624.12,
+    "Demanda de Ponta": 537.6,
+    "Energia Fora de Ponta": 118769,
+    "Energia de Ponta": 8206
   },
   {
-    "date": "01/08/2021",
-    "demand": 784.44,
-    "peak_demand": 620.76,
-    "off_peak_demand": 784.44,
-    "peak_energy": 26654,
-    "off_peak_energy": 137737
+    "data": "01/08/2021",
+    "Demanda ou Demanda Fora de Ponta": 784.44,
+    "Demanda de Ponta": 620.76,
+    "Energia Fora de Ponta": 137737,
+    "Energia de Ponta": 26654
   },
   {
-    "date": "01/09/2021",
-    "demand": 719.88,
-    "peak_demand": 624.96,
-    "off_peak_demand": 719.88,
-    "peak_energy": 25065,
-    "off_peak_energy": 133994
+    "data": "01/09/2021",
+    "Demanda ou Demanda Fora de Ponta": 719.88,
+    "Demanda de Ponta": 624.96,
+    "Energia Fora de Ponta": 133994,
+    "Energia de Ponta": 25065
   },
   {
-    "date": "01/10/2021",
-    "demand": 624.68,
-    "peak_demand": 383.88,
-    "off_peak_demand": 624.68,
-    "peak_energy": 17033,
-    "off_peak_energy": 102337
+    "data": "01/10/2021",
+    "Demanda ou Demanda Fora de Ponta": 624.68,
+    "Demanda de Ponta": 383.88,
+    "Energia Fora de Ponta": 102337,
+    "Energia de Ponta": 17033
   },
   {
-    "date": "01/11/2021",
-    "demand": 254.52,
-    "peak_demand": 100.8,
-    "off_peak_demand": 254.52,
-    "peak_energy": 4989,
-    "off_peak_energy": 59163
+    "data": "01/11/2021",
+    "Demanda ou Demanda Fora de Ponta": 254.52,
+    "Demanda de Ponta": 100.8,
+    "Energia Fora de Ponta": 59163,
+    "Energia de Ponta": 4989
   },
   {
-    "date": "01/12/2021",
-    "demand": 624.12,
-    "peak_demand": 537.6,
-    "off_peak_demand": 624.12,
-    "peak_energy": 8206,
-    "off_peak_energy": 118769
+    "data": "01/12/2021",
+    "Demanda ou Demanda Fora de Ponta": 624.12,
+    "Demanda de Ponta": 537.6,
+    "Energia Fora de Ponta": 118769,
+    "Energia de Ponta": 8206
   }
 ]
