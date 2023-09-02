@@ -4,6 +4,16 @@ export const TIME_SERIES_DATE_FORMAT = 'dd/MM/yyyy'
 
 export const sum = (acc, cur) => acc + cur;
 
+export const sequence_headers_input_data_file = ['date', 'off_peak_demand', 'peak_demand', 'off_peak_energy', 'peak_energy']
+
+export const translated_input_file_keys = {
+  'demanda ou demanda fora de ponta' : 'off_peak_demand',
+  'demanda de ponta' : 'peak_demand',
+  'energia fora de ponta' : 'off_peak_energy',
+  'energia de ponta' : 'peak_energy',
+  'data': 'date'
+}
+
 export const MEAS_INFO = {
     "demand":{key:"demand", "title": "Demanda", "prefix":"R$", "suffix":"por kW", "type":"number"},
     "peak_demand": {key: "peak_demand", title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},

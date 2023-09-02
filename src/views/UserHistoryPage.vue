@@ -147,6 +147,7 @@
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
   import fileDownload from 'js-file-download'
+  import { translated_input_file_keys, sequence_headers_input_data_file } from '@/assets/files/consts'
   import { csv2Json } from '@/assets/files/consts'
 
   export default {
@@ -189,13 +190,19 @@
     methods: {
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
 
-      fileUploaded(val) {
-        val.forEach(item => {          
-          Object.keys(item).forEach((key) => {       
+      fileUploaded(val) {      
+        val.forEach(item => {                    
+          Object.keys(item).forEach((key, index) => {       
             let num = Number(item[key].replace(/\./g, "").replace(/,/g, "."))
             if(!Number.isNaN(num)){
               item[key] = num
             }
+
+            let name_key = translated_input_file_keys[key.toLowerCase()] || sequence_headers_input_data_file[index]
+            if(!sequence_headers_input_data_file.includes(key) && !Object.keys(item).includes(name_key)) {              
+              item[name_key] = item[key]   
+              delete item[key]              
+            }            
           })
         })        
         this.$store.dispatch('data_history/load_user_data_history', val)
