@@ -7,11 +7,11 @@ export const sum = (acc, cur) => acc + cur;
 export const sequence_headers_input_data_file = ['date', 'off_peak_demand', 'peak_demand', 'off_peak_energy', 'peak_energy']
 
 export const translated_input_file_keys = {
+  'data': 'date',
   'demanda ou demanda fora de ponta' : 'off_peak_demand',
   'demanda de ponta' : 'peak_demand',
   'energia fora de ponta' : 'off_peak_energy',
-  'energia de ponta' : 'peak_energy',
-  'data': 'date'
+  'energia de ponta' : 'peak_energy'
 }
 
 export const MEAS_INFO = {

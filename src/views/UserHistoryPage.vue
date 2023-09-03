@@ -189,7 +189,15 @@
     methods: {
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
 
-      change_names(val) {      
+      change_names_en2pt(val) {
+        return val.map(item => {  
+          let new_obj = {}         
+          Object.keys(translated_input_file_keys).forEach(key => Object.assign(new_obj, {[key]: item[translated_input_file_keys[key]]}))          
+          return {...new_obj}
+        })
+      },
+
+      change_names_pt2en(val) {      
         return val.map(item => {  
           let new_obj = {}                  
           Object.keys(item).forEach((key, index) => {                 
@@ -213,7 +221,7 @@
             }
           })
         })   
-        this.$store.dispatch('data_history/load_user_data_history', this.change_names(val))
+        this.$store.dispatch('data_history/load_user_data_history', this.change_names_pt2en(val))
       },
 
       active_meas(type_meas) {
@@ -231,14 +239,12 @@
       },
 
       load_standard_user_historic() {
-        this.$store.dispatch('data_history/load_user_data_history', macde_model)
+        this.$store.dispatch('data_history/load_user_data_history', JSON.parse(JSON.stringify(macde_model)))
       },
 
       download_standard_user_historic() {
-        let dt = JSON.parse(JSON.stringify(macde_model))
-        dt.forEach(item => {
-          Object.keys(item).forEach(key => item[key] = item[key].toString().replace(/\./g, ","))
-        })
+        let dt = this.change_names_en2pt(JSON.parse(JSON.stringify(macde_model)))
+        dt.forEach(item => Object.keys(item).forEach(key => item[key] = item[key].toString().replace(/\./g, ",")))
         fileDownload(this.$papa.unparse(dt, {delimiter: ";",}), 'modelo_macde.csv')
       },
       
