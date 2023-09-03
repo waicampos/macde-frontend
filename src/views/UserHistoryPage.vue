@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column">
-    <v-row class="flex-1-0 ma-2 pa-2">
+    <v-row class="flex-1-0">
       <v-col cols="12">
         <v-card
           elevation="0"
@@ -30,7 +30,23 @@
       </v-col>
     </v-row>
 
-    <v-row class="flex-1-0 text-center ma-0 pa-0">
+    <!-- Mensagens -->
+    <v-row class="flex-1-0 ma-0 pa-0">
+      <v-col 
+        cols="12"
+          v-for="(msg, index) in get_user_data_history_messages"
+          :key="msg.code"
+      >
+        <MessageViewer 
+          :msg="msg"
+          v-show="msg"
+          @msg_shown='message_shown(index)'
+        />
+      </v-col>
+    </v-row>
+
+    <!-- Botões -->
+    <v-row class="flex-1-0 text-center">
       <v-col cols="4">
         <v-btn 
           @click="load_standard_user_historic" 
@@ -78,21 +94,8 @@
       </v-col>
     </v-row>
 
-    <v-row class="flex-1-0 ma-0 pa-0">
-      <v-col 
-        cols="12"
-          v-for="(msg, index) in get_user_data_history_messages"
-          :key="msg.code"
-      >
-        <MessageViewer 
-          :msg="msg"
-          v-show="msg"
-          @msg_shown='message_shown(index)'
-        />
-      </v-col>
-    </v-row>
-
-    <v-row class="flex-1-0 ma-2 pa-2">
+    <!-- FileUploader -->
+    <v-row class="flex-1-0">
       <v-col cols="12">
         <FileUploader  
           @newFileUploaded="fileUploaded"  
@@ -100,9 +103,25 @@
       </v-col>
     </v-row>
 
+    <!-- Modalidade Tarifária -->
+    <v-row >                        
+        <v-col cols="12">
+            <v-select
+                v-model="selected_simulation_type"
+                label="Modalidade Tarifária"
+                :items="simulation_types"
+                item-title="text"
+                item-value="name"
+                variant="outlined"
+                return-object
+            ></v-select>
+        </v-col>                        
+    </v-row>
+
+    <!-- Gráficos -->
     <v-row 
       v-if="data_file.length"
-      class="flex-1-0 ma-2 pa-2"
+      class="flex-1-0"
     >
       <v-col cols="12" :lg="active_meas('energy').length ? 6 : 12">
         <v-sheet rounded="lg" min-height="300">
@@ -125,8 +144,9 @@
       </v-col>
     </v-row>    
 
+    <!-- Tabela -->
     <v-row 
-      class="flex-1-0 ma-2 pa-2"
+      class="flex-1-0 mb-4 pb-4"
     >
       <v-col cols="12">
         <TableData />
@@ -147,13 +167,14 @@
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
   import fileDownload from 'js-file-download'
-  import { translated_input_file_keys, sequence_headers_input_data_file } from '@/assets/files/consts'
+  import { translated_input_file_keys, sequence_headers_input_data_file, SIMULATION_TYPES } from '@/assets/files/consts'
 
   export default {
     name: 'userHistoryPage',
     components: {FileUploader, TableData, MessageViewer, Bar},
     data() {
       return {
+        simulation_types: SIMULATION_TYPES,
         msg_props: {"text": "", "type": "success"},
         chartEnergy: {datasets: []},
         chartDemand: {datasets: []},
@@ -168,6 +189,15 @@
       ...mapGetters('data_parameters', {
           get_selected_simulation_type: 'get_selected_simulation_type',
       }),
+
+      selected_simulation_type: {
+          get() {
+              return this.get_selected_simulation_type
+          },
+          set(payload){
+              this.set_selected_simulation_type(payload)
+          }
+      },
 
       chartOptionsDemand() {
         let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
@@ -188,6 +218,7 @@
     },
     methods: {
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
+      ...mapActions('data_parameters', ['set_selected_simulation_type']),
 
       change_names_en2pt(val) {
         return val.map(item => {  
@@ -266,7 +297,17 @@
       this.chartDataDemand()
       this.chartDataEnergy()
     },
+
     watch: {
+      get_selected_simulation_type: {
+        handler() {
+          this.chartDataDemand()
+          this.chartDataEnergy()
+        },
+        deep: true,
+        imediate: true,
+      },
+
       data_file: {
         handler() {
           this.chartDataDemand()
