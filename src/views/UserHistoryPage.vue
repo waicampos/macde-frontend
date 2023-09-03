@@ -189,22 +189,31 @@
     methods: {
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
 
+      change_names(val) {      
+        return val.map(item => {  
+          let new_obj = {}                  
+          Object.keys(item).forEach((key, index) => {                 
+            let name_key = translated_input_file_keys[key.toLowerCase()] || sequence_headers_input_data_file[index]
+            if(!sequence_headers_input_data_file.includes(key) && !Object.keys(item).includes(name_key)) {              
+              new_obj[name_key] = item[key]                         
+            }else {
+              new_obj[key] = item[key]   
+            }         
+          })
+          return new_obj
+        })        
+      },
+
       fileUploaded(val) {      
         val.forEach(item => {                    
-          Object.keys(item).forEach((key, index) => {       
+          Object.keys(item).forEach(key => {       
             let num = Number(item[key].replace(/\./g, "").replace(/,/g, "."))
             if(!Number.isNaN(num)){
               item[key] = num
             }
-
-            let name_key = translated_input_file_keys[key.toLowerCase()] || sequence_headers_input_data_file[index]
-            if(!sequence_headers_input_data_file.includes(key) && !Object.keys(item).includes(name_key)) {              
-              item[name_key] = item[key]   
-              delete item[key]              
-            }            
           })
-        })        
-        this.$store.dispatch('data_history/load_user_data_history', val)
+        })   
+        this.$store.dispatch('data_history/load_user_data_history', this.change_names(val))
       },
 
       active_meas(type_meas) {
