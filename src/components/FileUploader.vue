@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import { csv2Json } from '@/assets/files/consts'
 
 export default {
     data() {
@@ -78,10 +77,14 @@ export default {
                         this.max_exceded = true
                     } else {
                         this.max_exceded = false
-                        this.$emit("newFileUploaded", csv2Json(e.target.result))
+                        const csv2json = this.$papa.parse(e.target.result, {header: true, separator: ';', skipEmptyLines: true})                        
+                        if(csv2json.errors.length) {
+                            throw 'file read failure'
+                        }
+                        this.$emit("newFileUploaded", csv2json.data)
                     }                
                 } catch(err) {
-                    this.$emit("newFileUploaded", null)
+                    this.$emit("newFileUploaded", [])
                 } 
             };                     
         },

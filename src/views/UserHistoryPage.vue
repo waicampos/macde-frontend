@@ -148,7 +148,6 @@
   import 'chartjs-adapter-date-fns';
   import fileDownload from 'js-file-download'
   import { translated_input_file_keys, sequence_headers_input_data_file } from '@/assets/files/consts'
-  import { csv2Json } from '@/assets/files/consts'
 
   export default {
     name: 'userHistoryPage',

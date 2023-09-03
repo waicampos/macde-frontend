@@ -107,18 +107,3 @@ export function demand_cost_response_disassembly(contracted, response) {
     }
     return demand_costs
 }
-
-export const csv2Json = (csv_file, sep=';') => {
-  const [firstLine, ...lines] = csv_file.split('\n');
-  
-  const keys = firstLine.split(sep);
-  return lines.filter(line => line).map(line => ((values) => 
-    keys.reduce(
-      (curr, next, index) => ({
-        ...curr,
-        [next]: values[index],
-      }),
-      {}
-    )
-  )(line.split(sep)));
-};
