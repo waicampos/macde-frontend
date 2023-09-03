@@ -27,7 +27,7 @@ export class TimeSeriesError{
   }
 
 export class ValidationTimeSerie{
-    constructor(ts, minimum_size = 12, maximum_size = 36) {
+    constructor(ts, minimum_size = 12, maximum_size = 120) {
         this.ts = ts
         this.minimum_size = minimum_size
         this.maximum_size = maximum_size

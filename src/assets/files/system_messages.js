@@ -62,18 +62,18 @@ export const ERROR_TS_MISSING_KEY_DATE = () => {
     }
 }
 
-export const ERROR_TS_MIN_SIZE = (ts) => {
+export const ERROR_TS_MIN_SIZE = (ts, ts_validation) => {
     return {
         code: 'ERROR_TS_MIN_SIZE',
-        message: `A série informada possui um tamanho de ${ts.size()} amostras, sendo que o tamanho mínimo aceitável é de ${ts.get_frequency()} amostras.`,
+        message: `A série informada possui um tamanho de ${ts.size()} amostras, sendo que o tamanho mínimo aceitável é de ${ts_validation.get_min_size()} amostras.`,
         type: 'error'
     }
 }
 
-export const ERROR_TS_MAX_SIZE = (ts) => {
+export const ERROR_TS_MAX_SIZE = (ts, ts_validation) => {
     return {
         code: 'ERROR_TS_MAX_SIZE',
-        message: `A série informada possui um tamanho de ${ts.size()} amostras, sendo que o tamanho máximo aceitável é de ${ts.get_frequency()} amostras.`,
+        message: `A série informada possui um tamanho de ${ts.size()} amostras, sendo que o tamanho máximo aceitável é de ${ts_validation.get_maximum_size()} amostras.`,
         type: 'error'
     }
 }
