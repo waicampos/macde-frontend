@@ -87,6 +87,11 @@ export default {
             state.user_data_history_messages.push(sys_msg.ERROR_FAIL_UPLOAD_FILE())
             return false
           }
+
+          payload.forEach(item => {        
+            item.demand = Math.max(item.peak_demand, item.off_peak_demand)
+          })
+
           let simulation_type = rootGetters['data_parameters/get_selected_simulation_type'].meas
           let ts = new TimeSeries(payload, simulation_type)
           let ts_validation = new ValidationTimeSerie(ts)
