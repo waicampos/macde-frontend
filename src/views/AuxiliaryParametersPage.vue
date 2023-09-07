@@ -296,15 +296,15 @@
                 </template>
 
                 <template v-slot>
-                    <v-row>
-                        <v-col
-                        class="pa-0"
-                        cols=12 md=6
-                        v-for="(item, index) in this.local_tariffs"
+                    <v-row>                                        
+                        <v-col        
+                        class="pa-0"                
+                        cols=12 md=6 lg=4
+                        v-for="(item, index) in local_tariffs"
                         :key="index"
-                        >
+                        >                        
                         <InputNumberFormatted  
-                        class="px-3"
+                            class="px-3"
                             :initial="item.value"                                                        
                             maxFractionDigits='12'
                             lang="pt-BR"
@@ -449,7 +449,7 @@ export default {
         },
 
         formBoxTariffCancel() {
-            this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
+            this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs))
         },
     },
 
@@ -500,7 +500,7 @@ export default {
     },
 
     mounted() {
-        this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs()[this.get_tariff_modality.name]))
+        this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs))
         this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
         this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
         this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges))

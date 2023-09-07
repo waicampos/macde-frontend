@@ -1,4 +1,4 @@
-import { SIMULATION_TYPES } from '@/assets/files/consts'
+import { SIMULATION_TYPES, TARIFF_MODALITY_TYPES } from '@/assets/files/consts'
 
 export default {
     namespaced: true,
@@ -8,21 +8,15 @@ export default {
         has_photovoltaic_system: false,
         date_installation_photovoltaic_system: new Date(),
         growth_forecast: 5,
-        tariffs: {
-          blue: 
-          [
-            {value: 42.4, name: 'peak_demand', title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
-            {value: 18.38, name: 'off_peak_demand', title: "Demanda Fora de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
-            {value: 0.72, name: 'peak_energy', title:"Energia de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-            {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-          ],
-          green:
-          [
-            {value: 18.38, name: 'demand', title: "Demanda", prefix:"R$", suffix:"por kW", type:"number"},
-            {value: 1.84, name: 'peak_energy', title:"Energia de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-            {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta", prefix:"R$", suffix:"por kW/h", type:"number"},
-          ]
-        },
+        tariffs: [          
+          {value: 18.38, name: 'demand', title: "Demanda Verde", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 1.84, name: 'peak_energy', title:"Energia de Ponta Verde", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta Verde", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 42.4, name: 'peak_demand', title: "Demanda de Ponta Azul", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 18.38, name: 'off_peak_demand', title: "Demanda Fora de Ponta Azul", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 0.72, name: 'peak_energy', title:"Energia de Ponta Azul", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta Azul", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]}         
+        ],
         taxes_and_charges: [
           {value: 0.50, name:'pis_pasep', title:"pis_pasep", text:"PIS/PASEP", prefix:"", suffix:"%", type:"number"},
           {value: 2.31, name:'cofins', title:"cofins", text:"COFINS", prefix:"", suffix:"%", type:"number"},
@@ -58,14 +52,8 @@ export default {
         return state.growth_forecast
       },
       
-      get_tariffs: (state, getters, rootState, rootGetters) => (key) => {
-        const tariff_modality = rootGetters['data_configurations/get_tariff_modality']
-        if(!key) {
+      get_tariffs(state) {
           return state.tariffs
-        }
-        else {          
-          return state.tariffs[tariff_modality.name].filter(item => item.name == key)[0]
-        }
       },
 
       get_taxes_and_charges(state) {
@@ -92,7 +80,7 @@ export default {
         state.growth_forecast = payload
       },
       set_tariffs(state, payload) {
-        state.tariffs[payload.modality.name] = payload
+        state.tariffs = payload
       },     
       set_taxes_and_charges(state, payload) {
         state.taxes_and_charges = payload
@@ -117,8 +105,7 @@ export default {
       set_growth_forecast({ commit }, payload) {
         commit("set_growth_forecast", payload)
       },
-      set_tariffs({ commit, rootGetters }, payload) {
-        payload.modality = rootGetters['data_configurations/get_tariff_modality']
+      set_tariffs({ commit }, payload) {
         commit("set_tariffs", payload)
       },
       set_taxes_and_charges({ commit }, payload) {
