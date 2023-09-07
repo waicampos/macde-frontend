@@ -127,7 +127,7 @@
         <v-sheet rounded="lg" min-height="300">
            <Bar 
               id="bar-data-history-chart-demand-id"
-              :data="chartDemand"
+              :data="chartDataSets['demand']"
               :options="chartOptionsDemand"
             />
         </v-sheet>
@@ -137,7 +137,7 @@
           <v-sheet rounded="lg" min-height="300">
             <Bar 
               id="bar-data-history-chart-energy-id"
-              :data="chartEnergy"
+              :data="chartDataSets['energy']"
               :options="chartOptionsEnergy"
             />                 
           </v-sheet>
@@ -168,6 +168,7 @@
   import 'chartjs-adapter-date-fns';
   import fileDownload from 'js-file-download'
   import { translated_input_file_keys, sequence_headers_input_data_file, SIMULATION_TYPES } from '@/assets/files/consts'
+  import { isAfter as fns_isAfter } from 'date-fns'
 
   export default {
     name: 'userHistoryPage',
@@ -176,8 +177,10 @@
       return {
         simulation_types: SIMULATION_TYPES,
         msg_props: {"text": "", "type": "success"},
-        chartEnergy: {datasets: []},
-        chartDemand: {datasets: []},
+        chartDataSets: {
+          energy: {datasets: []},
+          demand: {datasets: []},
+        }
       }
     },
     computed: {
@@ -188,6 +191,8 @@
 
       ...mapGetters('data_parameters', {
           get_selected_simulation_type: 'get_selected_simulation_type',
+          get_date_installation_photovoltaic_system: 'get_date_installation_photovoltaic_system',
+          get_has_photovoltaic_system: 'get_has_photovoltaic_system',
       }),
 
       selected_simulation_type: {
@@ -279,30 +284,43 @@
         fileDownload(this.$papa.unparse(dt, {delimiter: ";",}), 'modelo_macde.csv')
       },
       
-      chartDataDemand() {
-        this.chartDemand = createDataSetsTimeSeries( 
-          this.active_meas('demand'), 
-          'date',
-          [...this.data_file])
-      },
+      chartData(type_meas) {                      
+        let data_filter = 
+          (!this.get_has_photovoltaic_system && new Array(this.data_file.length).fill(true)) ||
+          this.data_file.map(item => !fns_isAfter(this.get_date_installation_photovoltaic_system, item.date))
 
-      chartDataEnergy() {
-        this.chartEnergy = createDataSetsTimeSeries( 
-          this.active_meas('energy'), 
+        this.chartDataSets[type_meas] = createDataSetsTimeSeries( 
+          this.active_meas(type_meas), 
           'date',
-          [...this.data_file])
+          Object.assign([],this.data_file.filter((item, index) => data_filter[index]))
+        )        
+  
+        if(this.get_has_photovoltaic_system) {
+          const disabled_data = createDataSetsTimeSeries( 
+            this.active_meas(type_meas), 
+            'date',
+            Object.assign([],this.data_file.filter((item, index) => !data_filter[index]))
+          )
+          
+          disabled_data.datasets.forEach(item => {
+            item.backgroundColor = "#BDBDBD"
+            item.borderColor = "#757575"
+            item.label = item.label + ' (Antes FV)'
+            this.chartDataSets[type_meas].datasets.push(item)
+          })
+        }
       },
     },
     mounted(){
-      this.chartDataDemand()
-      this.chartDataEnergy()
+      this.chartData('demand')
+      this.chartData('energy')
     },
 
     watch: {
       get_selected_simulation_type: {
         handler() {
-          this.chartDataDemand()
-          this.chartDataEnergy()
+          this.chartData('demand')
+          this.chartData('energy')
         },
         deep: true,
         imediate: true,
@@ -310,8 +328,8 @@
 
       data_file: {
         handler() {
-          this.chartDataDemand()
-          this.chartDataEnergy()
+          this.chartData('demand')
+          this.chartData('energy')
         },
         deep: true,
         imediate: true,
