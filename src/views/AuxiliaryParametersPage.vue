@@ -366,7 +366,7 @@
                             :initial="item.value"                                                        
                             maxFractionDigits='12'
                             lang="pt-BR"
-                            :label="item.name"
+                            :label="item.text"
                             :prefix="item.prefix"
                             :suffix= "item.suffix"
                             @changedValue="changedTaxesChargesInputNumberValue($event, item.value, index)"
