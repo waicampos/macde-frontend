@@ -9,13 +9,14 @@
     class="elevation-4"
   >
     <template v-slot:[`item.date`]="{ item }">         
-      {{ date2string(item.columns.date) }}
+      <span :class="defineClassTextColor(item.columns.date)"> {{ date2string(item.columns.date) }} </span>
     </template>
 
     <template
       v-for="name in this.get_selected_simulation_type.meas" v-slot:[`item.${name}`]="{ item }" :key="name"
     >        
-      {{new Intl.NumberFormat("pt-BR").format(item.columns[name])}}
+
+      <span :class="defineClassTextColor(item.columns.date)"> {{ new Intl.NumberFormat("pt-BR").format(item.columns[name]) }} </span>
     </template>	  
 
     <template v-slot:top>
@@ -143,7 +144,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { format as fns_format } from 'date-fns'
+  import { format as fns_format, isAfter as fns_isAfter } from 'date-fns'
   import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
   import InputDatePicker from '@/components/InputDatePicker.vue'
   import { TIME_SERIES_DATE_FORMAT, MEAS_INFO } from '@/assets/files/consts'
@@ -173,6 +174,8 @@
 
       ...mapGetters('data_parameters', {
           get_selected_simulation_type: 'get_selected_simulation_type',
+          get_has_photovoltaic_system: 'get_has_photovoltaic_system',
+          get_date_installation_photovoltaic_system: 'get_date_installation_photovoltaic_system',
       }),
 
       headers() {
@@ -214,6 +217,10 @@
         let opt = [{name: 'date', value: '', label: 'Data', suffix: ""}]
         this.get_selected_simulation_type.meas.forEach(key => opt.push(base.filter(item => item.name === key)[0]))
         this.defaultItem = opt
+      },
+
+      defineClassTextColor(dt) {
+        return this.get_has_photovoltaic_system && fns_isAfter(this.get_date_installation_photovoltaic_system, dt) ? 'text-disabled' : ''
       },
 
       changedInputNumberValue(e, param, index) {
