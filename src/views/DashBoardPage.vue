@@ -57,8 +57,8 @@ import NavBar from '@/components/NavBar.vue'
           { text: 'Previsão', icon: 'mdi-finance', link: "/simulador/previsao" },
           { text: 'Otimização', icon: 'mdi-desktop-classic', link: "/simulador/otimizacao" },
           { text: 'Resultados', icon: 'mdi-chart-bar-stacked', link: "/simulador/resultados" },
+          { text: 'Informações', icon: 'mdi-account-edit', link: "/simulador/info" },
           { text: 'Relatório', icon: 'mdi-content-paste', link: "/simulador/relatorio" },
-          { text: 'Informações', icon: 'mdi-account-edit', link: "/simulador/info" }
         ],
       }
     },
