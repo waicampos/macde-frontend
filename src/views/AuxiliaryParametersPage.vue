@@ -197,12 +197,13 @@
                         <v-row>
                             <v-col cols=6 md=4>
                                 <v-text-field
-                                    v-model="local_growth_forecast"
-                                    suffix="%"
-                                    type="number"                                    
+                                    v-model="v$.local_growth_forecast.$model"
+                                    suffix="%"                                                                     
                                     density="compact"
-                                    hide-details
+                                    :hide-details = false
                                     variant="outlined"
+                                    :error="v$.local_growth_forecast.$error"        
+                                    :error-messages="v$.local_growth_forecast.$error ? v$.local_growth_forecast.$errors[0].$message : ''"
                                 ></v-text-field>   
                             </v-col>
                         </v-row>
@@ -384,10 +385,16 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { useVuelidate } from '@vuelidate/core'
+import { helpers, required } from '@vuelidate/validators'
+import { is_number_pt_br } from '@/assets/files/validators'
+import { MSG_REQUIRED, MSG_INVALID_NUMBER } from '@/assets/files/validators_messages'
 import { SIMULATION_TYPES } from '@/assets/files/consts'
 import FormBox from '@/components/FormBox.vue'
 import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
 import InputDatePicker from '@/components/InputDatePicker.vue'
+
+
 
 export default {
     components: {FormBox, InputNumberFormatted, InputDatePicker},
@@ -399,6 +406,17 @@ export default {
             local_contrac_demand: [],
             local_growth_forecast: '',
             local_taxes_and_charges: [],
+        }
+    },
+
+    setup: () => ({ v$: useVuelidate() }),
+
+    validations () {
+        return {
+            local_growth_forecast: { 
+                required: helpers.withMessage(MSG_REQUIRED, required), 
+                is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+            }
         }
     },
 
@@ -416,12 +434,9 @@ export default {
             this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges))
         },
 
-        changedGrowthForecastInputNumberValue(e) {
-            this.local_growth_forecast = e
-        },
-
-        formBoxGrowthForecastSave() {
-            this.set_growth_forecast(Number(this.local_growth_forecast))
+        async formBoxGrowthForecastSave() {
+            const isFormCorrect = await this.v$.local_growth_forecast.$validate()
+            isFormCorrect && this.set_growth_forecast(Number(this.local_growth_forecast.replace(',', '.')))
         },
 
         formBoxGrowthForecastCancel() {
