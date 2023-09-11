@@ -1,26 +1,50 @@
 <template>
   <v-text-field  
-    v-model="convert_number"
+    v-model="v$.local_number.$model"
     :label= "label"
     :suffix= "suffix"
     :prefix="prefix"
+    :error="v$.local_number.$error"        
+    :error-messages="v$.local_number.$error ? v$.local_number.$errors[0].$message : ''"
   ></v-text-field>
 </template>
 
 <script>
+import { useVuelidate } from '@vuelidate/core'
+import { helpers, required } from '@vuelidate/validators'
+import { is_number_pt_br } from '@/assets/files/validators'
+import { MSG_REQUIRED, MSG_INVALID_NUMBER } from '@/assets/files/validators_messages'
+
+
 export default {
   name: 'InputNumberFormatted',
-   data() {
-      return {
-        local_number: '',
-        temp_string: '',
+
+  computed: {
+    local_number: {
+      get() {
+        return this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
       }
-   },
+    }
+  },
+
+    setup: () => ({ v$: useVuelidate() }),
+
+    validations () {
+        return {
+            local_number: { 
+                required: helpers.withMessage(MSG_REQUIRED, required), 
+                is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+            }
+        }
+    },
 
   props: {
-    initial: {
-      type: Number,
-      default: 0
+    modelValue: {
+      type: [String, Number],
+      default: ''
     },
     label: {
       type: String,
@@ -43,49 +67,6 @@ export default {
       default: '12'
     }
   },
-
-  computed: {
-    convert_number: {
-          get() {        
-              return !this.local_number ? '' : new Intl.NumberFormat(this.lang, { maximumFractionDigits: this.maxFractionDigits }).format(this.local_number);
-          },
-
-          set(payload){ 
-            const isComma = payload.slice(-1) === ',';
-            const hasComma = this.temp_string.includes(',');
-            payload = payload.replaceAll('.', '')            
-            
-            const isNumber = !Number.isNaN(parseFloat(payload.slice(-1)));            
-            if(isNumber || (isComma && !hasComma && payload.length > 1)) {
-              this.temp_string = payload
-              this.local_number = payload.replace(',', '.')
-            } 
-            else{
-              this.local_number = ' '
-              this.temp_string = payload.slice(0, -1)
-              this.$nextTick(() => {
-                this.local_number = this.temp_string.replace(',', '.')
-              })
-            } 
-
-            this.$nextTick(() => {
-              this.$emit('changedValue', parseFloat(this.local_number))
-            })
-          }
-        },
-  },
-  created() {
-    this.local_number = this.initial
-  },
-  watch: {
-      initial: {
-        handler() {
-          this.local_number = this.initial
-        },
-        deep: true,
-        imediate: true,
-      }
-    },
 }
 </script>
 
