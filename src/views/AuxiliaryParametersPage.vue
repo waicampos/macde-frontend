@@ -304,13 +304,12 @@
                         >                        
                         <InputNumberFormatted  
                             class="px-3"
-                            :initial="item.value"                                                        
+                            v-model="item.value"                                                        
                             maxFractionDigits='12'
                             lang="pt-BR"
                             :label="item.title"
                             :prefix="item.prefix"
-                            :suffix= "item.suffix"
-                            @changedValue="changedTariffInputNumberValue($event, item.value, index)"
+                            :suffix= "item.suffix"                            
                         />                            
                         </v-col>
                     </v-row>
@@ -422,6 +421,14 @@ export default {
                             is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
                         }
                 })                                    
+            },
+            local_tariffs: {
+                $each: helpers.forEach({
+                        value: {
+                            required: helpers.withMessage(MSG_REQUIRED, required), 
+                            is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+                        }
+                })                                    
             }
         }
     },
@@ -450,7 +457,7 @@ export default {
         },
 
         async formBoxContracDemandSave() {
-            const isValid = this.v$.local_contrac_demand.$each.$response.$valid
+            const isValid = await this.v$.local_contrac_demand.$each.$response.$valid
             isValid && this.set_current_contracted_demand(JSON.parse(JSON.stringify(this.local_contrac_demand)))
         },
         
@@ -458,12 +465,9 @@ export default {
             this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
         },
 
-        changedTariffInputNumberValue(e, param, index) {
-            this.local_tariffs[index].value = e
-        },
-
-        formBoxTariffSave() {
-            this.set_tariffs(JSON.parse(JSON.stringify(this.local_tariffs)))
+        async formBoxTariffSave() {
+            const isValid = await this.v$.local_tariffs.$each.$response.$valid
+            isValid && this.set_tariffs(JSON.parse(JSON.stringify(this.local_tariffs)))
         },
 
         formBoxTariffCancel() {
