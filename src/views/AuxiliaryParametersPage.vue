@@ -361,13 +361,12 @@
                         >
                         <InputNumberFormatted  
                             class="px-3"
-                            :initial="item.value"                                                        
+                            v-model="item.value"                                                        
                             maxFractionDigits='12'
                             lang="pt-BR"
                             :label="item.text"
                             :prefix="item.prefix"
-                            :suffix= "item.suffix"
-                            @changedValue="changedTaxesChargesInputNumberValue($event, item.value, index)"
+                            :suffix= "item.suffix"                            
                         />                                    
                         </v-col>
                     </v-row>
@@ -429,18 +428,24 @@ export default {
                             is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
                         }
                 })                                    
-            }
+            },
+            local_taxes_and_charges: {
+                $each: helpers.forEach({
+                        value: {
+                            required: helpers.withMessage(MSG_REQUIRED, required), 
+                            is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+                        }
+                })                                    
+            },
         }
     },
 
     methods: {
         ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand', 'set_growth_forecast', 'set_taxes_and_charges']),
-
-        changedTaxesChargesInputNumberValue(e, param, index) {
-            this.local_taxes_and_charges[index].value = e
-        },
-        formBoxTaxesChargesSave() {            
-            this.set_taxes_and_charges(JSON.parse(JSON.stringify(this.local_taxes_and_charges)))
+       
+        async formBoxTaxesChargesSave() { 
+            const isValid = await this.v$.local_taxes_and_charges.$each.$response.$valid
+            isValid && this.set_taxes_and_charges(JSON.parse(JSON.stringify(this.local_taxes_and_charges)))
         },
 
         formBoxTaxesChargesCancel() {
