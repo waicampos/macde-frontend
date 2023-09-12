@@ -244,22 +244,20 @@
                 </template>
 
                 <template v-slot>
-                    <v-row>                        
+                    <v-row>                                           
                         <v-col 
                             class="pa-0"
                             cols=12 md=6
                             v-for="(item, index) in this.local_contrac_demand"
                             :key="index"
                         >
-
                             <InputNumberFormatted  
                                 class="px-3"
-                                :initial="item.value"                                                        
+                                v-model="item.value"                                                        
                                 maxFractionDigits='12'
                                 lang="pt-BR"
                                 :label="item.title"                                
                                 :suffix= "item.suffix"
-                                @changedValue="changedContracDemandInputNumberValue($event, item.value, index)"
                             />                           
                         </v-col>
                     </v-row>
@@ -416,6 +414,14 @@ export default {
             local_growth_forecast: { 
                 required: helpers.withMessage(MSG_REQUIRED, required), 
                 is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+            },
+            local_contrac_demand: {
+                $each: helpers.forEach({
+                        value: {
+                            required: helpers.withMessage(MSG_REQUIRED, required), 
+                            is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+                        }
+                })                                    
             }
         }
     },
@@ -443,12 +449,9 @@ export default {
             this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
         },
 
-        changedContracDemandInputNumberValue(e, param, index) {
-            this.local_contrac_demand[index].value = e
-        },
-
-        formBoxContracDemandSave() {
-            this.set_current_contracted_demand(JSON.parse(JSON.stringify(this.local_contrac_demand)))
+        async formBoxContracDemandSave() {
+            const isValid = this.v$.local_contrac_demand.$each.$response.$valid
+            isValid && this.set_current_contracted_demand(JSON.parse(JSON.stringify(this.local_contrac_demand)))
         },
         
         formBoxContracDemandCancel() {
