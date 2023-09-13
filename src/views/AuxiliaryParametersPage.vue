@@ -526,11 +526,23 @@ export default {
         },
     },
 
-    mounted() {
-        this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs))
-        this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
+    mounted() {        
+        this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs)).map(item => {
+            item.value = item.value.toString().replace(".", ",")
+            return item 
+        })
+        
+        this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand())).map(item => {
+            item.value = item.value.toString().replace(".", ",")
+            return item 
+        })
+
+        this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges)).map(item => {
+            item.value = item.value.toString().replace(".", ",")
+            return item 
+        })
+
         this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
-        this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges))
     }
 }
 </script>

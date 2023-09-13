@@ -1,5 +1,12 @@
 import { SIMULATION_TYPES, TARIFF_MODALITY_TYPES } from '@/assets/files/consts'
 
+function isPatternNumber(value) {
+  if((value != '') && (typeof value != 'number')) {
+    return true
+  }
+  return false
+}
+
 export default {
     namespaced: true,
     state: {
@@ -100,15 +107,30 @@ export default {
         commit("set_date_installation_photovoltaic_system", payload)
       },
       set_current_contracted_demand({ commit }, payload) {
+        payload.forEach(item => {
+          if(isPatternNumber(item.value)) {
+            item.value = Number(item.value.replace(',', '.'))
+          }                    
+        })
         commit("set_current_contracted_demand", payload)
       },
       set_growth_forecast({ commit }, payload) {
         commit("set_growth_forecast", payload)
       },
       set_tariffs({ commit }, payload) {
+        payload.forEach(item => {
+          if(isPatternNumber(item.value)) {
+            item.value = Number(item.value.replace(',', '.'))
+          }                    
+        })
         commit("set_tariffs", payload)
       },
       set_taxes_and_charges({ commit }, payload) {
+        payload.forEach(item => {
+          if(isPatternNumber(item.value)) {
+            item.value = Number(item.value.replace(',', '.'))
+          }                    
+        })
         commit("set_taxes_and_charges", payload)
       },
     },

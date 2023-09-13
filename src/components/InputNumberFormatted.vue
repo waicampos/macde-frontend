@@ -21,8 +21,8 @@ export default {
 
   computed: {
     local_number: {
-      get() {
-        return this.modelValue
+      get() {                        
+        return (typeof this.modelValue === 'number') ? this.modelValue.toString().replace('.', ',') : this.modelValue
       },
       set(value) {
         this.$emit('update:modelValue', value)
