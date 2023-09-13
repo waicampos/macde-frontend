@@ -194,6 +194,7 @@
         <v-col cols=10>
 
             <FormBox
+                :disabled_save_btn="!v$.local_growth_forecast.$each.$response.$valid"
                 @save="formBoxGrowthForecastSave"
                 @cancel="formBoxGrowthForecastCancel"
              >
@@ -258,6 +259,7 @@
      <!-- Demanda contratada -->
         <v-col cols=10>
             <FormBox
+                :disabled_save_btn="!v$.local_contrac_demand.$each.$response.$valid"
                 @save="formBoxContracDemandSave"
                 @cancel="formBoxContracDemandCancel"
             >
@@ -320,6 +322,7 @@
         <!-- tarifas -->
         <v-col cols=10>
             <FormBox
+                :disabled_save_btn="!v$.local_tariffs.$each.$response.$valid"
                 @save="formBoxTariffSave"
                 @cancel="formBoxTariffCancel"
             >
@@ -382,6 +385,7 @@
         <!-- Encargos e tributos -->
         <v-col cols=10>
             <FormBox
+                :disabled_save_btn="!v$.local_taxes_and_charges.$each.$response.$valid"
                 @save="formBoxTaxesChargesSave"
                 @cancel="formBoxTaxesChargesCancel"
             >

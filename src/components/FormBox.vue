@@ -25,15 +25,16 @@
                 <v-btn 
                     prepend-icon="mdi-content-save"
                     class="text-none"
-                    color="grey-lighten-1"
+                    color="grey-lighten-2"
                     variant="flat"
+                    :disabled="disabled_save_btn"
                     @click="$emit('save')"
                 >
                     Salvar
                 </v-btn>
                 <v-btn 
                     class="text-none"
-                    color="grey-lighten-3"
+                    color="grey-lighten-2"
                     variant="flat"
                     @click="$emit('cancel')"
                     prepend-icon="mdi-cancel"
@@ -48,6 +49,10 @@
 <script>
     export default {
         props: {
+            disabled_save_btn: {
+                type: Boolean,
+                default: false
+            },
             hide_actions: {
                 type: Boolean,
                 default: false
