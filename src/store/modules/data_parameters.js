@@ -14,7 +14,15 @@ export default {
         selected_simulation_type: {name: SIMULATION_TYPES[0].name, text: SIMULATION_TYPES[0].text,  meas: SIMULATION_TYPES[0].meas},
         has_photovoltaic_system: false,
         date_installation_photovoltaic_system: new Date(),
-        growth_forecast: 5,
+        growth_forecast: [
+          {value: 5, name: 'demand', title: "Demanda Verde", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 5, name: 'peak_energy', title:"Energia de Ponta Verde", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 5, name:'off_peak_energy', title:"Energia Fora de Ponta Verde", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 5, name: 'peak_demand', title: "Demanda de Ponta Azul", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 5, name: 'off_peak_demand', title: "Demanda Fora de Ponta Azul", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 5, name: 'peak_energy', title:"Energia de Ponta Azul", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 5, name:'off_peak_energy', title:"Energia Fora de Ponta Azul", prefix:"", suffix:"%", tariff_modality: TARIFF_MODALITY_TYPES[1]}
+        ],
         tariffs: [          
           {value: 18.38, name: 'demand', title: "Demanda Verde", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
           {value: 1.84, name: 'peak_energy', title:"Energia de Ponta Verde", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
@@ -115,6 +123,11 @@ export default {
         commit("set_current_contracted_demand", payload)
       },
       set_growth_forecast({ commit }, payload) {
+        payload.forEach(item => {
+          if(isPatternNumber(item.value)) {
+            item.value = Number(item.value.replace(',', '.'))
+          }                    
+        })
         commit("set_growth_forecast", payload)
       },
       set_tariffs({ commit }, payload) {

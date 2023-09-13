@@ -193,20 +193,22 @@
                 </template>
 
                 <template v-slot>
-                    <v-row>                    
-                        <v-row>
-                            <v-col cols=6 md=4>
-                                <v-text-field
-                                    v-model="v$.local_growth_forecast.$model"
-                                    suffix="%"                                                                     
-                                    density="compact"
-                                    :hide-details = false
-                                    variant="outlined"
-                                    :error="v$.local_growth_forecast.$error"        
-                                    :error-messages="v$.local_growth_forecast.$error ? v$.local_growth_forecast.$errors[0].$message : ''"
-                                ></v-text-field>   
-                            </v-col>
-                        </v-row>
+                    <v-row>                                           
+                        <v-col 
+                            class="pa-0"
+                            cols=12 md=6
+                            v-for="(item, index) in this.local_growth_forecast"
+                            :key="index"
+                        >
+                            <InputNumberFormatted  
+                                class="px-3"
+                                v-model="item.value"                                                        
+                                maxFractionDigits='12'
+                                lang="pt-BR"
+                                :label="item.title"                                
+                                :suffix= "item.suffix"
+                            />                           
+                        </v-col>
                     </v-row>
                 </template>                     
             </FormBox>
@@ -410,8 +412,12 @@ export default {
     validations () {
         return {
             local_growth_forecast: { 
-                required: helpers.withMessage(MSG_REQUIRED, required), 
-                is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+                $each: helpers.forEach({
+                        value: {
+                            required: helpers.withMessage(MSG_REQUIRED, required), 
+                            is_number_pt_br: helpers.withMessage(MSG_INVALID_NUMBER, is_number_pt_br)
+                        }
+                })        
             },
             local_contrac_demand: {
                 $each: helpers.forEach({
@@ -453,8 +459,8 @@ export default {
         },
 
         async formBoxGrowthForecastSave() {
-            const isFormCorrect = await this.v$.local_growth_forecast.$validate()
-            isFormCorrect && this.set_growth_forecast(Number(this.local_growth_forecast.replace(',', '.')))
+            const isValid = await this.v$.local_growth_forecast.$each.$response.$valid
+            isValid && this.set_growth_forecast(JSON.parse(JSON.stringify(this.local_growth_forecast)))
         },
 
         formBoxGrowthForecastCancel() {
@@ -542,7 +548,10 @@ export default {
             return item 
         })
 
-        this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
+        this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast)).map(item => {
+            item.value = item.value.toString().replace(".", ",")
+            return item 
+        })
     }
 }
 </script>
