@@ -22,6 +22,13 @@
                         class="me-2"
                     ></v-icon>
                     Tipo Simulação
+                    <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.selected_simulation_type = !show_message.selected_simulation_type"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -29,7 +36,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12 
+                        v-show="show_message.selected_simulation_type"
+                    >
                         <v-col>
                             <p>As simulações da aplicação MACDE são realizadas para as modalidades tarifárias Verde e Azul. Esta informação é importante pois difere no tipo 
                                 de cobrança ao qual o consumidor é submetido. Consumidores da Modalide Azul são cobrados pela demanda ponta e fora de ponta. Já os Consumidores
@@ -71,6 +81,13 @@
                         class="me-2"
                     ></v-icon>
                     Aumento ou redução de demanda (1x)
+                     <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.has_demand_variation = !show_message.has_demand_variation"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -78,7 +95,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12
+                        v-show="show_message.has_demand_variation"
+                    >
                         <v-col>
                             <p>
                                 Algumas unidades consumidores possuem perfis de carga diferente dependendo do período do ano. Uma possibilidade é considerar essa variação de demanda e contratar dois 
@@ -118,6 +138,13 @@
                         class="me-2"
                     ></v-icon>
                     Possui Sistema Fotovoltaico
+                    <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.has_photovoltaic_system = !show_message.has_photovoltaic_system"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -125,7 +152,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12
+                        v-show="show_message.has_photovoltaic_system"
+                    >
                         <v-col>
                             <p>
                                 A inserção de sistema solar fotovoltaico interfere no valor da demanda a ser contratado. Caso o consumidor instalou sistema fotovoltaico
@@ -175,6 +205,13 @@
                         class="me-2"
                     ></v-icon>
                     Previsão de crescimento
+                    <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.local_growth_forecast = !show_message.local_growth_forecast"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -182,7 +219,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12
+                        v-show="show_message.local_growth_forecast"
+                    >
                         <v-col>
                             <p>
                                 O modelo de previsão permite considerar a previsão de crescimento da unidade consumidora para o próximo ano. Caso o consumidor 
@@ -229,6 +269,13 @@
                         class="me-2"
                     ></v-icon>
                         Demanda Contratada
+                    <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.local_contrac_demand = !show_message.local_contrac_demand"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -236,7 +283,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12
+                        v-show="show_message.local_contrac_demand"
+                    >
                         <v-col>
                             <p>A demanda contratada é o valor de demanda de potência que a distribuidora deve obrigatoriamente disponibilizar ao consumidor. Uma demanda contratada abaixo
                                 da demanda utilizada ocasiona custos adicionais com o pagamento de penalidade. Já uma demanda contratada elevada em relação a demanda utilizada, representa 
@@ -281,6 +331,13 @@
                         class="me-2"
                     ></v-icon>
                     Tarifas
+                    <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.local_tariffs = !show_message.local_tariffs"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -288,7 +345,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12
+                        v-show="show_message.local_tariffs"
+                    >
                         <v-col>
                             <p>Os valores de tarifa são aplicados sobre a demanda e a energia. Estes valores são a forma de remunerar a distribuidora pelo serviço de distribuição prestado
                             e no caso dos consumidores cativos, pela produto entregue.</p>                        
@@ -333,6 +393,13 @@
                         class="me-2"
                     ></v-icon>
                     Tributação
+                    <v-icon
+                        icon="mdi-help-circle"
+                        color="info"
+                        size="x-small"
+                        class="me-2"
+                        @click="show_message.local_taxes_and_charges = !show_message.local_taxes_and_charges"
+                    ></v-icon>
                 </template>
 
                 <template v-slot:subtitle>
@@ -340,7 +407,10 @@
                 </template>
                 
                 <template v-slot:message>
-                   <v-row cols=12>
+                    <v-row 
+                        cols=12
+                        v-show="show_message.local_taxes_and_charges"
+                    >
                         <v-col>
                             <p>
                                 Além das tarifas de Energia e de Uso do Sistema de Distribuição incidem sobre a tarifa final o pagamento compulsório de tributos devidos ao poder público. Os tributos
@@ -404,6 +474,15 @@ export default {
             local_contrac_demand: [],
             local_growth_forecast: '',
             local_taxes_and_charges: [],
+            show_message: {
+                selected_simulation_type: false,
+                has_demand_variation: false,
+                has_photovoltaic_system: false,
+                local_growth_forecast: false,
+                local_contrac_demand: false,
+                local_tariffs: false,
+                local_taxes_and_charges: false
+            }
         }
     },
 
