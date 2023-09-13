@@ -32,9 +32,9 @@ export default {
           {value: 0, name:'others', title:"others", text:"Outros", prefix:"R$", suffix:"", type:"number"},
         ],
         current_contracted_demand: [
-          {value: 480, name: 'demand', title: "Demanda", suffix:"kW", type:"number"},
-          {value: 480, name: 'peak_demand', title: "Demanda de Ponta", suffix:"kW", type:"number"},
-          {value: 480, name: 'off_peak_demand', title: "Demanda Fora de Ponta", suffix:"kW", type:"number"},
+          {value: 480, name: 'demand', title: "Demanda Verde", suffix:"kW", type:"number"},
+          {value: 480, name: 'peak_demand', title: "Demanda de Ponta Azul", suffix:"kW", type:"number"},
+          {value: 480, name: 'off_peak_demand', title: "Demanda Fora de Ponta Azul", suffix:"kW", type:"number"},
         ]
     },
 
