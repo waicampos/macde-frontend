@@ -455,7 +455,10 @@ export default {
         },
 
         formBoxTaxesChargesCancel() {
-            this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges))
+            this.local_taxes_and_charges = JSON.parse(JSON.stringify(this.get_taxes_and_charges)).map(item => {
+                item.value = item.value.toString().replace(".", ",")
+                return item 
+            })
         },
 
         async formBoxGrowthForecastSave() {
@@ -464,7 +467,10 @@ export default {
         },
 
         formBoxGrowthForecastCancel() {
-            this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast))
+            this.local_growth_forecast = JSON.parse(JSON.stringify(this.get_growth_forecast)).map(item => {
+                item.value = item.value.toString().replace(".", ",")
+                return item 
+            })
         },
 
         async formBoxContracDemandSave() {
@@ -473,7 +479,10 @@ export default {
         },
         
         formBoxContracDemandCancel() {
-            this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand()))
+            this.local_contrac_demand = JSON.parse(JSON.stringify(this.get_current_contracted_demand())).map(item => {
+                item.value = item.value.toString().replace(".", ",")
+                return item 
+            })
         },
 
         async formBoxTariffSave() {
@@ -482,7 +491,10 @@ export default {
         },
 
         formBoxTariffCancel() {
-            this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs))
+            this.local_tariffs =  JSON.parse(JSON.stringify(this.get_tariffs)).map(item => {
+                item.value = item.value.toString().replace(".", ",")
+                return item 
+            })
         },
     },
 
