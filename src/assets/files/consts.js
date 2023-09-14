@@ -14,6 +14,13 @@ export const translated_input_file_keys = {
   'energia de ponta' : 'peak_energy'
 }
 
+export function change_names_en2pt(val) {
+  return val.map(item => {  
+    let new_obj = {}         
+    Object.keys(translated_input_file_keys).forEach(key => Object.assign(new_obj, {[key]: item[translated_input_file_keys[key]]}))          
+    return {...new_obj}
+  })
+}
 export const MEAS_INFO = {
     "demand":{key:"demand", "title": "Demanda", "prefix":"R$", "suffix":"por kW", "type":"number"},
     "peak_demand": {key: "peak_demand", title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},

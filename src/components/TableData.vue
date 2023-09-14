@@ -43,7 +43,22 @@
               mdi-plus-circle
             </v-icon>
               Adicionar Item
-            </v-btn>
+            </v-btn>  
+            <v-btn
+              v-if="data_file.length"
+              color="red"
+              dark
+              class="mb-2"
+              @click="download_table_data()"
+            >
+            <v-icon
+              size="large"
+              class="me-2"
+            >
+              mdi-download-circle
+            </v-icon>
+              Baixar Tabela
+            </v-btn>            
           </template>
           <v-card>
             <v-card-title>
@@ -145,10 +160,10 @@
 <script>
   import { mapGetters } from 'vuex'
   import { format as fns_format, isAfter as fns_isAfter } from 'date-fns'
+  import fileDownload from 'js-file-download'
   import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
   import InputDatePicker from '@/components/InputDatePicker.vue'
-  import { TIME_SERIES_DATE_FORMAT, MEAS_INFO } from '@/assets/files/consts'
-
+  import { TIME_SERIES_DATE_FORMAT, MEAS_INFO, change_names_en2pt } from '@/assets/files/consts'
 
   export default {
     components: {InputNumberFormatted, InputDatePicker},
@@ -217,6 +232,21 @@
         let opt = [{name: 'date', value: '', label: 'Data', suffix: ""}]
         this.get_selected_simulation_type.meas.forEach(key => opt.push(base.filter(item => item.name === key)[0]))
         this.defaultItem = opt
+      },
+
+      download_table_data() {        
+        let dt = this.data_file.map(item => {
+          let new_obj = {}   
+          Object.keys(item).forEach(key => {
+            if(key != 'date') {
+              Object.assign(new_obj, {[key]: item[key].toString().replace(/\./g, ",")})
+            } else {            
+              Object.assign(new_obj, {[key]: this.date2string(item.date)})
+            }
+          })      
+          return new_obj    
+        })                   
+        fileDownload(this.$papa.unparse(change_names_en2pt(dt), {delimiter: ";",}), 'dados_tabela_historico_macde.csv')
       },
 
       defineClassTextColor(dt) {

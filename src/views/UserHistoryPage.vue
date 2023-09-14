@@ -178,7 +178,7 @@
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
   import fileDownload from 'js-file-download'
-  import { translated_input_file_keys, sequence_headers_input_data_file, SIMULATION_TYPES } from '@/assets/files/consts'
+  import { translated_input_file_keys, change_names_en2pt, sequence_headers_input_data_file, SIMULATION_TYPES } from '@/assets/files/consts'
   import { isAfter as fns_isAfter } from 'date-fns'
 
   export default {
@@ -239,14 +239,6 @@
       ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
       ...mapActions('data_parameters', ['set_selected_simulation_type']),
 
-      change_names_en2pt(val) {
-        return val.map(item => {  
-          let new_obj = {}         
-          Object.keys(translated_input_file_keys).forEach(key => Object.assign(new_obj, {[key]: item[translated_input_file_keys[key]]}))          
-          return {...new_obj}
-        })
-      },
-
       change_names_pt2en(val) {      
         return val.map(item => {  
           let new_obj = {}                  
@@ -293,7 +285,7 @@
       },
 
       download_standard_user_historic() {
-        let dt = this.change_names_en2pt(JSON.parse(JSON.stringify(macde_model)))
+        let dt = change_names_en2pt(JSON.parse(JSON.stringify(macde_model)))
         dt.forEach(item => Object.keys(item).forEach(key => item[key] = item[key].toString().replace(/\./g, ",")))
         fileDownload(this.$papa.unparse(dt, {delimiter: ";",}), 'modelo_macde.csv')
       },
