@@ -26,34 +26,6 @@ export default {
       get_chosen_forecast_model(state) {
         return state.chosen_forecast_model
       },
-      
-      // get_contracted_demand_total_cost(state, getters, rootState, rootGetters){
-      //   let tariff_modality = rootGetters['data_configurations/get_tariff_modality']
-      //   let demand_names = get_demand_measurements_names(tariff_modality.name)
-      //   let costs = {}
-
-      //   demand_names.forEach(key => {            
-      //     costs[key] = state.contracted_demand_cost.map(item => item[key]).reduce(sum, 0)
-      //   })
-        
-      //   return costs
-      // },
-      
-      
-
-      // get_energy_total_cost(state) {
-      //   const energy_names = get_energy_measurements_names()
-      //   let costs = {}
-        
-      //   energy_names.forEach(key => {
-      //     costs[key] = 0
-      //     state.energy_cost.forEach(item => {
-      //       costs[key] += item[key]
-      //     })
-      //   })
-        
-      //   return costs
-      // },
     },
 
     mutations: {  
@@ -76,11 +48,10 @@ export default {
       },
 
       forecast({dispatch, getters, rootGetters}) {
-        let meas_names = rootGetters['data_configurations/get_all_measurements_names']
-        let get_data = rootGetters['data_history/get_user_data_history_by_serie']
-        if(getters.get_chosen_forecast_model.type == 'doublemean') {
-          get_data = rootGetters['data_history/get_user_data_history_by_group']
-        }
+        const is_double_mean = getters.get_chosen_forecast_model.type == 'doublemean'
+        let get_data = rootGetters[`data_history/${is_double_mean ? 'get_user_data_history_by_group' : 'get_user_data_history_by_serie'}`]
+        let meas_names = rootGetters['data_parameters/get_selected_simulation_type'].meas
+        
         const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/${getters.get_chosen_forecast_model.type}`
         let arr_req = meas_names.map(key => axios.post(addr, {'data': get_data(key)}))
         Promise.all(arr_req).then(response => {   

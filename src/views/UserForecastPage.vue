@@ -197,13 +197,12 @@ export default {
             }
         ),
 
-        ...mapGetters('data_configurations', {
-            tariff_modality: 'get_tariff_modality',
-            get_measurements_names: 'get_measurements_names'
+        ...mapGetters('data_parameters', {
+            get_selected_simulation_type: 'get_selected_simulation_type',            
         }),
         
         headers() {
-            let names = this.get_measurements_names.map(key => MEAS_INFO[key])            
+            let names = this.get_selected_simulation_type.meas.map(key => MEAS_INFO[key])            
             names.unshift(
                 {
                     title: 'Date',
