@@ -17,10 +17,11 @@
                     </v-card-title>               
                     <v-card-subtitle>Seleção do Modelo de Previsão</v-card-subtitle>               
                     <v-divider></v-divider>
-                    <v-card-text
-                        v-show="show_message.header"
-                    >
-                        <v-row class="text-center pa-3">
+                    <v-card-text>
+                        <v-row 
+                            class="text-center pa-3"
+                            v-show="show_message.header"    
+                        >
                             <v-col>
                                 <p class="text-justify"> 
                                     Nesta etapa, é realizado a pevisão de demanda com base no histórico do consumidor. Os valores previstos são utilizados como dados de entrada para 
