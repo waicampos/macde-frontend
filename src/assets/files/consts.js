@@ -114,3 +114,11 @@ export function demand_cost_response_disassembly(contracted, response) {
     }
     return demand_costs
 }
+
+export const ITEMS_PER_PAGE_TABLE = [
+  {value: 12, title: '12'},
+  {value: 24, title: '24'},
+  {value: 36, title: '36'},
+  {value: 48, title: '48'},
+  {value: -1, title: 'Todos'}
+]

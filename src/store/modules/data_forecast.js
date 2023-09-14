@@ -59,12 +59,12 @@ export default {
             let lentgh_res = response[0].data.length
             for(let i in [...Array(lentgh_res).keys()]){
                 let prov = {}
-                meas_names.map((key, index) => {
+                meas_names.map((key, index) => {    
+                    prov['date'] = (Number(i) + 1).toString()
                     prov[key] = response[index].data[i]
                  })
                 forecasted.push(prov)
             }
-          forecasted.forEach((item, index) => item.date = (index + 1).toString())
           dispatch('set_forecasted_data', forecasted)
         })
       },

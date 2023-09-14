@@ -84,14 +84,6 @@
             </v-col>
         </v-row>
 
-        <!-- Título tabela de previsão -->
-        <v-row  v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
-            <v-col class="text-center" cols='12'>
-                <h1>Resultados de Previsão</h1>
-            </v-col>
-            <v-divider></v-divider>
-        </v-row>
-
         <!-- Modelos de Previsão -->
         <v-row v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
             <v-col cols="12">
@@ -99,31 +91,36 @@
                     :headers="headers"
                     :items="this.forecasted_data"
                     class="elevation-4"
+                    :items-per-page-options="items_per_page"
+                    items-per-page=12
+                    items-per-page-text="Itens por Página:"
                 >
+                    <template v-slot:top>
+                        <v-toolbar
+                            flat
+                        >
+                            <v-toolbar-title>Previsão</v-toolbar-title>
+                            <v-btn
+                                v-if="forecasted_data.length"
+                                color="red"
+                                dark
+                                class="mb-2"
+                                @click="download_table_data()"
+                                >
+                                <v-icon
+                                size="large"
+                                class="me-2"
+                                >
+                                mdi-download-circle
+                                </v-icon>
+                                Baixar Tabela
+                            </v-btn>            
+                        </v-toolbar>                        
+                    </template>
                 </v-data-table>
             </v-col>
         </v-row>
     </div>
-
-        <!-- Download de arquivo -->
-        <v-row v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12" class=" text-end">
-                <v-btn 
-                    class="bg-red"
-                    elevation = 2
-                    @click="download()"
-                >
-                    <v-icon 
-                        color="black"
-                        size="x-large"
-                        icon="mdi-file-download-outline"
-                        start>
-                    </v-icon>
-                    <span class="hidden-sm-and-down">Baixar dados da Previsão</span>
-                </v-btn>
-            </v-col>
-        </v-row>
-
     <div 
         v-if="this.forecasted_data.length"
         class="d-flex flex-column"
@@ -191,7 +188,7 @@ import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-import { MEAS_INFO } from '@/assets/files/consts'
+import { MEAS_INFO, ITEMS_PER_PAGE_TABLE, change_names_en2pt } from '@/assets/files/consts'
 
 export default {
     name: "user-forecast_page",
@@ -200,7 +197,8 @@ export default {
       return {       
         show_message: {
                 header: false,
-        }
+        },
+        items_per_page: ITEMS_PER_PAGE_TABLE
       }
     },
     computed: {
@@ -257,10 +255,8 @@ export default {
             this.set_forecasted_data(val)
         },
 
-        download() {
-            let dt = new Date()
-            let filename = `${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_macde_forecast.json`
-            fileDownload(JSON.stringify(this.forecasted_data), filename);
+        download_table_data() {                                              
+            fileDownload(this.$papa.unparse(change_names_en2pt(this.forecasted_data), {delimiter: ";",}), 'previsao_macde.csv')
         },
 
         chartTimeSeriesData(keys) {

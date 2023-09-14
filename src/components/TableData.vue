@@ -163,24 +163,17 @@
   import fileDownload from 'js-file-download'
   import InputNumberFormatted from '@/components/InputNumberFormatted.vue'
   import InputDatePicker from '@/components/InputDatePicker.vue'
-  import { TIME_SERIES_DATE_FORMAT, MEAS_INFO, change_names_en2pt } from '@/assets/files/consts'
+  import { TIME_SERIES_DATE_FORMAT, MEAS_INFO, change_names_en2pt, ITEMS_PER_PAGE_TABLE } from '@/assets/files/consts'
 
   export default {
     components: {InputNumberFormatted, InputDatePicker},
     data: () => ({
       dialog: false,
       dialogDelete: false,
-      items_per_page:
-      [
-        {value: 12, title: '12'},
-        {value: 24, title: '24'},
-        {value: 36, title: '36'},
-        {value: 48, title: '48'},
-        {value: -1, title: 'Todos'}
-      ],
       editedIndex: -1,
       editedItem: [],
-      defaultItem: [],      
+      defaultItem: [], 
+      items_per_page: ITEMS_PER_PAGE_TABLE  
     }),
     computed: {
       ...mapGetters('data_history', {
