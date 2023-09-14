@@ -5,10 +5,21 @@
         <v-card
           elevation="0"
         >
-          <v-card-title>Etapa Entrada dos dados históricos</v-card-title>               
+          <v-card-title>
+            Etapa Entrada dos dados históricos
+            <v-icon
+              icon="mdi-help-circle"
+              color="info"
+              size="x-small"
+              class="me-2"
+              @click="show_message.header = !show_message.header"
+            ></v-icon>
+          </v-card-title>
           <v-card-subtitle>Entrada dos dados que serão utilizados nas simulações.</v-card-subtitle>               
           <v-divider></v-divider>
-          <v-card-text>
+          <v-card-text
+            v-show="show_message.header"
+          >
               <v-row class="text-center pa-0">
                 <v-col>
                     <p class="text-justify"> 
@@ -180,6 +191,9 @@
         chartDataSets: {
           energy: {datasets: []},
           demand: {datasets: []},
+        },
+        show_message: {
+                header: false,
         }
       }
     },

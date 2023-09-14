@@ -5,10 +5,21 @@
                 <v-card
                     elevation="0"
                 >
-                    <v-card-title>Etapa de Previsão de Demanda</v-card-title>               
+                    <v-card-title>
+                        Etapa de Previsão de Demanda
+                        <v-icon
+                            icon="mdi-help-circle"
+                            color="info"
+                            size="x-small"
+                            class="me-2"
+                            @click="show_message.header = !show_message.header"
+                        ></v-icon>
+                    </v-card-title>               
                     <v-card-subtitle>Seleção do Modelo de Previsão</v-card-subtitle>               
                     <v-divider></v-divider>
-                    <v-card-text>
+                    <v-card-text
+                        v-show="show_message.header"
+                    >
                         <v-row class="text-center pa-3">
                             <v-col>
                                 <p class="text-justify"> 
@@ -185,6 +196,13 @@ import { MEAS_INFO } from '@/assets/files/consts'
 export default {
     name: "user-forecast_page",
     components: {MyLine, FileUploader, BtnOptions},
+     data() {
+      return {       
+        show_message: {
+                header: false,
+        }
+      }
+    },
     computed: {
         ...mapGetters('data_history', {
             data_file: 'get_user_data_history',
