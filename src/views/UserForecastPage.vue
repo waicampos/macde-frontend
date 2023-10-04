@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column">
-        <v-row class="flex-1-0 ma-2 pa-2">
+        <v-row class="flex-1-0">
             <v-col cols="12">
                 <v-card
                     elevation="0"
@@ -51,14 +51,12 @@
                     <v-divider></v-divider>
                 </v-card>
             </v-col>
-        </v-row>
-    </div>
+        </v-row>    
 
-    <!-- Tipos Modelos -->
-    <div class="d-flex flex-column">        
+        <!-- Tipos Modelos -->
         <v-row 
             v-if="!this.data_file.length && this.chosen_forecast_model.type != 'custom'"
-            class="flex-1-0 ma-2 pa-2 bg-grey-lighten-2"
+            class="flex-1-0 bg-grey-lighten-2"
         >
             <v-col class="text-center" >
                 <v-icon
@@ -74,19 +72,48 @@
         </v-row> 
 
         <!-- File Uploader -->
-         <v-row 
-            class="flex-1-0 ma-2 pa-2"
+        <v-row 
+            class="flex-1-0"
             v-if="chosen_forecast_model.type == 'custom'"
-         >
+            >
             <v-col cols="12">
                 <FileUploader 
                     @newFileUploaded="fileUploaded"    
                 />
             </v-col>
         </v-row>
+        
+        <!-- Gráficos -->
+        <v-row 
+            v-if="this.forecasted_data.length"
+            class="flex-1-0"
+        >
+            <v-col cols="12" :lg="active_meas('energy').length ? 6 : 12">
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        id="my-line-forecast-chart-id"
+                        :data="chartDataSets['demand']"
+                        :options="this.chartTimeSeriesOptionsDemand"
+                    />
+                </v-sheet>
+            </v-col>            
+      
+            <v-col cols="12" lg="6" v-if="active_meas('energy').length">
+                <v-sheet rounded="lg" min-height="300">
+                    <MyLine
+                        id="my-line-forecast-chart-id"
+                        :data="chartDataSets['energy']"
+                        :options="this.chartTimeSeriesOptionsEnergy"
+                    />
+                </v-sheet>
+            </v-col>            
+        </v-row>
 
-        <!-- Modelos de Previsão -->
-        <v-row v-if="this.forecasted_data.length" class="flex-1-0 ma-2 pa-2">
+        <!-- Tabela Modelos de Previsão -->
+        <v-row 
+            v-if="this.forecasted_data.length" 
+            class="flex-1-0  mb-4 pb-4"
+        >
             <v-col cols="12">
                 <v-data-table                     
                     :headers="headers"
@@ -121,63 +148,7 @@
                 </v-data-table>
             </v-col>
         </v-row>
-    </div>
-    <div 
-        v-if="this.forecasted_data.length"
-        class="d-flex flex-column"
-    >
-        <!-- Título dos gráficos -->
-        <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col class="text-center" cols='12'>
-                <h1>Gráficos de Previsão</h1>
-            </v-col>
-            <v-divider></v-divider>
-        </v-row>
-
-        <!-- Gráficos de demanda -->
-        <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12" lg="6">
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-line-forecast-chart-id"
-                        :data="chartTimeSeriesData(['peak_demand'])"
-                        :options="this.chartTimeSeriesOptionsDemand"
-                    />
-                </v-sheet>
-            </v-col>
-            <v-col cols="12" lg="6">
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-line-forecast-chart-id"
-                        :data="chartTimeSeriesData(['off_peak_demand'])"
-                        :options="this.chartTimeSeriesOptionsDemand"
-                    />
-                </v-sheet>
-            </v-col>
-        </v-row>
-
-        <!-- Gráficos de energia -->
-        <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12" lg="6">
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-line-forecast-chart-id"
-                        :data="chartTimeSeriesData(['peak_energy'])"
-                        :options="this.chartTimeSeriesOptionsEnergy"
-                    />
-                </v-sheet>
-            </v-col>
-            <v-col cols="12" lg="6">
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        id="my-line-forecast-chart-id"
-                        :data="chartTimeSeriesData(['off_peak_energy'])"
-                        :options="this.chartTimeSeriesOptionsEnergy"
-                    />
-                </v-sheet>
-            </v-col>
-        </v-row>
-    </div>
+    </div>    
 </template>
 
 <script>
@@ -186,7 +157,7 @@ import fileDownload from 'js-file-download'
 import BtnOptions from '@/components/BtnOptions.vue';
 import FileUploader from '@/components/FileUploader.vue';
 import { Line as MyLine} from 'vue-chartjs'
-import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
+import { createDataSetsTimeSeries, chartOptionsConfigDefault } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 import { MEAS_INFO, ITEMS_PER_PAGE_TABLE, change_names_en2pt } from '@/assets/files/consts'
@@ -199,7 +170,11 @@ export default {
         show_message: {
                 header: false,
         },
-        items_per_page: ITEMS_PER_PAGE_TABLE
+        items_per_page: ITEMS_PER_PAGE_TABLE,
+        chartDataSets: {
+          energy: {datasets: []},
+          demand: {datasets: []},
+        },
       }
     },
     computed: {
@@ -232,7 +207,7 @@ export default {
         },
 
         chartTimeSeriesOptionsDemand() {
-            let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
+            let opt = JSON.parse(JSON.stringify(chartOptionsConfigDefault))
             opt.plugins.title.text = "Gráfico de Demanda"
             opt.scales.x.title.text = "Data"
             opt.scales.y.title.text = "Demanda [kW]"
@@ -241,7 +216,7 @@ export default {
         },
 
         chartTimeSeriesOptionsEnergy() {
-            let opt = JSON.parse(JSON.stringify(chartOptionsConfig))
+            let opt = JSON.parse(JSON.stringify(chartOptionsConfigDefault))
             opt.plugins.title.text = "Gráfico de Energia"
             opt.scales.x.title.text = "Data"
             opt.scales.y.title.text = "Energia [kWh]"
@@ -252,6 +227,10 @@ export default {
     methods: {
         ...mapActions('data_forecast', ['set_forecasted_data', 'forecast']),
 
+        active_meas(type_meas) {
+            return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
+        },
+
         fileUploaded(val) {            
             this.set_forecasted_data(val)
         },
@@ -260,48 +239,42 @@ export default {
             fileDownload(this.$papa.unparse(change_names_en2pt(this.forecasted_data), {delimiter: ";",}), 'previsao_macde.csv')
         },
 
-        chartTimeSeriesData(keys) {
-            let dt_series = []
-            dt_series = createDataSetsTimeSeries( 
-                keys, 
-                'date',
-                [...this.data_file]
-            )
-                         
-            let dt_data = createDataSetsTimeSeries( 
-                keys, 
-                'date',
-                [...this.forecasted_data]
-            )
-            dt_data.datasets[0].backgroundColor = "#BDBDBD"
-            dt_data.datasets[0].borderColor = "#757575"
-            dt_data.datasets[0].borderDash = [5, 5]
-            
-            dt_data.datasets.forEach( dt => {
-                dt_series.datasets.push(dt)
-            })
-                                                        
-            return dt_series
+        chartData(type_meas) {  
+            this.chartDataSets[type_meas] = createDataSetsTimeSeries( 
+            this.active_meas(type_meas), 
+            'date',
+            Object.assign([], this.forecasted_data)
+            )            
         },
         
         changed_forecast_model_type() {
             this.set_forecasted_data([])
             if(this.data_file.length > 0 && this.chosen_forecast_model.type != 'custom' ) {
-                this.forecast()
+                this.forecast()               
             }
         }
     },
     mounted() {
         this.changed_forecast_model_type();
+        this.chartData('demand')
+        this.chartData('energy')    
     },
 
     watch:{
         chosen_forecast_model: {
             handler() {         
-                this.changed_forecast_model_type();
+                this.changed_forecast_model_type();                              
             },
             deep: true
-        }
+        },        
+        forecasted_data: {
+            handler() {
+                this.chartData('demand')
+                this.chartData('energy')   
+            },
+            deep: true,
+            imediate: true,
+}
     }
 }
 </script>

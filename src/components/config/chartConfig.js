@@ -81,6 +81,32 @@ export const chartOptionsConfig = {
     }
 }
 
+export const chartOptionsConfigDefault = {
+    plugins: {
+        title : {
+            display: true,
+            text: 'Título do Gráfico'
+        },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        x: {            
+            title: {
+                display: true,
+                text: 'Label X axis'
+            }
+        },
+        y: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Label Y axis'
+            }
+        },
+    }
+}
+
 export function createDataSetsTimeSeries(keys, xAxis, data_raw) {
     let modelData = {datasets: []}
     keys.forEach(i => {
