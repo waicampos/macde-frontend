@@ -1,24 +1,32 @@
 <template>
     <div class="d-flex flex-column">
-        <v-row class="flex-1-0 ma-2 pa-2">
+        <v-row class="flex-1-0">
             <v-col cols="12">
                 <v-card
                     elevation="0"
                 >
-                    <v-card-title>Etapa Otimização</v-card-title>               
+                    <v-card-title>
+                        Etapa Otimização
+                        <v-icon
+                            icon="mdi-help-circle"
+                            color="info"
+                            size="x-small"
+                            class="me-2"
+                            @click="show_message.header = !show_message.header"
+                        ></v-icon>
+                    </v-card-title>               
                     <v-card-subtitle>Otimização dos valores de demanda contratada.</v-card-subtitle>               
                     <v-divider></v-divider>
-                    <v-card-text>
+                    <v-card-text
+                        v-show="show_message.header"
+                    >
                         <v-row class="text-center pa-3">
                             <v-col>
                                 <p class="text-justify"> 
                                     Com base nos valores previstos é otimizado o valor da demanda contratada. O processo de otimização busca o valor de demanda, a ser contratada,
-                                    que represente o menor custo.
-                                    <br><br>
-                                </p>
-                                <p class="text-justify"> 
-                                    Atualmente está disponível o modelo de otimização exploratória.
-                                </p>                    
+                                    que represente o menor custo. Atualmente está disponível o modelo de otimização exploratória.
+                                    <br>
+                                </p>                                                    
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -27,31 +35,55 @@
             </v-col>
         </v-row>
 
-        <!-- Seleção aumento e redução de demanda -->
-        <v-row class="flex-1-0 ma-2 pa-2">
-            <v-col cols="4">
+        <!-- Modalidade Tarifária -->
+        <v-row class="flex-1-0">
+            <v-col class="pb-0 mb-0" cols="12">
                 <v-select
-                    v-model="tariff_modality"
+                    v-model="selected_simulation_type"
                     label="Modalidade tarifária"
-                    :items="tariff_modality_types"
+                    :items="simulation_types"
                     item-title="text"
-                    item-value="value"
+                    item-value="name"
                     variant="outlined"
                     return-object
                 ></v-select>
             </v-col>
-            <v-col cols="8">
+        </v-row>    
+
+        <!-- Aumento e redução de demanda-->
+        <v-row class="flex-1-0">
+            <v-col class="pt-0 mt-0" cols="12">
                 <v-switch
                     v-model="has_demand_variation"
                     label="Aumento ou Redução de Demanda (1x)"
-                    color="orange"
-                
+                    color="orange"                
                     hide-details
                 ></v-switch>
             </v-col>
         </v-row>
-    
-      <v-row>
+        
+        <!-- Mensagem de erro para dados de previsão não carregados-->
+        <v-row 
+            v-if="!this.get_forecasted_data.length"
+            class="flex-1-0 bg-grey-lighten-2"
+        >
+            <v-col class="text-center" >
+                <v-icon
+                    icon="mdi-alert"
+                    color="red-accent-4"
+                    size="80"
+                    class="me-2"
+                ></v-icon>
+            </v-col>
+            <v-col class="text-center" cols="12">
+                <h4 class="text-red">Não há dados previstos. É necessário realizar a previsão dos dados antes da otimização. </h4>
+            </v-col>
+        </v-row> 
+
+        <!-- Otimizar -->
+        <v-row
+            v-if="this.get_forecasted_data.length"
+        >
             <v-col cols="12 text-center">
                 <v-btn 
                     :disabled="loading"
@@ -69,58 +101,56 @@
 
         <!-- Gráficos -->
         <v-row 
-            v-if="this.get_optimized.length"
+            v-if="this.get_optimized_data.length"
             class="flex-1-0 ma-0 pa-0"
-        >
-            <v-col cols="12 text-justify">
-                <h3>Gráficos dos valores otimizados</h3>
-                <p>Nos gráficos abaixo são apresentados o resultado da otimização da demanda.</p>
-            </v-col>
-             <v-col                 
-                v-for="demand_name in get_demand_measurements_names" :key="demand_name"
-                cols=12 :lg="get_tariff_modality.name == 'green' ? 12 : 6"
-            >
+        >            
+            <v-col cols=12>
                 <v-sheet rounded="lg" min-height="300">
                     <MyLine
-                        :data="chartTimeSeriesData([demand_name])"
+                        id="my-line-optimize-chart-id"
+                        :data="chartDataSets['demand']"
+                        :options="this.chartTimeSeriesOptionsDemand"
                     />
                 </v-sheet>
             </v-col>    
-        </v-row>
+        </v-row>       
 
-        <!-- Download de arquivo -->
-        <v-row v-if="this.get_optimized.length" class="flex-1-0 ma-2 pa-2">
-            <v-col cols="12" class=" text-end">
-                <v-btn 
-                    class="bg-red"
-                    elevation = 2
-                    @click="download()"
-                >
-                    <v-icon 
-                        color="black"
-                        size="x-large"
-                        icon="mdi-file-download-outline"
-                        start>
-                    </v-icon>
-                    <span class="hidden-sm-and-down">Baixar dados da Otimização</span>
-                </v-btn>
-            </v-col>
-        </v-row>
-
-        <!-- Valores Previstos -->
-        <v-row class="flex-1-0 ma-0pa-0">
-            <v-col cols="12 text-justify">
-                <h3>Tabela Otimizados</h3>
-                <p>A tabela abaixo apresenta os valores ótimos de demanda. Caso a opção de Aumento ou Redução de Demanda (1x) esteja habilitada, são apresentados
-                    dois valores diferentes para contratação da demanda.
-                </p>
-            </v-col>
+        <!-- Tabela Valores Previstos -->
+        <v-row 
+            v-if="this.get_optimized_data.length" 
+            class="flex-1-0  mb-4 pb-4"
+        >            
             <v-col cols="12">
                 <v-data-table                     
                     :headers="headers"
-                    :items="this.get_optimized"
+                    :items="this.get_optimized_data"
                     class="elevation-4"
+                    :items-per-page-options="items_per_page"
+                    items-per-page=12
+                    items-per-page-text="Itens por Página:"
                 >
+                    <template v-slot:top>
+                        <v-toolbar
+                            flat
+                        >
+                            <v-toolbar-title>Otimização</v-toolbar-title>
+                            <v-btn
+                                v-if="this.get_optimized_data.length"
+                                color="red"
+                                dark
+                                class="mb-2"
+                                @click="download_table_data()"
+                                >
+                                <v-icon
+                                size="large"
+                                class="me-2"
+                                >
+                                mdi-download-circle
+                                </v-icon>
+                                Baixar Tabela
+                            </v-btn>            
+                        </v-toolbar>                        
+                    </template>
                 </v-data-table>
             </v-col>
         </v-row>
@@ -131,41 +161,56 @@
     import { mapGetters, mapActions } from 'vuex';
     import fileDownload from 'js-file-download'
     import { Line as MyLine} from 'vue-chartjs'
-    import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
+    import { createDataSetsTimeSeries, chartOptionsConfigDefault } from '@/components/config/chartConfig'
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-    import { MEAS_INFO,TARIFF_MODALITY_TYPES } from '@/assets/files/consts'    
+    import { MEAS_INFO, SIMULATION_TYPES, ITEMS_PER_PAGE_TABLE, change_names_en2pt } from '@/assets/files/consts'    
 
     export default {
         name: "userOptimizationPage",
         components: {MyLine},
         data() {
             return {      
-                tariff_modality_types: TARIFF_MODALITY_TYPES,   
-                loading: false,       
+                simulation_types: SIMULATION_TYPES,
+                loading: false,
+                items_per_page: ITEMS_PER_PAGE_TABLE,
+                show_message: {
+                        header: false,
+                },
+                chartDataSets: {                    
+                    demand: {datasets: []},
+                },         
             }
         },
 
         computed: {
             ...mapGetters('data_forecast', {
-                get_forecasted: 'get_forecasted_data',
+                get_forecasted_data: 'get_forecasted_data',
             }),
 
             ...mapGetters('data_optimize', {
-                get_optimized: 'get_optimized_data',
+                get_optimized_data: 'get_optimized_data',
             }),
 
-            ...mapGetters('data_configurations', {
-              get_tariff_modality: 'get_tariff_modality',
-              get_demand_measurements_names: 'get_demand_measurements_names'
+            ...mapGetters('data_parameters', {
+                get_selected_simulation_type: 'get_selected_simulation_type',
             }),
 
-            tariff_modality: {
+            chartTimeSeriesOptionsDemand() {
+                let opt = JSON.parse(JSON.stringify(chartOptionsConfigDefault))
+                opt.plugins.title.text = "Gráfico de Demanda"
+                opt.scales.x.title.text = "Data"
+                opt.scales.y.title.text = "Demanda [kW]"
+
+                return opt
+            },
+
+            selected_simulation_type: {                
                 get() {
-                    return this.get_tariff_modality
+                    return this.get_selected_simulation_type
                 },
                 set(payload){
-                    this.set_tariff_modality(payload)
+                    this.set_selected_simulation_type(payload)
                 }
             },
 
@@ -179,10 +224,12 @@
             },
 
             headers() {
-                let names = this.get_demand_measurements_names.map(key => MEAS_INFO[key])
+                let names = this.get_selected_simulation_type.meas
+                    .filter(i => i.includes('demand'))
+                    .map(key => MEAS_INFO[key])
                 names.unshift(
                     {
-                        title: 'Date',
+                        title: 'Mês',
                         align: 'start',
                         sortable: false,
                         key: 'date',
@@ -194,62 +241,63 @@
 
         methods: {        
             ...mapActions('data_optimize', ['set_optimized_data', 'optimize']),
-            ...mapActions('data_configurations', ['set_tariff_modality']),
+            ...mapActions('data_parameters', ['set_selected_simulation_type']),        
         
-            download() {
-                let dt = new Date()
-                let filename = `${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_macde_otimizacao.json`
-                fileDownload(JSON.stringify(this.get_optimized), filename);
+            active_meas(type_meas) {
+                return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
             },
 
-            chartTimeSeriesData(keys) {  
-                let data = [...this.get_forecasted]
+            chartData(type_meas) {  
+                this.chartDataSets[type_meas] = createDataSetsTimeSeries( 
+                this.active_meas(type_meas), 
+                'date',
+                Object.assign([], this.get_optimized_data)
+                )             
 
-                if(this.tariff_modality.value == 1) {
-                    data = data.map((item) => {
-                        item['demand'] = Math.max(item.peak_demand, item.off_peak_demand)
-                        return item
-                    })              
-                }
+                let forecast_dataset = createDataSetsTimeSeries( 
+                this.active_meas(type_meas), 
+                'date',
+                Object.assign([], this.get_forecasted_data)
+                )              
                 
-                let dt = createDataSetsTimeSeries( 
-                    keys, 
-                    'date',
-                    data
-                )
-                
-                let dt_optimized = createDataSetsTimeSeries(
-                        keys,
-                        'date',
-                        [...this.get_optimized]
-                )
-                dt_optimized.datasets[0].label += ' Contratada'
-                dt_optimized.datasets[0].backgroundColor = "#BDBDBD"
-                dt_optimized.datasets[0].borderColor = "#757575"
-                dt_optimized.datasets[0].borderDash = [5, 5]
-
-                dt_optimized.datasets.forEach( dt_item => {
-                    dt.datasets.push(dt_item)
-                })
-
-                return dt
+                forecast_dataset.datasets.forEach(dt => {
+                    dt.label += ' Contratada'
+                    
+                    dt.borderDash = [5, 5]
+                    this.chartDataSets[type_meas].datasets.push(dt)
+                })                
             },
 
+            download_table_data() {                                                              
+                fileDownload(this.$papa.unparse(change_names_en2pt(this.get_optimized_data), {delimiter: ";",}), 'otimizacao_macde.csv')
+            },
+           
             loadExploratory() {
                 this.loading  = true
-                this.optimize()
-                               
+                this.optimize()                               
             },
         },
 
+        mounted() {
+            this.chartData('demand')
+        },
+
         watch: {
-            get_optimized: {
+            get_optimized_data: {
                 handler() {
+                    this.chartData('demand')
                     if(this.loading) {
                         this.loading  = false  
                     }
                 }
-            }
+            },
+            get_selected_simulation_type: {
+                handler() {                    
+                    this.set_optimized_data([])              
+                },
+                deep: true,
+                imediate: true,
+            },
         }
     }
 </script>

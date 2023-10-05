@@ -29,7 +29,7 @@ export default {
     },
 
     mutations: {  
-      set_optimized_data(state, payload) {
+      set_optimized_data(state, payload) {        
         state.optimized_data = payload
       },  
       set_chosen_optimize_model(state, payload) {
@@ -42,17 +42,21 @@ export default {
         commit('set_chosen_optimize_model', payload)
       },
 
-      optimize({ commit, rootGetters }){
-        const tariff_modality = rootGetters['data_configurations/get_tariff_modality']
+      set_optimized_data({ commit }, payload) {        
+        commit("set_optimized_data", payload)        
+      },  
+
+      optimize({ commit, rootGetters }){    
         const get_data = rootGetters['data_forecast/get_forecasted_data_by_key']
         const has_demand_variation = rootGetters['data_parameters/get_has_demand_variation']
-        const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/exploratory/${tariff_modality.value}/${has_demand_variation ? "1" : "0"}`
-
+        const is_blue = rootGetters['data_parameters/get_selected_simulation_type'].name.includes('blue')
+        const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/exploratory/${is_blue ? "2" : "1"}/${has_demand_variation ? "1" : "0"}`
+        
         let arr_req = []
-        if(tariff_modality.name == 'blue') {
+        if(is_blue) {
           let peak_demand =  get_data('peak_demand')
           let off_peak_demand =  get_data('off_peak_demand')
-          arr_req = [axios.post(addr, {'data': [[...peak_demand], ...[off_peak_demand]]})]
+          arr_req = [axios.post(addr, {'data': [[...peak_demand], [...off_peak_demand]]})]
         }
         else {
           let demand = get_data('demand')
@@ -61,10 +65,10 @@ export default {
 
         Promise.all(arr_req).then(response => {   
           let optimized = []
-          let lentgh_res = tariff_modality.name == 'blue' ? response[0].data[0].length : response[0].data.length
+          let lentgh_res = is_blue ? response[0].data[0].length : response[0].data.length
           for(let i in [...Array(lentgh_res).keys()]){
               let prov = {}
-              if(tariff_modality.name == 'blue') {
+              if(is_blue) {
                 prov['peak_demand'] = response[0].data[0][i]
                 prov['off_peak_demand'] = response[0].data[1][i]
               }else {
@@ -73,8 +77,7 @@ export default {
               optimized.push(prov)
           }
 
-          optimized.forEach((item, index) => item.date = (index + 1).toString())
-
+          optimized.forEach((item, index) => item.date = (index + 1).toString())          
           commit("set_optimized_data", optimized)
         })
       },
