@@ -253,6 +253,9 @@
                 'date',
                 Object.assign([], this.get_optimized_data)
                 )             
+                this.chartDataSets[type_meas].datasets.forEach(dt => {
+                    dt.label += ' Sugerida'                                
+                })                                
 
                 let forecast_dataset = createDataSetsTimeSeries( 
                 this.active_meas(type_meas), 
@@ -261,8 +264,7 @@
                 )              
                 
                 forecast_dataset.datasets.forEach(dt => {
-                    dt.label += ' Contratada'
-                    
+                    dt.label += ' Prevista'                    
                     dt.borderDash = [5, 5]
                     this.chartDataSets[type_meas].datasets.push(dt)
                 })                
