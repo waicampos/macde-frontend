@@ -94,7 +94,7 @@ export function demand_cost_assembly_request(data, contracted, tariff, demand_na
         axios.post('https://gese.florianopolis.ifsc.edu.br/mcd/demand_cost', {
           'data': data.map(item => item[key]),
           'contracted': contracted.map(item => item[key]),
-          'tariff': tariff(key).value
+          'tariff': tariff.find(i => i.name == key).value
         })            
       )
     })

@@ -69,19 +69,8 @@ export default {
 
   },
 
-  computed: {
-    ...mapGetters('data_configurations', {
-      get_tariff_modality: 'get_tariff_modality',
-      get_demand_measurements_names: 'get_demand_measurements_names',
-      get_all_measurements_names: 'get_all_measurements_names'
-    }),
-
-    ...mapGetters('data_results', {
-      get_contracted_demand_cost: 'get_contracted_demand_cost',
-      get_optimized_demand_cost: 'get_optimized_demand_cost',
-      get_energy_cost: 'get_energy_cost',
-      get_contracted_cost: 'get_contracted_cost',
-      get_optimized_cost: 'get_optimized_cost',
+  computed: {    
+    ...mapGetters('data_results', {      
       get_total_contracted_cost_by_key: 'get_total_contracted_cost_by_key',
       get_total_optimized_cost_by_key: 'get_total_optimized_cost_by_key',
       get_proportional_optimized_cost: 'get_proportional_optimized_cost',

@@ -60,7 +60,7 @@ export default {
 
         get_total_optimized_cost_by_key(state, getters) {
           let costs = {}
-          if(getters.get_optimized_cost.length) {
+          if(getters.get_optimized_cost.length) {            
             Object.keys(getters.get_optimized_cost[0]).forEach(key => costs[key] = 0)
             getters.get_optimized_cost.map(item => {
               Object.keys(item).forEach(key => {
@@ -125,7 +125,7 @@ export default {
             const forecasted = rootGetters['data_forecast/get_forecasted_data']
             const current_contracted = rootGetters['data_parameters/get_current_contracted_demand']
             let contracted_values = {}
-            const demand_names = rootGetters['data_configurations/get_demand_measurements_names']
+            const demand_names = rootGetters['data_parameters/get_selected_simulation_type'].meas.filter(i => i.includes('demand'))      
             demand_names.forEach(key => {
                 contracted_values[key] = current_contracted(key).value
             })
@@ -143,9 +143,8 @@ export default {
           },
 
           calculate_optimized_demand_cost({ commit, rootGetters }) {    
-            const demand_names = rootGetters['data_configurations/get_demand_measurements_names']
-            let optimized = rootGetters['data_optimize/get_optimized_data']           
-                        
+            const demand_names = rootGetters['data_parameters/get_selected_simulation_type'].meas.filter(i => i.includes('demand'))
+            let optimized = rootGetters['data_optimize/get_optimized_data']                            
             const arr_req = demand_cost_assembly_request(
               rootGetters['data_forecast/get_forecasted_data'], 
               optimized, 
@@ -162,12 +161,12 @@ export default {
           calculate_energy_cost({ commit, rootGetters }) { 
             const forecasted = rootGetters['data_forecast/get_forecasted_data']     
             const get_tariff = rootGetters['data_parameters/get_tariffs']
-            const energy_names = rootGetters['data_configurations/get_energy_measurements_names']
+            const energy_names = rootGetters['data_parameters/get_selected_simulation_type'].meas.filter(i => i.includes('energy'))
             let costs = []
             forecasted.forEach(item => {
               let prov = {}
               energy_names.forEach(key => {
-                prov[key] = Number((item[key] * get_tariff(key).value).toFixed(2))
+                prov[key] = Number((item[key] * get_tariff.find(i => i.name == key).value).toFixed(2))
               })
               costs.push(prov)
             })

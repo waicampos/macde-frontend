@@ -1,142 +1,175 @@
 <template>
-  <VRow>   
-    <VCol cols=12>
-      <v-card elevation="3">
-        <v-card-item class="bg-green">               
-          <v-card-title>Economia anual</v-card-title>               
-          <v-card-subtitle>Economia prevista com alteração do valor de demanda contratada.</v-card-subtitle>               
-        </v-card-item>
-          <v-divider></v-divider>
-          <v-card-text>
-              <v-row align="center" no-gutters>
-                <v-col
-                  class="text-h3 font-weight-bold text-green text-center"
-                  cols="8"
-                >
-                    <span class="text-green text-h6">R$</span>
-                    {{ get_total_cost_savings.toFixed(2) }}                    
-                </v-col>
-                <v-col class="text-left">
-                  
-                </v-col>
-                <v-col class="text-right">
+  <div class="d-flex flex-column">
+    <v-row class="flex-1-0">
+      <v-col cols="12">
+          <v-card
+              elevation="0"
+          >
+              <v-card-title>
+                  Etapa Resultados
                   <v-icon
-                    icon="mdi-star-face"
-                    size="118"
-                    color="orange"
-                    class="me-1 pb-1"
+                      icon="mdi-help-circle"
+                      color="info"
+                      size="x-small"
+                      class="me-2"
+                      @click="show_message.header = !show_message.header"
                   ></v-icon>
-                </v-col>
-              </v-row>
-          </v-card-text>
-        </v-card>
-  </VCol>
-  <VCol
-    v-for="item in get_demand_measurements_names" :key="item"
-    cols=12 md=6 lg=3
-    >
-    <SingleCard         
-      :annual_cost="get_total_optimized_cost_by_key[item]"
-      :demand="unique_optimized_demand_cost[item]"
-      :title="this.get__title_single_card(item)"
-      subtitle="Demanda Sugerida"
-    />
-  </VCol>
-  <VCol
-    v-for="item in get_demand_measurements_names" :key="item"
-    cols=12 md=6 lg=3
-    >
-    <SingleCard         
-      :annual_cost="get_total_contracted_cost_by_key[item]"
-      :demand="[get_current_contracted_demand(item).value]"
-      :title="this.get__title_single_card(item)"
-      subtitle="Demanda Atual"
-    />
-  </VCol>
-  </VRow>
-
-  <VRow>
-    <VCol
-      cols="12" lg="6"
-    >
-      <v-card>
-      <v-card-item>
-        <v-card-title class="text-center">Custos Demanda Contratada</v-card-title>
-        <v-card-subtitle class="text-center">Composição do custo</v-card-subtitle>
-      </v-card-item>
-      <v-card-text>
-      <Pie
-        id="pie-costs-results-chart-id"
-        :data="get_all_contracted_costs_proportional"
-        :options="options_pie" 
-      />        
-      </v-card-text>
-      </v-card>
-    </VCol>
-
-    <VCol
-      cols="12" lg="6"
-    >
-      <v-card>
-      <v-card-item>
-        <v-card-title class="text-center">Custos Demanda Sugerida</v-card-title>
-        <v-card-subtitle class="text-center">Composição do custo</v-card-subtitle>
-      </v-card-item>
-      <v-card-text>
-      <Pie
-        id="pie-costs-results-chart-id"
-        :data="get_all_optimized_costs_proportional"
-        :options="options_pie" 
-      />        
-      </v-card-text>
-      </v-card>
-    </VCol>
+              </v-card-title>               
+              <v-card-subtitle>Resultados da simulação.</v-card-subtitle>               
+              <v-divider></v-divider>
+              <v-card-text
+                  v-show="show_message.header"
+              >
+                  <v-row class="text-center pa-3">
+                      <v-col>
+                          <p class="text-justify"> 
+                              Resultados apresentados com base nas etapas anteriores.
+                              <br>
+                          </p>                                                    
+                      </v-col>
+                  </v-row>
+              </v-card-text>
+              <v-divider></v-divider>
+          </v-card>
+      </v-col>
+    </v-row>
     
-    <VCol
-      cols="12" lg="6"
-    >
-      <v-sheet rounded="lg" min-height="300">
-        <Bar 
-          id="bar-costs-results-chart-id"
-          :data="chartBarTimeSeriesData(get_measurements_names, get_optimized_cost)"
-          :options="options_bar"
+    <v-row>   
+      <v-col cols=12>
+        <v-card elevation="3">
+          <v-card-item class="bg-green">               
+            <v-card-title>Economia anual</v-card-title>               
+            <v-card-subtitle>Economia prevista com alteração do valor de demanda contratada.</v-card-subtitle>               
+          </v-card-item>
+            <v-divider></v-divider>
+            <v-card-text>
+                <v-row align="center" no-gutters>
+                  <v-col
+                    class="text-h3 font-weight-bold text-green text-center"
+                    cols="8"
+                  >
+                      <span class="text-green text-h6">R$</span>
+                      {{ get_total_cost_savings.toFixed(2) }}                    
+                  </v-col>
+                  <v-col class="text-left">
+                    
+                  </v-col>
+                  <v-col class="text-right">
+                    <v-icon
+                      icon="mdi-star-face"
+                      size="118"
+                      color="orange"
+                      class="me-1 pb-1"
+                    ></v-icon>
+                  </v-col>
+                </v-row>
+            </v-card-text>
+          </v-card>
+      </v-col>
+
+      <v-col
+        v-for="item in this.active_meas('demand')" :key="item"
+        cols=12 md=6 lg=3
+        >
+        <SingleCard         
+          :annual_cost="get_total_optimized_cost_by_key[item]"
+          :demand="unique_optimized_demand_cost[item]"
+          :title="this.get__title_single_card(item)"
+          subtitle="Demanda Sugerida"
         />
-      </v-sheet>
-    </VCol>
- 
-    <VCol
-      cols="12" lg="6"
-    >
-      <v-sheet rounded="lg" min-height="300">
-        <MyLine
-            id="my-line-costs-results-chart-id"
-            :data="chartTimeSeriesData(get_demand_measurements_names, get_optimized_data)"            
+      </v-col>
+
+      <v-col
+        v-for="item in this.active_meas('demand')" :key="item"
+        cols=12 md=6 lg=3
+        >
+        <SingleCard         
+          :annual_cost="get_total_contracted_cost_by_key[item]"
+          :demand="[get_current_contracted_demand(item).value]"
+          :title="this.get__title_single_card(item)"
+          subtitle="Demanda Atual"
         />
-      </v-sheet>
-    </VCol>
-  </VRow>
+      </v-col>
 
-  <VRow>
-    <VCol      
-      cols="12"
-      lg="6"
-    >
-      <TotalEarnings cost_type="optimized"/>
-    </VCol>
+    </v-row>
 
-    <VCol      
-      cols="12"
-      lg="6"
-    >
-      <TotalEarnings cost_type="contracted"/>
-    </VCol>
-
-      <!-- <VCol
-      cols="12"
+    <v-row>
+      <v-col
+        cols="12" lg="6"
       >
-        <TableResults />
-      </VCol>    -->
-  </VRow>
+        <v-card>
+        <v-card-item>
+          <v-card-title class="text-center">Custos Demanda Contratada</v-card-title>
+          <v-card-subtitle class="text-center">Composição do custo</v-card-subtitle>
+        </v-card-item>
+        <v-card-text>
+        <Pie
+          id="pie-costs-results-chart-id"
+          :data="get_all_contracted_costs_proportional"
+          :options="options_pie" 
+        />        
+        </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12" lg="6"
+      >
+        <v-card>
+        <v-card-item>
+          <v-card-title class="text-center">Custos Demanda Sugerida</v-card-title>
+          <v-card-subtitle class="text-center">Composição do custo</v-card-subtitle>
+        </v-card-item>
+        <v-card-text>
+        <Pie
+          id="pie-costs-results-chart-id"
+          :data="get_all_optimized_costs_proportional"
+          :options="options_pie" 
+        />        
+        </v-card-text>
+        </v-card>
+      </v-col>
+      
+      <v-col
+        cols="12" lg="6"
+      >
+        <v-sheet rounded="lg" min-height="300">
+          <Bar 
+            id="bar-costs-results-chart-id"
+            :data="chartBarTimeSeriesData(this.get_selected_simulation_type.meas, get_optimized_cost)"
+            :options="options_bar"
+          />
+        </v-sheet>
+      </v-col>
+  
+      <v-col
+        cols="12" lg="6"
+      >
+        <v-sheet rounded="lg" min-height="300">
+          <MyLine
+              id="my-line-costs-results-chart-id"
+              :data="chartTimeSeriesData(active_meas('demand'), get_optimized_data)"            
+          />
+        </v-sheet> 
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col      
+        cols="12"
+        lg="6"
+      >
+        <TotalEarnings cost_type="optimized"/>
+      </v-col>
+
+      <v-col      
+        cols="12"
+        lg="6"
+      >
+        <TotalEarnings cost_type="contracted"/>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -144,7 +177,6 @@
     import { Line as MyLine} from 'vue-chartjs'
 
     import TotalEarnings from '@/components/results/TotalEarnings.vue'
-    import TableResults from '@/components/results/TableResults.vue'
     import SingleCard from '@/components/results/SingleCard.vue'
     import { Chart as ChartJS, Title, ArcElement, PointElement, LineElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
     import { Pie } from 'vue-chartjs'
@@ -154,47 +186,11 @@
     import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 
     export default {
-      components: {MyLine, TotalEarnings, TableResults, SingleCard, Pie, Bar},
+      components: {MyLine, TotalEarnings, SingleCard, Pie, Bar},
       data() {
         return {
-          demand_names: ['demand'],         
-          data_bar: {
-            labels: [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-              'July',
-              'August',
-              'September',
-              'October',
-              'November',
-              'December'
-            ],
-            datasets: [
-              {
-                label: 'Energia de Ponta',
-                backgroundColor: '#DD1B16',
-                data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-              },
-              {
-                label: 'Energia Fora de Ponta',
-                backgroundColor: '#00D8FF',
-                data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-              },
-              {
-                label: 'Energia de Ponta',
-                backgroundColor: '#41B883',
-                data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-              },
-              {
-                label: 'Energia Fora de Ponta',
-                backgroundColor: '#E46651',
-                data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-              },
-            ]
+          show_message: {
+                  header: false,
           },
           options_pie: {
             responsive: true,
@@ -221,6 +217,10 @@
       },
       methods: {
         ...mapActions('data_results', ['calculate_contracted_demand_cost', 'calculate_energy_cost', 'calculate_optimized_demand_cost']),
+
+        active_meas(type_meas) {
+            return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
+        },
 
         get__title_single_card(key) {
           return MEAS_INFO[key].title
@@ -261,10 +261,7 @@
       },
       computed: {
         ...mapGetters('data_results', {
-          get_contracted_demand_cost: 'get_contracted_demand_cost',
-          get_optimized_demand_cost: 'get_optimized_demand_cost',
-          get_energy_cost: 'get_energy_cost',
-          get_contracted_cost: 'get_contracted_cost',
+          get_energy_cost: 'get_energy_cost',          
           get_optimized_cost: 'get_optimized_cost',
           get_total_cost_savings: 'get_total_cost_savings',
           get_total_optimized_cost_by_key: 'get_total_optimized_cost_by_key',
@@ -274,17 +271,13 @@
         }),
 
         ...mapGetters('data_parameters', {
-            get_current_contracted_demand: 'get_current_contracted_demand'
+            get_current_contracted_demand: 'get_current_contracted_demand',
+            get_selected_simulation_type: 'get_selected_simulation_type',
         }),
 
         ...mapGetters('data_optimize', {
             get_optimized_data: 'get_optimized_data',
             get_optimized_data_by_key: 'get_optimized_data_by_key',
-        }),
-
-        ...mapGetters('data_configurations', {
-            get_measurements_names: 'get_measurements_names',
-            get_demand_measurements_names: 'get_demand_measurements_names',
         }),
                         
         get_all_optimized_costs_proportional() {
@@ -297,11 +290,10 @@
               }
             ]
           }
-                
           Object.keys(this.get_proportional_optimized_cost).forEach(key => {              
             data_graph.labels.push(MEAS_INFO[key].title)
             data_graph.datasets[0].data.push(this.get_proportional_optimized_cost[key])
-          })    
+          })              
           return data_graph
         },
 
@@ -314,18 +306,17 @@
                 data: []
               }
             ]
-          }
-
+          }          
            Object.keys(this.get_proportional_contracted_cost).forEach(key => {              
             data_graph.labels.push(MEAS_INFO[key].title)
             data_graph.datasets[0].data.push(this.get_proportional_contracted_cost[key])
-          })    
+          })             
           return data_graph
         },
 
         unique_optimized_demand_cost() {
           let unique = {}          
-          this.get_demand_measurements_names.forEach(key => {
+          this.active_meas('demand').forEach(key => {
             unique[key] = Array.from(new Set(this.get_optimized_data_by_key(key)))
           })
           return unique
