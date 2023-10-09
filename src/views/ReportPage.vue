@@ -119,8 +119,8 @@
                 <h3>Previsão de Demanda</h3>
             </v-col>
             <v-col                 
-                v-for="demand_name in get_demand_measurements_names" :key="demand_name"
-                cols=12 :lg="get_tariff_modality.name == 'green' ? 12 : 6"
+                v-for="demand_name in active_meas('demand')" :key="demand_name"
+                cols=12 :lg="active_meas('energy').length ? 6 : 12"
             >
                 <v-sheet rounded="lg" min-height="300">
                     <MyLine
@@ -158,7 +158,7 @@
                                 Solicitações que devem ser feitas à distribuidora <b>{{ get_utility.name }}</b>:
                             </p>
                             <p 
-                                v-for="(demand_name, index) in get_demand_measurements_names" :key="demand_name"
+                                v-for="(demand_name, index) in active_meas('demand')" :key="demand_name"
                                 class="text-justify pt-2 mt-2 mb-2 pt-2"
                             >                                
                                 {{ index + 1 }}) Alteração do valor contratado de <b>{{get_demand_title(demand_name).toUpperCase() }}</b>
@@ -270,6 +270,10 @@ export default {
             return MEAS_INFO[key].title
         },
 
+        active_meas(type_meas) {
+            return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
+        },
+
         chartTimeSeriesData(keys) {  
             let data = [...this.get_forecasted]
             let dt = createDataSetsTimeSeries( 
@@ -300,6 +304,10 @@ export default {
     },
 
     computed: {
+         ...mapGetters('data_parameters', {
+            get_selected_simulation_type: 'get_selected_simulation_type',            
+        }),        
+
         ...mapGetters('data_forecast', {
             get_forecasted: 'get_forecasted_data',
         }),
@@ -311,8 +319,7 @@ export default {
 
         ...mapGetters('data_configurations', {
             get_utility: 'get_utility',
-            get_tariff_modality: 'get_tariff_modality',
-            get_demand_measurements_names: 'get_demand_measurements_names',
+            get_tariff_modality: 'get_tariff_modality',            
         }),        
         
         consumer_unit: {

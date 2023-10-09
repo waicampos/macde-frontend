@@ -20,8 +20,10 @@ export default {
       },  
 
       get_unique_optimized_demand_cost(state, getters, rootState, rootGetters) {
-        let unique = {}          
-        rootGetters['data_configurations/get_demand_measurements_names'].forEach(key => {
+        let unique = {}        
+        let meas_names = rootGetters['data_parameters/get_selected_simulation_type'].meas.filter(i => i.includes('demand')) 
+        
+        meas_names.forEach(key => {
           unique[key] = Array.from(new Set(getters.get_optimized_data_by_key(key)))
         })
         return unique
