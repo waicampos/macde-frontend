@@ -73,14 +73,12 @@
                     sm="6"
                   >
                     <InputNumberFormatted  
-                      :initial="item.value"
-                      v-if="item.name !== 'date'"
-                      input-placeholder='dd/mm/yyyy'
+                      v-model="item.value"
+                      v-if="item.name !== 'date'"                      
                       maxFractionDigits='12'
                       lang="pt-BR"
                       :label="item.label"
                       :suffix= "item.suffix"
-                      @changedValue="changedInputNumberValue($event, item.value, index)"
                     />
 
                     <InputDatePicker 
@@ -246,20 +244,16 @@
         return this.get_has_photovoltaic_system && fns_isAfter(this.get_date_installation_photovoltaic_system, dt) ? 'text-disabled' : ''
       },
 
-      changedInputNumberValue(e, param, index) {
-        this.editedItem[index].value = e;
-      },
-
       date2string(dt) {
         return fns_format(dt, TIME_SERIES_DATE_FORMAT)
       },
 
       editItem (item) {
         this.editedIndex = this.data_file.indexOf(item)
-
+        
         for(var i in this.editedItem){
           let name = this.editedItem[i].name
-          this.editedItem[i].value = item[name]        
+          this.editedItem[i].value = item[name]                
         }
         this.dialog = true
       },
@@ -295,7 +289,7 @@
         let obj = {}
         for(var i in this.editedItem){
           let name = this.editedItem[i].name
-          obj[name] = this.editedItem[i].value     
+          obj[name] = typeof this.editedItem[i].value === 'string' ? Number(this.editedItem[i].value.replace(',', '.')) : this.editedItem[i].value
         }
         if (this.editedIndex > -1) {
           let payload = {'index': this.editedIndex, 'value': obj}
@@ -318,6 +312,14 @@
       },
       dialogDelete (val) {''
         val || this.closeDelete()
+      },
+      get_selected_simulation_type: {
+          handler() {                    
+            this.mountEditedItem()
+            this.mountDefaultItem()              
+          },
+          deep: true,
+          imediate: true,
       },
     },
   }
