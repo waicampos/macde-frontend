@@ -530,7 +530,7 @@ export default {
     },
 
     methods: {
-        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand', 'set_growth_forecast', 'set_taxes_and_charges']),
+        ...mapActions('data_parameters', ['set_tariffs', 'set_current_contracted_demand', 'set_growth_forecast', 'set_taxes_and_charges', 'set_selected_simulation_type']),        
        
         async formBoxTaxesChargesSave() { 
             const isValid = await this.v$.local_taxes_and_charges.$each.$response.$valid
@@ -598,7 +598,7 @@ export default {
                 return this.$store.state.data_parameters.selected_simulation_type
             },
             set(payload){
-                this.$store.commit('data_parameters/set_selected_simulation_type', payload)
+                this.set_selected_simulation_type(payload)
             }
         },
         has_demand_variation: {

@@ -107,6 +107,8 @@ export default {
       },
       set_selected_simulation_type({ commit }, payload) {
         commit("set_selected_simulation_type", payload)
+        commit('data_forecast/set_forecasted_data', [], { root: true })
+        commit('data_optimize/set_optimized_data', [], { root: true })
       },
       set_has_photovoltaic_system({ commit }, payload) {
         commit("set_has_photovoltaic_system", payload)

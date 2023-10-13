@@ -33,22 +33,7 @@
                     <v-divider></v-divider>
                 </v-card>
             </v-col>
-        </v-row>
-
-        <!-- Modalidade Tarifária -->
-        <v-row class="flex-1-0">
-            <v-col class="pb-0 mb-0" cols="12">
-                <v-select
-                    v-model="selected_simulation_type"
-                    label="Modalidade tarifária"
-                    :items="simulation_types"
-                    item-title="text"
-                    item-value="name"
-                    variant="outlined"
-                    return-object
-                ></v-select>
-            </v-col>
-        </v-row>    
+        </v-row>       
 
         <!-- Aumento e redução de demanda-->
         <v-row class="flex-1-0">
@@ -76,7 +61,7 @@
                 ></v-icon>
             </v-col>
             <v-col class="text-center" cols="12">
-                <h4 class="text-red">Não há dados previstos. É necessário realizar a previsão dos dados antes da otimização. </h4>
+                <h4 class="text-red">Não há dados previstos ou houve alteração no valor do tipo de simulação. É necessário realizar a previsão dos dados antes da otimização.</h4>
             </v-col>
         </v-row> 
 
@@ -101,7 +86,7 @@
 
         <!-- Gráficos -->
         <v-row 
-            v-if="this.get_optimized_data.length"
+            v-if="this.get_optimized_data.length && this.get_forecasted_data.length"
             class="flex-1-0 ma-0 pa-0"
         >            
             <v-col cols=12>
@@ -117,7 +102,7 @@
 
         <!-- Tabela Valores Previstos -->
         <v-row 
-            v-if="this.get_optimized_data.length" 
+            v-if="this.get_optimized_data.length && this.get_forecasted_data.length" 
             class="flex-1-0  mb-4 pb-4"
         >            
             <v-col cols="12">
@@ -164,14 +149,13 @@
     import { createDataSetsTimeSeries, chartOptionsConfigDefault } from '@/components/config/chartConfig'
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-    import { MEAS_INFO, SIMULATION_TYPES, ITEMS_PER_PAGE_TABLE, change_names_en2pt } from '@/assets/files/consts'    
+    import { MEAS_INFO, ITEMS_PER_PAGE_TABLE, change_names_en2pt } from '@/assets/files/consts'    
 
     export default {
         name: "userOptimizationPage",
         components: {MyLine},
         data() {
-            return {      
-                simulation_types: SIMULATION_TYPES,
+            return {                      
                 loading: false,
                 items_per_page: ITEMS_PER_PAGE_TABLE,
                 show_message: {
@@ -203,15 +187,6 @@
                 opt.scales.y.title.text = "Demanda [kW]"
 
                 return opt
-            },
-
-            selected_simulation_type: {                
-                get() {
-                    return this.get_selected_simulation_type
-                },
-                set(payload){
-                    this.set_selected_simulation_type(payload)
-                }
             },
 
             has_demand_variation: {
