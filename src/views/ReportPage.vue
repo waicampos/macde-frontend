@@ -1,15 +1,39 @@
 <template>
     <div>
-        <VSheet>
-            <VRow>
-                <VCol cols="12">
+        <v-sheet>
+            <v-row>
+                <v-col cols="12">
                     <h1 class="text-center">Relatório MACDE</h1>
-                </VCol>
-            </VRow>
-                <v-divider class="py-2 my-4"></v-divider>
+                </v-col>
+            </v-row>
+
+            <v-divider
+                class="py-2 my-4"
+            ></v-divider>
+
+                <!-- Mensagem de dados não carregados -->
+            <v-row 
+                v-if="!this.get_optimized_data.length"
+                class="flex-1-0 bg-grey-lighten-2"
+            >
+                <v-col class="text-center" >
+                    <v-icon
+                        icon="mdi-alert"
+                        color="red-accent-4"
+                        size="80"
+                        class="me-2"
+                    ></v-icon>
+                </v-col>
+                <v-col class="text-center" cols="12">
+                    <h4 class="text-red">O relatório só estará disponível após todas as etapas anteriores estarem concluídas: Histórico, Previsão e Otimização.</h4>
+                </v-col>
+            </v-row> 
+
                 <!--Informações Consumidor-->
-            <VRow>
-                <VCol cols="12">                    
+            <v-row
+                v-if="this.get_optimized_data.length"
+            >  
+                <v-col cols="12">                    
                     <v-card elevation="0">
                         <v-card-item class="py-0 my-0">
                             <v-card-title>Informações do Cliente</v-card-title>
@@ -17,57 +41,62 @@
                         </v-card-item>
                         
                         <v-card-text class="my-5 py-0 my-0">
-                            <VRow>                               
-                                <VCol cols=12 class="py-0 my-1">
+                            <v-row>                               
+                                <v-col cols=12 class="py-0 my-1">
                                     <p><b>RAZÃO SOCIAL:</b> {{consumer_unit.name}}</p>
-                                </VCol>
-                                <VCol cols=12 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 class="py-0 my-1">
                                     <p><b>CPF/CNPJ:</b> {{consumer_unit.registration_number}}</p>
-                                </VCol>
-                                <VCol cols=12 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 class="py-0 my-1">
                                      <p><b>DISTRIBUIDORA/CONCESSIONÁRIA/PERMISSIONÁRIA(COOPERATIVA):</b> {{utility.name}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>CLASSE:</b> {{consumer_unit.class.text}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>UC:</b> {{consumer_unit.code}}</p>
-                                </VCol>                                
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>                                
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>MODALIDADE TARIFÁRIA:</b> {{consumer_unit.tariff_modality.text}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>GRUPO:</b> {{consumer_unit.group.name.toUpperCase()}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>SUBBGRUPO:</b> {{consumer_unit.subgroup.text}}</p>
-                                </VCol>                                
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>                                
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>PIS/PASEP(%):</b> {{taxes_and_charges.filter(item => item.name === 'pis_pasep')[0].value}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>COFINS(%):</b> {{taxes_and_charges.filter(item => item.name === 'cofins')[0].value}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>ICMS (%):</b> {{taxes_and_charges.filter(item => item.name === 'icms')[0].value}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>CIP ou COSIP (R$):</b> {{taxes_and_charges.filter(item => item.name === 'cip_cosip')[0].value}}</p>
-                                </VCol>
-                                <VCol cols=12 md=6 lg=4 class="py-0 my-1">
+                                </v-col>
+                                <v-col cols=12 md=6 lg=4 class="py-0 my-1">
                                     <p><b>Outros (R$):</b> {{taxes_and_charges.filter(item => item.name === 'others')[0].value}}</p>
-                                </VCol>
-                            </VRow>
+                                </v-col>
+                            </v-row>
                         </v-card-text>
                     </v-card>
-                </VCol>
-            </VRow>
+                </v-col>
+            </v-row>
             
-            <v-divider class="py-2 my-4"></v-divider>
+            <v-divider
+                v-if="this.get_optimized_data.length"
+                class="py-2 my-4"
+            ></v-divider>
 
             <!--Informações-->
-            <VRow>
-                <VCol cols="12">                    
+            <v-row
+                v-if="this.get_optimized_data.length"
+            >  
+                <v-col cols="12">                    
                     <v-card elevation="0">
                         <v-card-item class="py-0 my-0">
                             <v-card-title>Informações</v-card-title>
@@ -83,12 +112,14 @@
                             </p>                               
                         </v-card-text>
                     </v-card>
-                </VCol>
-            </VRow>   
+                </v-col>
+            </v-row>   
 
             <!--Laudo Técnio da Otimização-->
-            <VRow>                 
-                <VCol cols="12">                    
+            <v-row
+                v-if="this.get_optimized_data.length"
+            >                  
+                <v-col cols="12">                    
                     <v-card elevation="0">
                         <v-card-item class="py-0 my-0">
                             <v-card-title>Laudo Técnico</v-card-title>
@@ -106,33 +137,39 @@
                             </p>                               
                         </v-card-text>
                     </v-card>
-                </VCol>
-            </VRow>
+                </v-col>
+            </v-row>
 
-            <v-divider class="py-2 my-4"></v-divider>
+            <v-divider
+                v-if="this.get_optimized_data.length"
+                class="py-2 my-4"
+            ></v-divider>
 
-        <!-- Gráficos -->
-        <v-row 
-            class="flex-1-0 ma-0 pa-0"
-        >
-            <v-col cols="12 text-center">
-                <h3>Previsão de Demanda</h3>
-            </v-col>
-            <v-col                 
-                v-for="demand_name in active_meas('demand')" :key="demand_name"
-                cols=12 :lg="active_meas('energy').length ? 6 : 12"
+            <!-- Gráficos -->
+            <v-row 
+                v-if="this.get_optimized_data.length"
+                class="flex-1-0 ma-0 pa-0"
             >
-                <v-sheet rounded="lg" min-height="300">
-                    <MyLine
-                        :data="chartTimeSeriesData([demand_name])"
-                    />
-                </v-sheet>
-            </v-col>    
-        </v-row>
+                <v-col cols="12 text-center">
+                    <h3>Previsão de Demanda</h3>
+                </v-col>
+                <v-col                 
+                    v-for="demand_name in active_meas('demand')" :key="demand_name"
+                    cols=12 :lg="active_meas('energy').length ? 6 : 12"
+                >
+                    <v-sheet rounded="lg" min-height="300">
+                        <MyLine
+                            :data="chartTimeSeriesData([demand_name])"
+                        />
+                    </v-sheet>
+                </v-col>    
+            </v-row>
 
             <!--Ajustando o Contrato-->
-            <VRow>
-                <VCol cols="12" class="text-center">
+            <v-row
+                v-if="this.get_optimized_data.length"
+            >
+                <v-col cols="12" class="text-center">
                     <v-card elevation="0">
                         <v-card-item>
                             <v-card-title>Ajustando o Contrato</v-card-title>
@@ -176,14 +213,19 @@
                             </p>
                         </v-card-text>  
                     </v-card>  
-                </VCol>
-            </VRow>
+                </v-col>
+            </v-row>
 
-            <v-divider class="py-2 my-4"></v-divider>
+            <v-divider
+                v-if="this.get_optimized_data.length"
+                class="py-2 my-4"
+            ></v-divider>
 
             <!--Contato Concesionária de energia-->
-            <VRow>
-                <VCol cols="12" class="text-center">
+            <v-row
+                v-if="this.get_optimized_data.length"
+            >
+                <v-col cols="12" class="text-center">
                     <v-card elevation="0">
                         <v-card-item>
                             <v-card-title>Contato da Concessionária de Energia</v-card-title>
@@ -193,14 +235,19 @@
                             <p class="text-center">AmE Teleatendimento — 999 AmE — (99) 9999-9999 — 14 h às 17h exemplo@AmE.com.br</p>
                         </v-card-text>  
                     </v-card>  
-                </VCol>
-            </VRow>
+                </v-col>
+            </v-row>
 
-            <v-divider class="py-2 my-4"></v-divider>
+            <v-divider
+                v-if="this.get_optimized_data.length"
+                class="py-2 my-4"
+            ></v-divider>
 
             <!--Glossário Técnico-->
-            <VRow>
-                <VCol cols="12 text-center">
+            <v-row
+                v-if="this.get_optimized_data.length"
+            >
+                <v-col cols="12 text-center">
                     <v-card elevation="1">
                         <v-card-item>
                             <v-card-title class="text-h6">Glossário Técnico:</v-card-title>
@@ -240,9 +287,9 @@
                             </v-list>                                                                                                                   
                         </v-card-text>  
                     </v-card>  
-                </VCol>
-            </VRow>
-        </VSheet>
+                </v-col>
+            </v-row>
+        </v-sheet>
     </div>
 
 </template>
