@@ -34,7 +34,27 @@
       </v-col>
     </v-row>
     
-    <v-row>   
+    <!-- Mensagem de dados não carregados -->
+    <v-row 
+        v-if="!this.get_optimized_data.length"
+        class="flex-1-0 bg-grey-lighten-2"
+    >
+        <v-col class="text-center" >
+            <v-icon
+                icon="mdi-alert"
+                color="red-accent-4"
+                size="80"
+                class="me-2"
+            ></v-icon>
+        </v-col>
+        <v-col class="text-center" cols="12">
+            <h4 class="text-red">Os resultados só estarão disponíveis após todas as etapas anteriores estarem concluídas: Histórico, Previsão e Otimização.</h4>
+        </v-col>
+    </v-row> 
+
+    <v-row
+      v-if="this.get_optimized_data.length"
+    >   
       <v-col cols=12>
         <v-card elevation="3">
           <v-card-item class="bg-green">               
@@ -93,7 +113,9 @@
 
     </v-row>
 
-    <v-row>
+    <v-row
+      v-if="this.get_optimized_data.length"
+    >  
       <v-col
         cols="12" lg="6"
       >
@@ -154,7 +176,9 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row
+      v-if="this.get_optimized_data.length"
+    >  
       <v-col      
         cols="12"
         lg="6"
@@ -335,10 +359,12 @@
           return opt
         },        
       },
-      beforeMount() {          
-        this.calculate_contracted_demand_cost()
-        this.calculate_optimized_demand_cost()
-        this.calculate_energy_cost()
+      beforeMount() {     
+        if(this.get_optimized_data.length) {
+          this.calculate_contracted_demand_cost()
+          this.calculate_optimized_demand_cost()
+          this.calculate_energy_cost()
+        }     
       }
     }
 

@@ -236,8 +236,10 @@
       },
     },
     methods: {
-      ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages']),
+      ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages', 'clear_user_data_history']),
       ...mapActions('data_parameters', ['set_selected_simulation_type']),
+      ...mapActions('data_forecast', ['set_forecasted_data']),
+      ...mapActions('data_optimize', ['set_optimized_data']),      
 
       change_names_pt2en(val) {      
         return val.map(item => {  
@@ -276,7 +278,9 @@
 
       clear_user_historic() {
         if(this.data_file.length) {
-          this.$store.dispatch('data_history/clear_user_data_history')
+          this.clear_user_data_history()
+          this.set_forecasted_data([])
+          this.set_optimized_data([])
         }
       },
 
