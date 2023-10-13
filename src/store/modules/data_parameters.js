@@ -25,12 +25,12 @@ export default {
         ],
         tariffs: [          
           {value: 18.38, name: 'demand', title: "Demanda Verde", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
-          {value: 1.84, name: 'peak_energy', title:"Energia de Ponta Verde", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
-          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta Verde", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 1.84, name: 'peak_energy', title:"Energia de Ponta Verde", prefix:"R$", suffix:"por kWh", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
+          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta Verde", prefix:"R$", suffix:"por kWh", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[0]},
           {value: 42.4, name: 'peak_demand', title: "Demanda de Ponta Azul", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
           {value: 18.38, name: 'off_peak_demand', title: "Demanda Fora de Ponta Azul", prefix:"R$", suffix:"por kW", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
-          {value: 0.72, name: 'peak_energy', title:"Energia de Ponta Azul", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
-          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta Azul", prefix:"R$", suffix:"por kW/h", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]}         
+          {value: 0.72, name: 'peak_energy', title:"Energia de Ponta Azul", prefix:"R$", suffix:"por kWh", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]},
+          {value: 0.55, name:'off_peak_energy', title:"Energia Fora de Ponta Azul", prefix:"R$", suffix:"por kWh", type:"number", tariff_modality: TARIFF_MODALITY_TYPES[1]}         
         ],
         taxes_and_charges: [
           {value: 0.50, name:'pis_pasep', title:"pis_pasep", text:"PIS/PASEP", prefix:"", suffix:"%", type:"number"},
