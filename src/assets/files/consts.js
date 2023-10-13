@@ -122,3 +122,11 @@ export const ITEMS_PER_PAGE_TABLE = [
   {value: 48, title: '48'},
   {value: -1, title: 'Todos'}
 ]
+
+export function currency_separator(value) {
+  if((typeof value == 'number') && (!Number.isNaN(value))){
+      value = value.toFixed(2).toString().replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+  }
+  
+  return value;
+}

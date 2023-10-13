@@ -50,7 +50,7 @@
         <v-col 
           class="text-red-accent-4 text-h6 font-weight-bold text-center">
           
-          <span v-if="annual_cost">{{ annual_cost.toFixed(2) }}</span>
+          <span v-if="annual_cost">{{ currency_format(annual_cost) }}</span>
           <span v-else>-</span>
         </v-col>
       </v-row>
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { currency_separator } from '@/assets/files/consts'
+
 export default {
   props: {
     annual_cost: Number,
@@ -67,7 +69,9 @@ export default {
     subtitle: String,
   },
   methods: {
-    
+    currency_format(value) {          
+      return currency_separator(value)
+    },
   }
   
 }

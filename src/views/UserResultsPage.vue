@@ -49,7 +49,7 @@
                     cols="8"
                   >
                       <span class="text-green text-h6">R$</span>
-                      {{ get_total_cost_savings.toFixed(2) }}                    
+                      {{ currency_format(get_total_cost_savings) }}                    
                   </v-col>
                   <v-col class="text-left">
                     
@@ -181,7 +181,7 @@
     import { Chart as ChartJS, Title, ArcElement, PointElement, LineElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
     import { Pie } from 'vue-chartjs'
     import { Bar } from 'vue-chartjs'
-    import { sum, MEAS_INFO } from '@/assets/files/consts'
+    import { sum, MEAS_INFO, currency_separator } from '@/assets/files/consts'
     ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, BarElement, Title, ArcElement, Tooltip, Legend)
     import { createDataSetsTimeSeries, chartOptionsConfig } from '@/components/config/chartConfig'
 
@@ -257,7 +257,11 @@
 
         chartTimeSeriesData(keys, data) {
           return createDataSetsTimeSeries(keys, 'date', data)              
-        },        
+        },   
+        
+        currency_format(value) {          
+          return currency_separator(value)
+        },
       },
       computed: {
         ...mapGetters('data_results', {

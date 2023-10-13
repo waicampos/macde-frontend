@@ -28,7 +28,7 @@
       >
         <v-list-item-title>{{ get_cost_title(item) }} </v-list-item-title>
         <v-list-item-subtitle>Custo: <span class="text-subtitle-1 text-orange-darken-3 font-weight-medium">
-                R$ {{ cost.toFixed(2) }}
+                R$ {{ currency_format(cost) }}
               </span></v-list-item-subtitle>
     
         <v-row>
@@ -39,7 +39,7 @@
                   height="15"
                 >
                 <template v-slot:default="{ value }">
-                  <strong>{{ value }}%</strong>
+                  <strong>{{ currency_format(value) }}%</strong>
                 </template>
                 </VProgressLinear>
             </v-col>
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { MEAS_INFO, sum } from '@/assets/files/consts'
+import { MEAS_INFO, sum, currency_separator } from '@/assets/files/consts'
 import {chartDataConfig} from '@/components/config/chartConfig'
 import { mapGetters } from 'vuex';
 
@@ -67,6 +67,9 @@ export default {
       return chartDataConfig[key].backgroundColor
     },
 
+    currency_format(value) {          
+      return currency_separator(value)
+    },
   },
 
   computed: {    
@@ -86,7 +89,7 @@ export default {
     },
 
     get_total_cost() {
-      return Object.values(this.total_cost_by_key).reduce(sum,0).toFixed(2)
+      return this.currency_format(Object.values(this.total_cost_by_key).reduce(sum,0))
     },
 
     get_title() {
