@@ -41,7 +41,7 @@ export const ERROR_TS_IS_NUMBER = () => {
 export const ERROR_TS_INVALID_DATE = () => {
     return {
         code: 'ERROR_TS_INVALID_DATE',
-        message: 'Série Temporal possui uma ou mais datas inválidas',
+        message: 'Série Temporal possui uma ou mais datas inválidas (valores em branco ou fora do padrão dd/MM/yyyy).',
         type: 'error'
     }
 }

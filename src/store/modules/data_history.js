@@ -96,10 +96,10 @@ export default {
           let ts = new TimeSeries(payload, simulation_type)
           let ts_validation = new ValidationTimeSerie(ts)
           
-          if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
-          else if(!ts_validation.valid_there_is_least_one_month()) state.user_data_history_messages.push(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
-          else if(!ts_validation.valid_min_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MIN_SIZE(ts, ts_validation))
+          if(!ts_validation.valid_min_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MIN_SIZE(ts, ts_validation))
           else if(!ts_validation.valid_max_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MAX_SIZE(ts, ts_validation))
+          else if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
+          else if(!ts_validation.valid_there_is_least_one_month()) state.user_data_history_messages.push(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
           else if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())
           else if(!ts_validation.valid_allNumbers()) state.user_data_history_messages.push(sys_msg.ERROR_TS_IS_NUMBER())
           else if(!ts_validation.valid_required_keys()) state.user_data_history_messages.push(sys_msg.ERROR_REQ_KEYS(['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']))

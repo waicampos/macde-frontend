@@ -168,6 +168,8 @@ export class TimeSeries {
             }
             if(typeof item.date === 'string') {
                 item.date = fns_parse(item.date, this.date_format, new Date())
+            } else {
+                item.date = ''
             }
         })
     }
