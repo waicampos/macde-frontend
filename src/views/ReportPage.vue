@@ -155,11 +155,12 @@
                 </v-col>
                 <v-col                 
                     v-for="demand_name in active_meas('demand')" :key="demand_name"
-                    cols=12 :lg="active_meas('energy').length ? 6 : 12"
+                    cols=12 :lg="active_meas('demand').length > 1 ? 6 : 12"
                 >
                     <v-sheet rounded="lg" min-height="300">
                         <MyLine
                             :data="chartTimeSeriesData([demand_name])"
+                            :options="this.chartTimeSeriesOptionsDemand"
                         />
                     </v-sheet>
                 </v-col>    
@@ -296,7 +297,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { createDataSetsTimeSeries } from '@/components/config/chartConfig'
+import { createDataSetsTimeSeries, chartOptionsConfigDefault } from '@/components/config/chartConfig'
 import macde_report_glossary from '@/assets/files/macde_report_glossary.json'
 import { MEAS_INFO } from '@/assets/files/consts'
 
@@ -369,6 +370,15 @@ export default {
             get_tariff_modality: 'get_tariff_modality',            
         }),        
         
+        chartTimeSeriesOptionsDemand() {
+            let opt = JSON.parse(JSON.stringify(chartOptionsConfigDefault))
+            opt.plugins.title.text = "Gráfico de Demanda"
+            opt.scales.x.title.text = "Mês"
+            opt.scales.y.title.text = "Demanda [kW]"
+
+            return opt
+        },
+
         consumer_unit: {
             get() {
                 return this.$store.state.data_configurations.consumer_unit
