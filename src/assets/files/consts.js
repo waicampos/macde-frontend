@@ -22,11 +22,11 @@ export function change_names_en2pt(val) {
   })
 }
 export const MEAS_INFO = {
-    "demand":{key:"demand", "title": "Demanda", "prefix":"R$", "suffix":"por kW", "type":"number"},
-    "peak_demand": {key: "peak_demand", title: "Demanda de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
-    "off_peak_demand": {key: "off_peak_demand", title: "Demanda Fora de Ponta", prefix:"R$", suffix:"por kW", type:"number"},
-    "peak_energy": {key: "peak_energy", title:"Energia de Ponta", prefix:"R$", suffix:"por kWh", type:"number"},
-    "off_peak_energy": {key: 'off_peak_energy', title:"Energia Fora de Ponta", prefix:"R$", suffix:"por kWh", type:"number"},
+    "demand":{key:"demand", "title": "Demanda", "prefix":"R$", "suffix":"kW", "type":"number"},
+    "peak_demand": {key: "peak_demand", title: "Demanda de Ponta", prefix:"R$", suffix:"kW", type:"number"},
+    "off_peak_demand": {key: "off_peak_demand", title: "Demanda Fora de Ponta", prefix:"R$", suffix:"kW", type:"number"},
+    "peak_energy": {key: "peak_energy", title:"Energia de Ponta", prefix:"R$", suffix:"kWh", type:"number"},
+    "off_peak_energy": {key: 'off_peak_energy', title:"Energia Fora de Ponta", prefix:"R$", suffix:"kWh", type:"number"},
 }
 
 export const SIMULATION_TYPES = [
