@@ -36,7 +36,7 @@ export default {
           {value: 0.50, name:'pis_pasep', title:"pis_pasep", text:"PIS/PASEP", prefix:"", suffix:"%", type:"number"},
           {value: 2.31, name:'cofins', title:"cofins", text:"COFINS", prefix:"", suffix:"%", type:"number"},
           {value: 25, name:'icms', title:"icms", text:"ICMS", prefix:"", suffix:"%", type:"number"},
-          {value: 18.40, name:'cip_cosip', title:"cip_cosip", text:"CIP ou COSIP", prefix:"R$", suffix:"", type:"number"},
+          {value: 350, name:'cip_cosip', title:"cip_cosip", text:"CIP ou COSIP", prefix:"R$", suffix:"", type:"number"},
           {value: 0, name:'others', title:"others", text:"Outros", prefix:"R$", suffix:"", type:"number"},
         ],
         current_contracted_demand: [
