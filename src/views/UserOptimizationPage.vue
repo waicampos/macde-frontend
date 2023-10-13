@@ -183,7 +183,7 @@
             chartTimeSeriesOptionsDemand() {
                 let opt = JSON.parse(JSON.stringify(chartOptionsConfigDefault))
                 opt.plugins.title.text = "Gráfico de Demanda"
-                opt.scales.x.title.text = "Data"
+                opt.scales.x.title.text = "Mês"
                 opt.scales.y.title.text = "Demanda [kW]"
 
                 return opt
