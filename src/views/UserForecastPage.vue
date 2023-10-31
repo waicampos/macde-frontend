@@ -55,7 +55,7 @@
 
         <!-- Tipos Modelos -->
         <v-row 
-            v-if="!this.data_file.length && this.chosen_forecast_model.type != 'custom'"
+            v-if="!this.get_is_valid_user_data_history && this.chosen_forecast_model.type != 'custom'"
             class="flex-1-0 bg-grey-lighten-2"
         >
             <v-col class="text-center" >
@@ -67,7 +67,10 @@
                 ></v-icon>
             </v-col>
             <v-col class="text-center" cols="12">
-                <h4 class="text-red">Ops. Parece que os dados do histórico não foram carregados. Os modelos Naive e Média Dupla utilizam estes dados.</h4>
+                <h4 class="text-red">
+                    Ops. Parece que os dados do histórico não foram carregados ou não são válidos. 
+                    Os modelos Naive e Média Dupla utilizam estes dados. Verifique os dados na página histórico.
+                </h4>
             </v-col>
         </v-row> 
 
@@ -179,7 +182,7 @@ export default {
     },
     computed: {
         ...mapGetters('data_history', {
-            data_file: 'get_user_data_history',
+            get_is_valid_user_data_history: 'get_is_valid_user_data_history',
             }
         ),
         
@@ -249,7 +252,7 @@ export default {
         
         changed_forecast_model_type() {
             this.set_forecasted_data([])
-            if(this.data_file.length > 0 && this.chosen_forecast_model.type != 'custom' ) {
+            if(this.get_is_valid_user_data_history && this.chosen_forecast_model.type != 'custom' ) {
                 this.forecast()               
             }
         }
