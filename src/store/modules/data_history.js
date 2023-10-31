@@ -126,21 +126,22 @@ export default {
           }
         },
 
-        add_user_data_history({ state, commit, dispatch }, payload) {             
+        add_user_data_history({ state, commit, dispatch }, payload) {
           commit("add_user_data_history", payload)
           dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
-        set_item_user_data_history({ commit }, payload) {          
+        set_item_user_data_history({ state, commit, dispatch }, payload) {
           commit("set_item_user_data_history", payload)
+          dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
         delete_item_user_data_history_by_id({ state, commit, dispatch }, payload) {       
           commit("delete_item_user_data_history_by_id", payload)
           dispatch("set_is_valid_user_data_history", state.user_data_history)          
         },
-        clear_user_data_history({ state, commit }) {
+        clear_user_data_history({ state, commit, dispatch }) {
           state.user_data_history_messages.push(sys_msg.INFO_DELETED_DATA())
           commit("clear_user_data_history")
-          commit("set_is_valid_user_data_history", false)          
+          dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
       },
 }
