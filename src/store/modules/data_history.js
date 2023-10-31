@@ -5,10 +5,15 @@ import { TimeSeries, ValidationTimeSerie } from '@/components/classes/time_serie
 export default {
     namespaced: true,
     state: {
-        user_data_history: [],     
+        user_data_history: [],
+        is_valid_user_data_history: false,
         user_data_history_messages: [],
       },
       getters: {
+        get_is_valid_user_data_history(state) {
+          return state.is_valid_user_data_history
+        },
+
         get_user_data_history(state) {
           return state.user_data_history
         },
@@ -51,6 +56,9 @@ export default {
       },
 
       mutations: {
+        set_is_valid_user_data_history(state, payload) {
+          state.is_valid_user_data_history = payload
+        },
         load_user_data_history(state, payload) {
           state.user_data_history = payload
         },
@@ -74,6 +82,24 @@ export default {
         },
       },
       actions: {
+        set_is_valid_user_data_history({ state, commit, rootGetters}, user_data) { 
+          let simulation_type = rootGetters['data_parameters/get_selected_simulation_type'].meas
+          let ts = new TimeSeries(user_data, simulation_type)
+          let ts_validation = new ValidationTimeSerie(ts)
+          let errors =  []
+        
+          if(!ts_validation.valid_min_size()) errors.push(sys_msg.ERROR_TS_MIN_SIZE(ts, ts_validation))
+          if(!ts_validation.valid_max_size()) errors.push(sys_msg.ERROR_TS_MAX_SIZE(ts, ts_validation))
+          if(!ts_validation.valid_isValidDate()) errors.push(sys_msg.ERROR_TS_INVALID_DATE())
+          if(!ts_validation.valid_there_is_least_one_month()) errors.push(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
+          if(!ts_validation.valid_DuplicatesDates()) errors.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())
+          if(!ts_validation.valid_allNumbers()) errors.push(sys_msg.ERROR_TS_IS_NUMBER())
+          if(!ts_validation.valid_required_keys()) errors.push(sys_msg.ERROR_REQ_KEYS(['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']))
+          
+          errors.forEach(err => state.user_data_history_messages.push(err))
+          commit("set_is_valid_user_data_history", errors.length == 0)          
+        },
+
         user_data_history_messages({ commit }, payload) {
           commit("user_data_history_messages", payload)
         },
@@ -82,7 +108,7 @@ export default {
           commit("delete_item_user_data_history_messages", payload)
         },
 
-        load_user_data_history({ state, commit, rootGetters }, payload) {
+        load_user_data_history({ state, commit, dispatch }, payload) {
           if(!payload) {
             state.user_data_history_messages.push(sys_msg.ERROR_FAIL_UPLOAD_FILE())
             return false
@@ -91,38 +117,30 @@ export default {
           payload.forEach(item => {        
             item.demand = Math.max(item.peak_demand, item.off_peak_demand)
           })
-
-          let simulation_type = rootGetters['data_parameters/get_selected_simulation_type'].meas
-          let ts = new TimeSeries(payload, simulation_type)
-          let ts_validation = new ValidationTimeSerie(ts)
-          
-          if(!ts_validation.valid_min_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MIN_SIZE(ts, ts_validation))
-          else if(!ts_validation.valid_max_size()) state.user_data_history_messages.push(sys_msg.ERROR_TS_MAX_SIZE(ts, ts_validation))
-          else if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.push(sys_msg.ERROR_TS_INVALID_DATE())
-          else if(!ts_validation.valid_there_is_least_one_month()) state.user_data_history_messages.push(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
-          else if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.push(sys_msg.ERROR_TS_DUPLICATED_VALUE())
-          else if(!ts_validation.valid_allNumbers()) state.user_data_history_messages.push(sys_msg.ERROR_TS_IS_NUMBER())
-          else if(!ts_validation.valid_required_keys()) state.user_data_history_messages.push(sys_msg.ERROR_REQ_KEYS(['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']))
-          else{           
+          dispatch("set_is_valid_user_data_history", payload)
+          if(state.is_valid_user_data_history) {
             state.user_data_history_messages.push(sys_msg.SUCCESS_UPLOAD_FILE())
             let ts_with_demand = new TimeSeries(payload)
             ts_with_demand.sort()
             commit("load_user_data_history", ts_with_demand.get_data()) 
-          }          
+          }
         },
 
-        add_user_data_history({ commit }, payload) {
+        add_user_data_history({ state, commit, dispatch }, payload) {             
           commit("add_user_data_history", payload)
+          dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
-        set_item_user_data_history({ commit }, payload) {
+        set_item_user_data_history({ commit }, payload) {          
           commit("set_item_user_data_history", payload)
         },
-        delete_item_user_data_history_by_id({ commit }, payload) {
+        delete_item_user_data_history_by_id({ state, commit, dispatch }, payload) {       
           commit("delete_item_user_data_history_by_id", payload)
+          dispatch("set_is_valid_user_data_history", state.user_data_history)          
         },
         clear_user_data_history({ state, commit }) {
           state.user_data_history_messages.push(sys_msg.INFO_DELETED_DATA())
           commit("clear_user_data_history")
+          commit("set_is_valid_user_data_history", false)          
         },
       },
 }
