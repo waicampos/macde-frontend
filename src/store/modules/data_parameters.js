@@ -1,4 +1,5 @@
 import { SIMULATION_TYPES, TARIFF_MODALITY_TYPES } from '@/assets/files/consts'
+import { isAfter as fns_isAfter } from 'date-fns'
 
 function isPatternNumber(value) {
   if((value != '') && (typeof value != 'number')) {
@@ -110,10 +111,17 @@ export default {
         commit('data_forecast/set_forecasted_data', [], { root: true })
         commit('data_optimize/set_optimized_data', [], { root: true })
       },
-      set_has_photovoltaic_system({ commit }, payload) {
+      set_has_photovoltaic_system({ commit, dispatch, getters, rootGetters }, payload) {
+        let dt_filtered = rootGetters[`data_history/get_user_data_history`].filter(item => !fns_isAfter(getters.get_date_installation_photovoltaic_system, item.date))
+        let dt = (payload && dt_filtered) || rootGetters[`data_history/get_user_data_history`]        
+        dispatch("data_history/set_is_valid_user_data_history", dt,  {root:true}) 
         commit("set_has_photovoltaic_system", payload)
       },
-      set_date_installation_photovoltaic_system({ commit }, payload) {
+      set_date_installation_photovoltaic_system({ state, dispatch, commit, rootGetters }, payload) {
+        if(state.has_photovoltaic_system) {
+          let dt_filtered = rootGetters[`data_history/get_user_data_history`].filter(item => !fns_isAfter(payload, item.date))
+          dispatch("data_history/set_is_valid_user_data_history", dt_filtered,  {root:true})
+        }
         commit("set_date_installation_photovoltaic_system", payload)
       },
       set_current_contracted_demand({ commit }, payload) {

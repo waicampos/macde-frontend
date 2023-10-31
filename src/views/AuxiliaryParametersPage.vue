@@ -606,7 +606,7 @@ export default {
                 return this.$store.state.data_parameters.has_demand_variation
             },
             set(payload){
-                this.$store.commit('data_parameters/set_has_demand_variation', payload)
+                this.$store.dispatch('data_parameters/set_has_demand_variation', payload)
             }
         },
         has_photovoltaic_system: {
@@ -614,7 +614,7 @@ export default {
                 return this.$store.state.data_parameters.has_photovoltaic_system
             },
             set(payload){
-                this.$store.commit('data_parameters/set_has_photovoltaic_system', payload)
+                this.$store.dispatch('data_parameters/set_has_photovoltaic_system', payload)
             }
         },
         date_installation_photovoltaic_system: {
@@ -622,7 +622,7 @@ export default {
                 return this.$store.state.data_parameters.date_installation_photovoltaic_system
             },
             set(payload){
-                this.$store.commit('data_parameters/set_date_installation_photovoltaic_system', payload)
+                this.$store.dispatch('data_parameters/set_date_installation_photovoltaic_system', payload)
             }
         },
     },
