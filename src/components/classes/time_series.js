@@ -72,7 +72,7 @@ export class ValidationTimeSerie{
     valid_there_is_least_one_month() {        
         let months = this.ts.get_data().map(item => {
             const { date } = item
-            return date.getMonth()
+            return fns_isValid(item.date) ? date.getMonth() : date            
         })
         const unique = Array.from(new Set(months))
         const diff = Array.from(Array(12).keys()).filter(a => !unique.includes( a ))
