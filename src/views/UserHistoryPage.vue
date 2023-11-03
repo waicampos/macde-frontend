@@ -45,13 +45,13 @@
     <v-row class="flex-1-0 ma-0 pa-0">
       <v-col 
         cols="12"
-          v-for="(msg, index) in get_user_data_history_messages"
+          v-for="msg in get_user_data_history_messages"
           :key="msg.code"
       >
         <MessageViewer 
           :msg="msg"
           v-show="msg"
-          @msg_shown='message_shown(index)'
+          @msg_shown='message_shown(msg.code)'
         />
       </v-col>
     </v-row>
@@ -194,7 +194,7 @@
         },
         show_message: {
                 header: false,
-        }
+        },
       }
     },
     computed: {
@@ -236,7 +236,7 @@
       },
     },
     methods: {
-      ...mapActions('data_history', ['user_data_history_messages', 'delete_item_user_data_history_messages', 'clear_user_data_history']),
+      ...mapActions('data_history', ['delete_item_user_data_history_messages', 'clear_user_data_history']),
       ...mapActions('data_parameters', ['set_selected_simulation_type']),
       ...mapActions('data_forecast', ['set_forecasted_data']),
       ...mapActions('data_optimize', ['set_optimized_data']),      

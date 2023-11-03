@@ -3,11 +3,14 @@
         name="fade"
     >
         <v-alert      
+            v-model="alert"
+            closable
             v-if="show"       
             density="compact"
-            :type="msg.type"
-            :title="msg.message"
-            :text="msg.code"
+            :type="msg.type"            
+            :text="msg.message"
+            :icon="msg.icon"
+            variant="tonal"
         ></v-alert>
     </Transition>  
 </template>
@@ -19,6 +22,7 @@
         data() {
             return {
                 show: false,
+                alert: true,
             }
         },
 
@@ -30,12 +34,22 @@
             msg: Object
         },
 
+        watch: {
+            alert: {
+                handler() {                        
+                    !this.alert && this.$emit('msg_shown')
+                },
+                imediate: true,
+            }
+        },
+
         mounted() {
             this.show = true
-            setTimeout(() => this.show = false, 3000)
-            setTimeout(() => this.$emit('msg_shown'), 3700)
-
-        }
+            if(!this.msg.hold) {
+                setTimeout(() => this.show = false, 3000)
+                setTimeout(() => this.$emit('msg_shown'), 3700)
+            }
+        },
     }
 </script>
 
