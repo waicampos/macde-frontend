@@ -146,7 +146,7 @@ export const ERROR_TS_INVALID_DATE = () => {
 export const ERROR_AT_LEAST_ONE_MONTH = () => {
     return new MessageInfo(
        'ERROR_AT_LEAST_ONE_MONTH',
-       'A Série deve ter pelo menos uma amostra para cada mês.',
+       'A série deve ter pelo menos uma amostra para cada mês.',
        'error',
        "mdi-alert-outline",
        true

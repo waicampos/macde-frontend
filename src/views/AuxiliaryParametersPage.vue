@@ -586,6 +586,10 @@ export default {
             get_tariff_modality: 'get_tariff_modality',
         }),
 
+        ...mapGetters('data_history', {
+            get_user_data_history: 'get_user_data_history',
+        }),       
+
         ...mapGetters('data_parameters', {
             get_tariffs: 'get_tariffs',
             get_current_contracted_demand: 'get_current_contracted_demand',
@@ -647,6 +651,26 @@ export default {
             item.value = item.value.toString().replace(".", ",")
             return item 
         })
-    }
+    },
+
+    watch: {
+        has_photovoltaic_system: {
+            handler() {                     
+                this.has_photovoltaic_system &&
+                this.$store.dispatch("data_history/set_is_valid_user_data_history", this.get_user_data_history) 
+                
+            },
+            imediate: true,
+            deep: true,
+        },
+
+        date_installation_photovoltaic_system: {
+            handler() {                                
+                this.$store.dispatch("data_history/set_is_valid_user_data_history", this.get_user_data_history)
+            },
+            imediate: true,
+            deep: true,
+        }        
+    },
 }
 </script>

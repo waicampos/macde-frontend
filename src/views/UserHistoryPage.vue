@@ -199,7 +199,7 @@
     },
     computed: {
       ...mapGetters('data_history', {
-          data_file: 'get_user_data_history',
+          data_file: 'get_user_data_history_raw',
           get_user_data_history_messages: 'get_user_data_history_messages',
       }),
 

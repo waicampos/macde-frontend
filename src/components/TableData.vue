@@ -175,7 +175,7 @@
     }),
     computed: {
       ...mapGetters('data_history', {
-        data_file: 'get_user_data_history'
+        data_file: 'get_user_data_history_raw'
       }),
 
       ...mapGetters('data_parameters', {

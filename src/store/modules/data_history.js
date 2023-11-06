@@ -1,6 +1,7 @@
 import { groupBy } from '@/assets/files/consts'
 import * as sys_msg from '@/assets/files/system_messages'
 import { TimeSeries, ValidationTimeSerie } from '@/components/classes/time_series'
+import { isAfter as fns_isAfter } from 'date-fns'
 
 export default {
     namespaced: true,
@@ -10,33 +11,34 @@ export default {
         user_data_history_messages: new sys_msg.MessageManager(),
       },
       getters: {
-        get_is_valid_user_data_history(state) {
+        get_is_valid_user_data_history(state) {          
           return state.is_valid_user_data_history
         },
 
-        get_user_data_history(state) {
+        get_user_data_history_raw(state) {
           return state.user_data_history
+        },
+
+        get_user_data_history(state, getters, rootState, rootGetters) {
+          const has_photovoltaic_system = rootGetters['data_parameters/get_has_photovoltaic_system']
+          const date_installation_photovoltaic_system = rootGetters['data_parameters/get_date_installation_photovoltaic_system']
+          
+          return (!has_photovoltaic_system && state.user_data_history) ||
+                  state.user_data_history.filter(item => !fns_isAfter(date_installation_photovoltaic_system, item.date))          
         },
 
         get_user_data_history_messages(state) {
           return state.user_data_history_messages.get_messages()
         },
 
-        get_user_data_history_by_serie: (state) => (key) => {
-          try{
-            if(Object.keys(state.user_data_history[0]).includes(key)) {
-              return state.user_data_history.map(curr => curr[key])
-            }else {
-              return []
-            }
-          }
-          catch{
-            return []
-          }
+        get_user_data_history_by_serie: (state, getters) => (key) => {
+          let arr = []
+          getters.get_user_data_history_by_group(key).forEach(curr => arr = arr.concat(curr))
+          return arr          
         },
 
-        get_user_data_history_by_group: (state) => (key) => {
-          let mod_data = [...state.user_data_history];
+        get_user_data_history_by_group: (state, getters) => (key) => {
+          let mod_data = [...getters.get_user_data_history];
           mod_data.forEach((curr, i, arr) => {
               arr[i]['month'] = curr.date.getMonth().toString()
               arr[i]['year'] = curr.date.getYear().toString()         
@@ -44,12 +46,14 @@ export default {
           let agrouped = groupBy(mod_data, 'year')
           let arr = []
 
-          for(let name in agrouped){                
-              arr.push(
-                  agrouped[name].map((curr) => {
-                      return curr[key]
-                  })
-              )
+          for(let name in agrouped){         
+              let temp_arr = new Array(12).fill(0)
+
+              agrouped[name].forEach((curr) => {
+                temp_arr[curr['month']] = curr[key]
+              })
+
+              arr.push(temp_arr)
           }
           return arr
         },    

@@ -49,7 +49,7 @@ export default {
 
       forecast({dispatch, getters, rootGetters}) {
         const is_double_mean = getters.get_chosen_forecast_model.type == 'doublemean'
-        let get_data = rootGetters[`data_history/${is_double_mean ? 'get_user_data_history_by_group' : 'get_user_data_history_by_serie'}`]
+        let get_data = rootGetters[`data_history/${is_double_mean ? 'get_user_data_history_by_group' : 'get_user_data_history_by_serie'}`]        
         let meas_names = rootGetters['data_parameters/get_selected_simulation_type'].meas
         
         const addr = `https://gese.florianopolis.ifsc.edu.br/mcd/${getters.get_chosen_forecast_model.type}`
