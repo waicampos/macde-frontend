@@ -655,10 +655,11 @@ export default {
 
     watch: {
         has_photovoltaic_system: {
-            handler() {                     
-                this.has_photovoltaic_system &&
+            handler() {                                     
                 this.$store.dispatch("data_history/set_is_valid_user_data_history", this.get_user_data_history) 
-                
+
+                this.$store.dispatch('data_forecast/clear_forecasted_data')
+                this.$store.dispatch('data_optimize/clear_optimized_data')
             },
             imediate: true,
             deep: true,
@@ -667,10 +668,20 @@ export default {
         date_installation_photovoltaic_system: {
             handler() {                                
                 this.$store.dispatch("data_history/set_is_valid_user_data_history", this.get_user_data_history)
+                this.$store.dispatch('data_forecast/clear_forecasted_data')
+                this.$store.dispatch('data_optimize/clear_optimized_data')
             },
             imediate: true,
             deep: true,
-        }        
+        },
+
+        has_demand_variation: {
+            handler() {
+                this.$store.dispatch('data_optimize/clear_optimized_data')                
+            },
+            imediate: true,
+            deep: true,
+        },
     },
 }
 </script>

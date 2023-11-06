@@ -31,6 +31,10 @@ export default {
     mutations: {  
       set_forecasted_data(state, payload) {
         state.forecasted_data = payload
+      }, 
+      
+      clear_forecasted_data(state) {
+        state.forecasted_data = []
       },  
 
       set_chosen_forecast_model(state, payload) {
@@ -41,6 +45,10 @@ export default {
     actions: {
       set_forecasted_data({ commit }, payload) {
         commit("set_forecasted_data", payload)
+      },
+
+      clear_forecasted_data({ commit }) {
+        commit("clear_forecasted_data")
       },
 
       set_chosen_forecast_model({ commit }, payload) {

@@ -267,14 +267,7 @@
                         this.loading  = false  
                     }
                 }
-            },
-            get_selected_simulation_type: {
-                handler() {                    
-                    this.set_optimized_data([])              
-                },
-                deep: true,
-                imediate: true,
-            },
+            },           
         }
     }
 </script>

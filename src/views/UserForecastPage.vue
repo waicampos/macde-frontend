@@ -266,6 +266,7 @@ export default {
     watch:{
         chosen_forecast_model: {
             handler() {         
+                this.$store.dispatch('data_optimize/clear_optimized_data')
                 this.changed_forecast_model_type();                              
             },
             deep: true

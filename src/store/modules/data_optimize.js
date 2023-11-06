@@ -37,6 +37,9 @@ export default {
       set_chosen_optimize_model(state, payload) {
         state.chosen_optimize_model = payload
       },
+      clear_optimized_data(state) {        
+        state.optimized_data = []
+      }, 
     },
 
     actions: {
@@ -47,6 +50,10 @@ export default {
       set_optimized_data({ commit }, payload) {        
         commit("set_optimized_data", payload)        
       },  
+
+      clear_optimized_data({ commit }) {        
+        commit("clear_optimized_data") 
+      }, 
 
       optimize({ commit, rootGetters }){    
         const get_data = rootGetters['data_forecast/get_forecasted_data_by_key']
