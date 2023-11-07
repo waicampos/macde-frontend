@@ -226,17 +226,28 @@
       },
 
       download_table_data() {        
+        const modality_is_green = ['green_demand', 'green_demand_plus_energy'].includes(this.get_selected_simulation_type.name)
         let dt = this.data_file.map(item => {
           let new_obj = {}   
           Object.keys(item).forEach(key => {
-            if(key != 'date') {
+            if(key != 'date') {              
               Object.assign(new_obj, {[key]: item[key].toString().replace(/\./g, ",")})
             } else {            
               Object.assign(new_obj, {[key]: this.date2string(item.date)})
             }
-          })      
+          })                
           return new_obj    
-        })                   
+        })
+
+        if(modality_is_green) {          
+          dt.forEach(item => {
+            delete item.off_peak_demand
+            delete Object.assign(item, {['off_peak_demand']: item['demand'] })['demand'];            
+            item.peak_demand = 0
+        })
+        } else {
+          dt.forEach(item => delete item.demand)
+        } 
         fileDownload(this.$papa.unparse(change_names_en2pt(dt), {delimiter: ";",}), 'dados_tabela_historico_macde.csv')
       },
 
