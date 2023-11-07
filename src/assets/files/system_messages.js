@@ -83,6 +83,8 @@ export class MessageInfo{
     }
 }
 
+export const BASIC_KEYS_REQUIRED = ['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']
+
 export const INFO_DELETED_DATA = () => {
     return new MessageInfo(
        'INFO_DELETED_DATA',

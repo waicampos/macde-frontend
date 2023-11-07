@@ -70,7 +70,7 @@ export default {
           state.user_data_history.push(payload)
         },
         set_item_user_data_history(state, payload) {
-          state.user_data_history[payload.index] = {...payload.value}
+          Object.keys(payload.value).forEach(key => state.user_data_history[payload.index][key] = payload.value[key])
         },
         delete_item_user_data_history_by_id(state, payload) {
           state.user_data_history.splice(payload, 1)
@@ -83,9 +83,8 @@ export default {
         }                
       },
       actions: {
-        set_is_valid_user_data_history({ state, commit, rootGetters}, user_data) { 
-          let simulation_type = rootGetters['data_parameters/get_selected_simulation_type'].meas
-          let ts = new TimeSeries(user_data, simulation_type)
+        set_is_valid_user_data_history({ state, commit}, user_data) { 
+          let ts = new TimeSeries(user_data, sys_msg.BASIC_KEYS_REQUIRED)
           let ts_validation = new ValidationTimeSerie(ts)
         
           state.user_data_history_messages.clear()
@@ -95,7 +94,7 @@ export default {
           if(!ts_validation.valid_there_is_least_one_month()) state.user_data_history_messages.add(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
           if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.add(sys_msg.ERROR_TS_DUPLICATED_VALUE())
           if(!ts_validation.valid_allNumbers()) state.user_data_history_messages.add(sys_msg.ERROR_TS_IS_NUMBER())
-          if(!ts_validation.valid_required_keys()) state.user_data_history_messages.add(sys_msg.ERROR_REQ_KEYS(['peak_demand', 'off_peak_demand', 'peak_energy', 'off_peak_energy']))
+          if(!ts_validation.valid_required_keys()) state.user_data_history_messages.add(sys_msg.ERROR_REQ_KEYS(sys_msg.BASIC_KEYS_REQUIRED))
                     
           commit("set_is_valid_user_data_history", state.user_data_history_messages.length() == 0)              
         },
@@ -107,11 +106,9 @@ export default {
             return false
           }
 
-          payload.forEach(item => {        
-            item.demand = Math.max(item.peak_demand, item.off_peak_demand)
-          })
           dispatch("set_is_valid_user_data_history", payload)
           if(state.is_valid_user_data_history) {
+            payload.forEach(item => item.demand = Math.max(item.peak_demand, item.off_peak_demand))
             state.user_data_history_messages.clear()
             state.user_data_history_messages.add(sys_msg.SUCCESS_UPLOAD_FILE())
             let ts_with_demand = new TimeSeries(payload)
@@ -121,6 +118,11 @@ export default {
         },
 
         add_user_data_history({ state, commit, dispatch }, payload) {
+          sys_msg.BASIC_KEYS_REQUIRED.forEach(key => payload[key] = payload[key] || 0)
+          if(!('demand' in payload)) {
+            payload['demand'] = Math.max(payload['peak_demand'], payload['off_peak_demand'])
+          }
+
           commit("add_user_data_history", payload)
           dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
