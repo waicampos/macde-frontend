@@ -248,7 +248,7 @@
         } else {
           dt.forEach(item => delete item.demand)
         } 
-        fileDownload(this.$papa.unparse(change_names_en2pt(dt), {delimiter: ";",}), 'dados_tabela_historico_macde.csv')
+        fileDownload(this.$papa.unparse(change_names_en2pt(dt, ['data', 'demanda ou demanda fora de ponta', 'demanda de ponta', 'energia fora de ponta', 'energia de ponta']), {delimiter: ";",}), 'dados_tabela_historico_macde.csv')
       },
 
       defineClassTextColor(dt) {

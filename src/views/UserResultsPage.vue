@@ -275,12 +275,12 @@
         },
         
         chartBarTimeSeriesData(keys, data){
-          data.forEach((item, index) => item.date = (index + 1).toString())    
-          return createDataSetsTimeSeries(keys, 'date', data)
+          data.forEach((item, index) => item.month = (index + 1).toString())    
+          return createDataSetsTimeSeries(keys, 'month', data)
         },
 
         chartTimeSeriesData(keys, data) {
-          return createDataSetsTimeSeries(keys, 'date', data)              
+          return createDataSetsTimeSeries(keys, 'month', data)              
         },   
         
         currency_format(value) {          

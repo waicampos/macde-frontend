@@ -326,16 +326,16 @@ export default {
             let data = [...this.get_forecasted]
             let dt = createDataSetsTimeSeries( 
                 keys, 
-                'date',
+                'month',
                 data
             )
 
             this.get_forecasted.forEach((item, index) => {
-                this.get_optimized_data[index].date = item.date
+                this.get_optimized_data[index].month = item.month
             })
             let dt_optimized = createDataSetsTimeSeries(
                     keys,
-                    'date',
+                    'month',
                     [...this.get_optimized_data]
             )
             dt_optimized.datasets[0].label += ' Sugerida'

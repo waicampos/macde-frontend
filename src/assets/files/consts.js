@@ -8,16 +8,17 @@ export const sequence_headers_input_data_file = ['date', 'off_peak_demand', 'pea
 
 export const translated_input_file_keys = {
   'data': 'date',
+  'mês': 'month',
   'demanda ou demanda fora de ponta' : 'off_peak_demand',
   'demanda de ponta' : 'peak_demand',
   'energia fora de ponta' : 'off_peak_energy',
   'energia de ponta' : 'peak_energy'
 }
 
-export function change_names_en2pt(val) {
+export function change_names_en2pt(val, user_keys) {
   return val.map(item => {  
     let new_obj = {}         
-    Object.keys(translated_input_file_keys).forEach(key => Object.assign(new_obj, {[key]: item[translated_input_file_keys[key]]}))          
+    user_keys.forEach(key => Object.assign(new_obj, {[key]: item[translated_input_file_keys[key]]}))          
     return {...new_obj}
   })
 }
@@ -108,7 +109,7 @@ export function demand_cost_response_disassembly(contracted, response) {
     for(let i in [...Array(lentgh_res).keys()]){
       let prov = {}
       Object.keys(contracted[0]).forEach((key, index) => {
-        if(key !== 'date') prov[key] = response[index].data[i]
+        if(key !== 'month') prov[key] = response[index].data[i]
       })
       demand_costs.push(prov)
     }

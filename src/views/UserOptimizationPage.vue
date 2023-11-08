@@ -207,7 +207,7 @@
                         title: 'Mês',
                         align: 'start',
                         sortable: false,
-                        key: 'date',
+                        key: 'month',
                     }
                 )
                 return names
@@ -225,7 +225,7 @@
             chartData(type_meas) {  
                 this.chartDataSets[type_meas] = createDataSetsTimeSeries( 
                 this.active_meas(type_meas), 
-                'date',
+                'month',
                 Object.assign([], this.get_optimized_data)
                 )             
                 this.chartDataSets[type_meas].datasets.forEach(dt => {
@@ -234,7 +234,7 @@
 
                 let forecast_dataset = createDataSetsTimeSeries( 
                 this.active_meas(type_meas), 
-                'date',
+                'month',
                 Object.assign([], this.get_forecasted_data)
                 )              
                 
@@ -245,8 +245,19 @@
                 })                
             },
 
-            download_table_data() {                                                              
-                fileDownload(this.$papa.unparse(change_names_en2pt(this.get_optimized_data), {delimiter: ";",}), 'otimizacao_macde.csv')
+            download_table_data() {     
+                const modality_is_green = ['green_demand', 'green_demand_plus_energy'].includes(this.get_selected_simulation_type.name)    
+                let dt = this.get_optimized_data.map(i => {return {...i}})
+                if(modality_is_green) {          
+                    dt.forEach(item => {
+                        delete item.off_peak_demand
+                        delete Object.assign(item, {['off_peak_demand']: item['demand'] })['demand'];            
+                        item.peak_demand = 0
+                    })
+                } else {
+                    dt.forEach(item => delete item.demand)
+                }                                                             
+                fileDownload(this.$papa.unparse(change_names_en2pt(dt, ['mês', 'demanda ou demanda fora de ponta', 'demanda de ponta']), {delimiter: ";",}), 'otimizacao_macde.csv')
             },
            
             loadExploratory() {

@@ -289,7 +289,7 @@
       },
 
       download_standard_user_historic() {
-        let dt = change_names_en2pt(JSON.parse(JSON.stringify(macde_model)))
+        let dt = change_names_en2pt(JSON.parse(JSON.stringify(macde_model)), ['data', 'demanda ou demanda fora de ponta', 'demanda de ponta', 'energia fora de ponta', 'energia de ponta'])
         dt.forEach(item => Object.keys(item).forEach(key => item[key] = item[key].toString().replace(/\./g, ",")))
         fileDownload(this.$papa.unparse(dt, {delimiter: ";",}), 'modelo_macde.csv')
       },

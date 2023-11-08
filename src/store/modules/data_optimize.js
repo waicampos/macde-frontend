@@ -86,7 +86,7 @@ export default {
               optimized.push(prov)
           }
 
-          optimized.forEach((item, index) => item.date = (index + 1).toString())          
+          optimized.forEach((item, index) => item.month = (index + 1).toString())          
           commit("set_optimized_data", optimized)
         })
       },
