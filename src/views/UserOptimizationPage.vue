@@ -215,8 +215,8 @@
         },
 
         methods: {        
-            ...mapActions('data_optimize', ['set_optimized_data', 'optimize']),
-            ...mapActions('data_parameters', ['set_selected_simulation_type']),        
+            ...mapActions('data_optimize', ['set_optimized_data', 'optimize', 'clear_optimized_data']),
+            ...mapActions('data_parameters', ['set_selected_simulation_type']),       
         
             active_meas(type_meas) {
                 return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
@@ -278,7 +278,14 @@
                         this.loading  = false  
                     }
                 }
-            },           
+            },  
+            has_demand_variation: {
+                handler() {
+                    this.clear_optimized_data()
+                },
+                imediate: true,
+                deep: true,
+            },         
         }
     }
 </script>
