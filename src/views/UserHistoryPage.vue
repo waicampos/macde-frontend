@@ -178,7 +178,7 @@
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, ArcElement, Tooltip, Legend,  TimeScale)
   import 'chartjs-adapter-date-fns';
   import fileDownload from 'js-file-download'
-  import { translated_input_file_keys, change_names_en2pt, sequence_headers_input_data_file, SIMULATION_TYPES } from '@/assets/files/consts'
+  import { change_names_en2pt, change_names_pt2en, SIMULATION_TYPES } from '@/assets/files/consts'
   import { isAfter as fns_isAfter } from 'date-fns'
 
   export default {
@@ -208,6 +208,9 @@
           get_date_installation_photovoltaic_system: 'get_date_installation_photovoltaic_system',
           get_has_photovoltaic_system: 'get_has_photovoltaic_system',
       }),
+      ...mapGetters('data_forecast', {
+          get_chosen_forecast_model: 'get_chosen_forecast_model',          
+      }),
 
       selected_simulation_type: {
           get() {
@@ -236,25 +239,10 @@
       },
     },
     methods: {
-      ...mapActions('data_history', ['delete_item_user_data_history_messages', 'clear_user_data_history']),
+      ...mapActions('data_history', ['delete_item_user_data_history_messages', 'clear_user_data_history', 'clear_user_data_history_messages']),
       ...mapActions('data_parameters', ['set_selected_simulation_type']),
-      ...mapActions('data_forecast', ['set_forecasted_data']),
-      ...mapActions('data_optimize', ['set_optimized_data']),      
-
-      change_names_pt2en(val) {      
-        return val.map(item => {  
-          let new_obj = {}                  
-          Object.keys(item).forEach((key, index) => {                 
-            let name_key = translated_input_file_keys[key.toLowerCase()] || sequence_headers_input_data_file[index]
-            if(!sequence_headers_input_data_file.includes(key) && !Object.keys(item).includes(name_key)) {              
-              new_obj[name_key] = item[key]                         
-            }else {
-              new_obj[key] = item[key]   
-            }         
-          })
-          return new_obj
-        })        
-      },
+      ...mapActions('data_forecast', ['clear_forecasted_data']),
+      ...mapActions('data_optimize', ['clear_optimized_data']),            
 
       fileUploaded(val) {      
         val.forEach(item => {                    
@@ -265,7 +253,7 @@
             }
           })
         })   
-        this.$store.dispatch('data_history/load_user_data_history', this.change_names_pt2en(val))
+        this.$store.dispatch('data_history/load_user_data_history', change_names_pt2en(val))
       },
 
       active_meas(type_meas) {
@@ -279,8 +267,10 @@
       clear_user_historic() {
         if(this.data_file.length) {
           this.clear_user_data_history()
-          this.set_forecasted_data([])
-          this.set_optimized_data([])
+          if(this.get_chosen_forecast_model.type != 'custom') {
+            this.clear_forecasted_data()
+            this.clear_optimized_data()
+          }
         }
       },
 
@@ -324,6 +314,10 @@
     mounted(){
       this.chartData('demand')
       this.chartData('energy')
+    },
+
+    beforeUnmount() {
+        this.clear_user_data_history_messages()        
     },
 
     watch: {

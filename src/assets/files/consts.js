@@ -15,6 +15,21 @@ export const translated_input_file_keys = {
   'energia de ponta' : 'peak_energy'
 }
 
+export function change_names_pt2en(val) {      
+  return val.map(item => {  
+    let new_obj = {}                  
+    Object.keys(item).forEach((key, index) => {                 
+      let name_key = translated_input_file_keys[key.toLowerCase()] || sequence_headers_input_data_file[index]
+      if(!sequence_headers_input_data_file.includes(key) && !Object.keys(item).includes(name_key)) {              
+        new_obj[name_key] = item[key]                         
+      }else {
+        new_obj[key] = item[key]   
+      }         
+    })
+    return new_obj
+  })        
+}
+
 export function change_names_en2pt(val, user_keys) {
   return val.map(item => {  
     let new_obj = {}         

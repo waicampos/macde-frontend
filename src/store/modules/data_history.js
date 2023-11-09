@@ -63,21 +63,31 @@ export default {
         set_is_valid_user_data_history(state, payload) {
           state.is_valid_user_data_history = payload
         },
+
         load_user_data_history(state, payload) {
           state.user_data_history = payload
         },
+
         add_user_data_history(state, payload) {
           state.user_data_history.push(payload)
         },
+
         set_item_user_data_history(state, payload) {
           Object.keys(payload.value).forEach(key => state.user_data_history[payload.index][key] = payload.value[key])
         },
+
         delete_item_user_data_history_by_id(state, payload) {
           state.user_data_history.splice(payload, 1)
-        },    
+        }, 
+
         clear_user_data_history(state) {
           state.user_data_history = []
         },
+
+         clear_user_data_history_messages(state) {       
+          state.user_data_history_messages.clear()      
+        },
+
         delete_item_user_data_history_messages(state, payload) {
           state.user_data_history_messages.delete(payload)
         }                
@@ -88,8 +98,8 @@ export default {
           let ts_validation = new ValidationTimeSerie(ts)
         
           state.user_data_history_messages.clear()
-          if(!ts_validation.valid_min_size()) state.user_data_history_messages.add(sys_msg.ERROR_TS_MIN_SIZE(ts, ts_validation))
-          if(!ts_validation.valid_max_size()) state.user_data_history_messages.add(sys_msg.ERROR_TS_MAX_SIZE(ts, ts_validation))
+          if(!ts_validation.valid_min_size()) state.user_data_history_messages.add(sys_msg.ERROR_TS_MIN_SIZE(ts.size(), ts_validation.get_minimum_size()))
+          if(!ts_validation.valid_max_size()) state.user_data_history_messages.add(sys_msg.ERROR_TS_MAX_SIZE(ts.size(), ts_validation.get_minimum_size()))
           if(!ts_validation.valid_isValidDate()) state.user_data_history_messages.add(sys_msg.ERROR_TS_INVALID_DATE())
           if(!ts_validation.valid_there_is_least_one_month()) state.user_data_history_messages.add(sys_msg.ERROR_AT_LEAST_ONE_MONTH())
           if(!ts_validation.valid_DuplicatesDates()) state.user_data_history_messages.add(sys_msg.ERROR_TS_DUPLICATED_VALUE())
@@ -126,20 +136,28 @@ export default {
           commit("add_user_data_history", payload)
           dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
+
         set_item_user_data_history({ state, commit, dispatch }, payload) {
           commit("set_item_user_data_history", payload)
           dispatch("set_is_valid_user_data_history", state.user_data_history)
         },
+
         delete_item_user_data_history_by_id({ state, commit, dispatch }, payload) {       
           commit("delete_item_user_data_history_by_id", payload)
           dispatch("set_is_valid_user_data_history", state.user_data_history)          
         },
+
         clear_user_data_history({ state, commit }) {       
           state.user_data_history_messages.clear()
           state.user_data_history_messages.add(sys_msg.INFO_DELETED_DATA())   
           commit("clear_user_data_history")
-          state.is_valid_user_data_history = true          
+          state.is_valid_user_data_history = false          
         },
+
+        clear_user_data_history_messages({ commit }) {       
+          commit("clear_user_data_history_messages")        
+        },
+
         delete_item_user_data_history_messages({ commit }, payload) {
           commit("delete_item_user_data_history_messages", payload)
         }   

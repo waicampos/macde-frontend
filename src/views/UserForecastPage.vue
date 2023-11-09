@@ -53,6 +53,21 @@
             </v-col>
         </v-row>    
 
+        <!-- Mensagens -->
+        <v-row class="flex-1-0 ma-0 pa-0">
+            <v-col 
+                cols="12"
+                v-for="msg in get_user_forecasted_data_messages"
+                :key="msg.code"
+            >            
+                <MessageViewer 
+                :msg="msg"
+                v-show="msg"
+                @msg_shown='message_shown(msg.code)'
+                />
+            </v-col>
+        </v-row>
+
         <!-- Tipos Modelos -->
         <v-row 
             v-if="!this.get_is_valid_user_data_history && this.chosen_forecast_model.type != 'custom'"
@@ -163,11 +178,12 @@ import { Line as MyLine} from 'vue-chartjs'
 import { createDataSetsTimeSeries, chartOptionsConfigDefault } from '@/components/config/chartConfig'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
-import { MEAS_INFO, ITEMS_PER_PAGE_TABLE, change_names_en2pt } from '@/assets/files/consts'
+import { MEAS_INFO, ITEMS_PER_PAGE_TABLE, change_names_en2pt, change_names_pt2en } from '@/assets/files/consts'
+import MessageViewer from '@/components/MessageViewer.vue'
 
 export default {
     name: "user-forecast_page",
-    components: {MyLine, FileUploader, BtnOptions},
+    components: {MyLine, FileUploader, BtnOptions, MessageViewer},
      data() {
       return {       
         show_message: {
@@ -189,6 +205,7 @@ export default {
         ...mapGetters('data_forecast', {
             forecasted_data: 'get_forecasted_data', 
             chosen_forecast_model: 'get_chosen_forecast_model',
+            get_user_forecasted_data_messages: 'get_user_forecasted_data_messages',
             }
         ),
 
@@ -221,21 +238,36 @@ export default {
         chartTimeSeriesOptionsEnergy() {
             let opt = JSON.parse(JSON.stringify(chartOptionsConfigDefault))
             opt.plugins.title.text = "Gráfico de Energia"
-            opt.scales.x.title.text = "Data"
+            opt.scales.x.title.text = "Mês"
             opt.scales.y.title.text = "Energia [kWh]"
 
             return opt
         },
     },
     methods: {
-        ...mapActions('data_forecast', ['set_forecasted_data', 'forecast']),
+        ...mapActions(
+            'data_forecast', 
+            ['clear_forecasted_data', 'forecast', 'set_forecasted_from_custom_data', 'delete_item_user_forecasted_data_messages', 'clear_user_forecasted_data_messages']),
+        ...mapActions('data_optimize', ['clear_optimized_data']),  
+        message_shown(index) {
+            this.delete_item_user_forecasted_data_messages(index)
+        },
 
         active_meas(type_meas) {
             return this.get_selected_simulation_type.meas.filter(item => item.includes(type_meas))
         },
 
         fileUploaded(val) {            
-            this.set_forecasted_data(val)
+            val.forEach(item => {                    
+            Object.keys(item).forEach(key => {       
+                let num = Number(item[key].replace(/\./g, "").replace(/,/g, "."))
+                if(!Number.isNaN(num)){
+                item[key] = num
+                }
+            })
+            })   
+            this.clear_optimized_data()
+            this.set_forecasted_from_custom_data(change_names_pt2en(val))
         },
 
         download_table_data() { 
@@ -245,7 +277,7 @@ export default {
                 dt.forEach(item => {
                     delete item.off_peak_demand
                     delete Object.assign(item, {['off_peak_demand']: item['demand'] })['demand'];            
-                    item.peak_demand = 0
+                    item.peak_demand = ''
                 })
             } else {
                 dt.forEach(item => delete item.demand)
@@ -262,9 +294,13 @@ export default {
         },
         
         changed_forecast_model_type() {
-            this.set_forecasted_data([])
-            if(this.get_is_valid_user_data_history && this.chosen_forecast_model.type != 'custom' ) {
-                this.forecast()               
+            this.clear_user_forecasted_data_messages()
+            if(this.chosen_forecast_model.type != 'custom') {
+                this.clear_forecasted_data()
+                this.$store.commit("data_forecast/set_is_valid_custom_forecasted_data", false)
+                if(this.get_is_valid_user_data_history) {
+                    this.forecast()               
+                }
             }
         }
     },
@@ -274,11 +310,20 @@ export default {
         this.chartData('energy')    
     },
 
+    beforeUnmount() {
+        this.clear_user_forecasted_data_messages()        
+    },
+
     watch:{
         chosen_forecast_model: {
-            handler() {         
-                this.$store.dispatch('data_optimize/clear_optimized_data')
-                this.changed_forecast_model_type();                              
+            handler() {   
+                this.clear_forecasted_data()
+                if(this.chosen_forecast_model.type == 'custom') {
+                    this.$store.commit("data_forecast/set_is_valid_custom_forecasted_data", false)
+                } else {
+                    this.changed_forecast_model_type();                              
+                }
+                this.clear_optimized_data()
             },
             deep: true
         },        

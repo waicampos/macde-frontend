@@ -165,20 +165,20 @@ export const ERROR_TS_MISSING_KEY_DATE = () => {
     )
 }
 
-export const ERROR_TS_MIN_SIZE = (ts, ts_validation) => {
+export const ERROR_TS_MIN_SIZE = (size, minimum_size) => {
     return new MessageInfo(
        'ERROR_TS_MIN_SIZE',
-       `A série informada possui um tamanho de ${ts.size()} amostras, sendo que o tamanho mínimo aceitável é de ${ts_validation.get_minimum_size()} amostras.`,
+       `A série informada possui um tamanho de ${size} amostras, sendo que o tamanho mínimo aceitável é de ${minimum_size} amostras.`,
        'error',
        "mdi-alert-outline",
        true
     )
 }
 
-export const ERROR_TS_MAX_SIZE = (ts, ts_validation) => {
+export const ERROR_TS_MAX_SIZE = (size, maximum_size) => {
     return new MessageInfo(
        'ERROR_TS_MAX_SIZE',
-       `A série informada possui um tamanho de ${ts.size()} amostras, sendo que o tamanho máximo aceitável é de ${ts_validation.get_maximum_size()} amostras.`,
+       `A série informada possui um tamanho de ${size} amostras, sendo que o tamanho máximo aceitável é de ${maximum_size} amostras.`,
        'error',
        "mdi-alert-outline",
        true
