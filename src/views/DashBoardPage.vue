@@ -9,8 +9,8 @@
       @click="rail = false"
     >
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="John Leider"
+        prepend-avatar="@/assets/pi-avatar.png"
+        title="IFSC-FLN"
         nav
       >
         <template v-slot:append>
