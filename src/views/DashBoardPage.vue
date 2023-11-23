@@ -10,7 +10,7 @@
     >
       <v-list-item
         prepend-avatar="@/assets/pi-avatar.png"
-        title="IFSC-FLN"
+        title="Macdinho"
         nav
       >
         <template v-slot:append>
